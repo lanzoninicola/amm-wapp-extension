@@ -2,6 +2,7 @@ import { useState } from "react";
 import { TemplateItem } from "../template-messages.types";
 import { Copy, Expand } from "lucide-react";
 import { useToast } from "../../../components/ui/use-toast";
+import { Button } from "../../../components/ui/button";
 
 interface ItemCardProps {
     itemIndex: number;
@@ -34,6 +35,9 @@ export default function ItemCard({ itemIndex, item, groupName }: ItemCardProps) 
     };
 
     async function copyContent() {
+
+        if (!navigator) return
+
         navigator.clipboard.writeText(item.content).then(() => {
             toast({
                 title: "Copiado!",
@@ -48,12 +52,13 @@ export default function ItemCard({ itemIndex, item, groupName }: ItemCardProps) 
     }
 
     return (
-        <div className="flex flex-col items-start gap-2 rounded-lg
-        border p-3 text-left text-sm transition-all hover:bg-accent"
+        <div className="flex flex-col items-start gap-2 rounded-lg p-3 text-left text-sm transition-all hover:bg-accent" style={{
+            borderStyle: "groove",
+        }}
         >
 
             <div className="flex gap-2 justify-between items-center w-full">
-                <div className="flex flex-col gap-1 items-center">
+                <div className="flex flex-col gap-1">
                     <h2 className="font-heading scroll-m-20 text-sm font-semibold tracking-tight leading-none uppercase">
                         {item.title}
                     </h2>
@@ -62,10 +67,18 @@ export default function ItemCard({ itemIndex, item, groupName }: ItemCardProps) 
                 </div>
 
                 <div className="flex gap-4">
-                    <Expand className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-yellow-500" onClick={() => toggleItem(itemIndex)} />
-                    <Copy className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-yellow-500"
+                    <Button className="hover:bg-yellow-500 rounded-full p-1" variant={"ghost"}
+                        onClick={() => toggleItem(itemIndex)}
+                    >
+                        <Expand className="h-4 w-4 text-muted-foreground cursor-pointer " />
+                    </Button>
+                    <Button className="hover:bg-yellow-500 rounded-full p-1" variant={"ghost"}
                         onClick={copyContent}
-                    />
+                    >
+                        <Copy className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-yellow-500" />
+                    </Button>
+
+
                 </div>
             </div>
             <p className="text-xs text-muted-foreground">
