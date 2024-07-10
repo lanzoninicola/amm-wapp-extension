@@ -5,20 +5,24 @@ export const mockDatabase = [
         items: [
             {
                 title: "Link Cardápio",
-                content: "Olá! Fico feliz com seu interesse no nosso cardápio! \nVocê pode conferir todas as nossas deliciosas opções de pizzas no link abaixo:\n\n [Link para o cardápio] \nSe tiver alguma dúvida ou precisar de uma recomendação, estou aqui para ajudar! \n\nBuon appetito! 🍕"
+                content: "Olá! Fico feliz com seu interesse no nosso cardápio!\nVocê pode conferir todas as nossas deliciosas opções de pizzas no link abaixo:\n\nwww.amodomio.com.br/cardapio\n\nSe tiver alguma dúvida ou precisar de uma recomendação, estou aqui para ajudar! \n\nBuon appetito! 🍕"
             },
             {
                 title: "Como funciona",
-                content: "lorem ipsum adovcata nossa"
+                content: "Somos uma pizzaria delivery que oferece uma pizza do estilo romano de Roma, é totalmente diferente das pizzas tradicionais da cidade.\n\nO formato da nossa pizza é retangular, com massa de farinha especial e molho de tomate importado da Itália.\n\nO processo de preparo é italiano, como da tradição, o nosso pizzaiolo è Italiano, nascido e criado em Verona, apaixonado por pizzas.\n\nOs tamanhos disponíveis são:\n\n- *MÉDIO* (40x20cm): serve até 2 pessoas, com no máximo dois sabores.\n- *FAMÍLIA* (60x40cm): serve até 6 pessoas, com no máximo quatro sabores.\n\nOferecemos também a pizza *Al Taglio*, disponível apenas no balcão. São fatias de pizza de 10x20cm, ideais para uma pessoa. Esse último segue um cardápio que muda semanalmente.\n\nNosso hórario de atendimento é de quarta a domingo, das 18h as 22h."
             },
             {
                 title: "Hórario de atendimento",
-                content: "lorem ipsum advocata nossa"
+                content: "Nosso hórario de atendimento é de quarta a domingo, das 18h as 22h."
+            },
+            {
+                title: "Para fazer um pedido",
+                content: ""
             }
         ]
     },
     {
-        group: "vendas",
+        group: "status de pedidos",
         items: [
             {
                 title: "No forno",
@@ -33,13 +37,27 @@ export const mockDatabase = [
     {
         group: "post vendas",
         items: [
+
             {
-                title: "Enviar feedback",
-                content: "lorem ipsum adovcata nossa"
+                title: "Feedback WhatsApp",
+                content: "Agradecemos por ter pedido nossa pizza! Por gentileza, nos envie um feedback aqui pelo WhatsApp sobre como foi a sua experiência."
             },
             {
-                title: "Responder pedidos",
-                content: "lorem ipsum adovcata nossa"
+                title: "Feedback Google",
+                content: "Se você gostou da nossa pizza e quer apoiar nosso crescimento, por que não deixar um comentário no Google pelo link https://g.page/r/CceZSxdctFZHEAE/review? São 2 minutos que, para nós, faz toda a diferença."
+            },
+        ]
+    },
+    {
+        group: "RH",
+        items: [
+            {
+                title: "Assistente Cozinha - Vaga aberta",
+                content: "Olá! Asgradecemos pelo interesse na vaga de Assistente de Cozinha na pizzaria A Modo Mio.\n\nVocê pode obter mais informações e se candidatar através da página\n\nhttps://www.amodomio.com.br/vagas/auxiliar-cozinha. \n\nAgradecemos novamente pelo interesse e esperamos contar com você em breve.\n\nEquipe A Modo Mio"
+            },
+            {
+                title: "Assistente Cozinha - Vaga fechada",
+                content: "Olá! Agradecemos pelo interesse na vaga de Assistente de Cozinha na pizzaria A Modo Mio. Informamos que, no momento, a vaga está fechada.\n\nConvidamos você a se candidatar através da página https://www.amodomio.com.br/vagas/auxiliar-cozinha em qualquer caso.\n\nSuas informações serão mantidas caso abrirmos novamente a mesma ou novas vagas.\n\nAgradecemos novamente pelo interesse e esperamos contar com você em breve.\n\n"
             }
         ]
     }
