@@ -46,7 +46,7 @@ function createSidebar() {
   sidebar.style.width = '300px';
   sidebar.style.height = '100%';
   sidebar.style.backgroundColor = '#ffffff';
-  sidebar.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+  sidebar.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.2)';
   sidebar.style.zIndex = '9999';
   document.body.appendChild(sidebar);
 
