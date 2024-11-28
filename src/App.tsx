@@ -1,4 +1,4 @@
-import { ArrowRight, PersonStanding } from 'lucide-react';
+import { PersonStanding } from 'lucide-react';
 import './App.css';
 import { ScrollArea } from './components/ui/scroll-area';
 import { Toaster } from './components/ui/toaster';
@@ -9,48 +9,109 @@ import { useState } from 'react';
 export default function App() {
   const [showSidebar, setShowSidebar] = useState(false);
 
+  const toggleSidebar = (e: React.MouseEvent, fromEl: string) => {
 
-  const toggleSidebar = () => setShowSidebar(!showSidebar);
+    console.log({ fromEl })
+
+    e.stopPropagation();
+    setShowSidebar(!showSidebar)
+  };
 
   return (
     <>
-      <div className='p-4'>
-        <Button className='bg-yellow-500 rounded-full p-2 text-black hover:bg-yellow-200'
-          onClick={toggleSidebar}
-        >
-          <PersonStanding />
-        </Button>
-      </div>
-      {showSidebar && <Sidebar toggleSidebar={toggleSidebar} />}
+      <Button className='bg-yellow-500 rounded-full p-2 text-black hover:bg-yellow-200 h-12 w-12 fixed right-4 top-4 z-10100'
+        onClick={
+          (e) => {
+            toggleSidebar(e, 'button')
+          }
+        }
+      >
+        <PersonStanding />
+      </Button>
+      {showSidebar && <Sidebar toggleSidebar={(e) => {
+        toggleSidebar(e, 'sidebar-container')
+      }} />}
     </>
   )
 
 }
 
+
 interface SidebarProps {
-  toggleSidebar: () => void
+  toggleSidebar: (e: React.MouseEvent, fromEl: string) => void
 }
 
 function Sidebar({ toggleSidebar }: SidebarProps) {
   return (
 
-    <div className='h-screen w-[350px] fixed right-0 top-0 bg-white'>
-      <ScrollArea className="calc(h-screen_-_50px) w-full p-4 overflow-hidden">
-        <h2 className="font-heading scroll-m-20 text-xl font-semibold tracking-tight">Assistente</h2>
-        <TemplateList />
-      </ScrollArea>
-      <Toaster />
-      <div className='h-[50px] fixed bottom-1 w-full px-4 backdrop-blur-md '>
-        <div className='h-full flex items-center'>
-          <Button variant='outline' className='items-center justify-center gap-2'
-            onClick={toggleSidebar}
-          >
-            <span className='text-xs uppercase font-semibold tracking-wide'>Fechar</span>
-            <ArrowRight size={16} />
-          </Button>
-        </div>
+    <SidebarContainer toggleSidebar={toggleSidebar}>
+
+      <div className='col-span-2 h-screen bg-white border-l border-gray-200'
+        data-element='sidebar'
+      >
+        <ScrollArea className="calc(h-screen_-_50px) w-full p-4 overflow-hidden">
+          <h2 className="font-heading scroll-m-20 text-xl font-semibold tracking-tight">Assistente</h2>
+          <TemplateList />
+        </ScrollArea>
+        <Toaster />
 
       </div>
-    </div>
+    </SidebarContainer>
   );
 }
+
+interface SidebarContainerProps {
+  children: React.ReactNode
+  toggleSidebar: (e: React.MouseEvent, fromEl: string) => void
+}
+
+
+function SidebarContainer({ children, toggleSidebar }: SidebarContainerProps) {
+
+  return (
+    <div className='absolute inset-0 w-screen h-screen'
+      data-element='sidebar-container'
+
+    >
+      <div className='grid grid-cols-12 w-full h-full relative z-10200'>
+        <div
+          className='col-span-10'
+          onClick={
+            (e) => {
+              toggleSidebar(e, 'sidebar-container')
+            }}>
+
+        </div>
+        {children}
+      </div>
+    </div>
+  )
+
+}
+
+/**
+interface SidebarCloseButtonProps {
+  toggleSidebar: (e: React.MouseEvent, fromEl: string) => void
+}
+
+
+function SidebarCloseButton({ toggleSidebar }: SidebarCloseButtonProps) {
+
+  return (
+    <div className='h-[50px] fixed bottom-1 w-full px-4 backdrop-blur-md '>
+      <div className='h-full flex items-center'>
+        <Button variant='outline' className='items-center justify-center gap-2'
+          onClick={
+            (e: React.MouseEvent) => {
+              toggleSidebar(e, 'sidebar')
+            }
+          }
+        >
+          <span className='text-xs uppercase font-semibold tracking-wide'>Fechar</span>
+          <ArrowRight size={16} />
+        </Button>
+      </div>
+
+    </div>
+  )
+} */

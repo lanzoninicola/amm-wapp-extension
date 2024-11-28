@@ -18,9 +18,8 @@ function createRootAndRender() {
 
   const root = document.createElement("div");
   root.id = id
-  root.style.position = 'fixed';
-  root.style.right = '0';
-  root.style.top = '0';
+  root.style.position = 'relative';
+  root.style.zIndex = '10000';
   document.body.appendChild(root);
 
   document.querySelectorAll<HTMLDivElement>(`#${id}`)

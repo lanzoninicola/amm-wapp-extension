@@ -7,11 +7,8 @@ function createRoot() {
 
     const root = document.createElement("div");
     root.id = "react-amm-wapp-root"
-    root.style.position = 'absolute';
-    // root.style.position = 'fixed';
-    root.style.right = '0';
-    root.style.top = '0';
-    root.style.zIndex = '9999';
+    root.style.position = 'relative';
+    root.style.zIndex = '10000';
     document.body.appendChild(root);
 
     injectReactApp(root);
