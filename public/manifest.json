@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "WhatsApp Template Manager",
+    "name": "A Modo Mio - Assistente atendimento whatsapp",
     "version": "1.0",
     "description": "Access and manage message templates in WhatsApp Web.",
     "permissions": [
