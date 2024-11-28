@@ -5,7 +5,7 @@ export const mockDatabase = [
         items: [
             {
                 title: "Link Cardápio",
-                content: "Olá! Fico feliz com seu interesse no nosso cardápio!\nVocê pode conferir todas as nossas deliciosas opções de pizzas no link abaixo:\n\nwww.amodomio.com.br/cardapio\n\nSe tiver alguma dúvida ou precisar de uma recomendação, estou aqui para ajudar! \n\nBuon appetito! 🍕"
+                content: "Olá!\nVocê pode conferir todas as nossas deliciosas opções de pizzas no link abaixo:\n\nhttps://amodomio.com.br/cardapio\n\nSe tiver alguma dúvida ou precisar de uma recomendação, estou aqui para ajudar! \n\nBuon appetito! 🍕"
             },
             {
                 title: "Como funciona",

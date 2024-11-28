@@ -20,7 +20,7 @@ class TemplateMessages {
 
     async getMockedMessages(): Promise<TemplateGroup[]> {
 
-        return new Promise(resolve => setTimeout(() => resolve(mockDatabase), 1000))
+        return new Promise(resolve => setTimeout(() => resolve(mockDatabase), 200))
     }
 }
 

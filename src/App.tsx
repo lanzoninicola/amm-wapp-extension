@@ -9,9 +9,11 @@ import { useState } from 'react';
 export default function App() {
   const [showSidebar, setShowSidebar] = useState(false);
 
-  const toggleSidebar = (e: React.MouseEvent, fromEl: string) => {
+  const toggleSidebar = (e: React.MouseEvent, fromEl: string = '') => {
 
-    console.log({ fromEl })
+    if (fromEl) {
+      console.log({ fromEl })
+    }
 
     e.stopPropagation();
     setShowSidebar(!showSidebar)
@@ -35,6 +37,7 @@ export default function App() {
   )
 
 }
+
 
 
 interface SidebarProps {
