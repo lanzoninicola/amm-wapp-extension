@@ -5,24 +5,22 @@ import { Toaster } from './components/ui/toaster';
 import TemplateList from './domain/template-messages/components/template-list.component';
 import { Button } from './components/ui/button';
 import { useState } from 'react';
+import { AppSidebar } from './components/app-sidebar';
+import { SidebarProvider, SidebarTrigger } from './components/ui/sidebar';
 
 export default function App() {
-  const [showSidebar, setShowSidebar] = useState(false);
-
-
-  const toggleSidebar = () => setShowSidebar(!showSidebar);
-
   return (
-    <>
-      <div className='p-4'>
-        <Button className='bg-yellow-500 rounded-full p-2 text-black hover:bg-yellow-200'
-          onClick={toggleSidebar}
+    <SidebarProvider defaultOpen={false}>
+      <AppSidebar />
+      <main>
+
+        <SidebarTrigger
+          className='bg-yellow-500 rounded-full text-black hover:bg-yellow-200 h-10 w-10 mt-4 mr-4'
         >
           <PersonStanding />
-        </Button>
-      </div>
-      {showSidebar && <Sidebar toggleSidebar={toggleSidebar} />}
-    </>
+        </SidebarTrigger>
+      </main >
+    </SidebarProvider >
   )
 
 }
