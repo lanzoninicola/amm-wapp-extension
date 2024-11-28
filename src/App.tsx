@@ -1,4 +1,4 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, PersonStanding } from 'lucide-react';
 import './App.css';
 import { ScrollArea } from './components/ui/scroll-area';
 import { Toaster } from './components/ui/toaster';
@@ -15,9 +15,11 @@ export default function App() {
   return (
     <>
       <div className='p-4'>
-        <Button className='bg-yellow-500 text-black uppercase text-xs tracking-wide hover:bg-yellow-200'
+        <Button className='bg-yellow-500 rounded-full p-2 text-black hover:bg-yellow-200'
           onClick={toggleSidebar}
-        >Abrir assistente</Button>
+        >
+          <PersonStanding />
+        </Button>
       </div>
       {showSidebar && <Sidebar toggleSidebar={toggleSidebar} />}
     </>
