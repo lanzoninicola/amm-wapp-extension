@@ -9,11 +9,9 @@ import { useState } from 'react';
 export default function App() {
   const [showSidebar, setShowSidebar] = useState(false);
 
-  const toggleSidebar = (e: React.MouseEvent, fromEl: string = '') => {
+  const toggleSidebar = (e: React.MouseEvent, fromEl: string) => {
 
-    if (fromEl) {
-      console.log({ fromEl })
-    }
+    console.log({ fromEl })
 
     e.stopPropagation();
     setShowSidebar(!showSidebar)
@@ -21,15 +19,20 @@ export default function App() {
 
   return (
     <>
-      <Button className='bg-yellow-500 rounded-full p-2 text-black hover:bg-yellow-200 h-12 w-12 fixed right-4 top-4 z-10100'
-        onClick={
-          (e) => {
-            toggleSidebar(e, 'button')
-          }
-        }
-      >
-        <PersonStanding />
-      </Button>
+      <div className='fixed right-4 top-4 z-10100'>
+        <div className='flex flex-col gap-4'>
+          <Button className='bg-yellow-500 rounded-full p-2 text-black hover:bg-yellow-200 h-12 w-12 '
+            onClick={
+              (e) => {
+                toggleSidebar(e, 'button')
+              }
+            }
+          >
+            <PersonStanding />
+          </Button>
+          <ButtonSalutation />
+        </div>
+      </div>
       {showSidebar && <Sidebar toggleSidebar={(e) => {
         toggleSidebar(e, 'sidebar-container')
       }} />}
@@ -38,6 +41,38 @@ export default function App() {
 
 }
 
+function ButtonSalutation() {
+
+
+  const fillSalutation = () => {
+
+    if (!document) return
+
+    const wappInputMessage = document.getElementsByClassName('selectable-text')[0] as HTMLInputElement;
+
+    console.log({ wappInputMessage })
+
+    const salutationSpan = document.createElement("span");
+    salutationSpan.innerText = "Olá";
+
+    if (wappInputMessage) {
+      wappInputMessage.setAttribute('contenteditable', 'true');
+      wappInputMessage.focus();
+      wappInputMessage.appendChild(salutationSpan);
+    } else {
+      alert('O campo de mensagem não foi encontrado');
+    }
+
+  }
+
+  return (
+    <div className='grid place-items-center border-2 bg-none rounded-full  text-black hover:bg-yellow-200 h-12 w-12 cursor-pointer'
+      onClick={fillSalutation}
+    >
+      <PersonStanding />
+    </div>
+  )
+}
 
 
 interface SidebarProps {
