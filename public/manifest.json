@@ -8,6 +8,9 @@
         "activeTab",
         "scripting"
     ],
+    "host_permissions": [
+        "*://amodomio.com.br/*"
+    ],
     "background": {
         "service_worker": "background.js"
     },
@@ -37,5 +40,8 @@
                 "https://web.whatsapp.com/*"
             ]
         }
-    ]
+    ],
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://amodomio.com.br/*"
+    }
 }

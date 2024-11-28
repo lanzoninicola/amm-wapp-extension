@@ -67,6 +67,7 @@ export default function ItemCard({ itemIndex, item, groupName }: ItemCardProps) 
                 </div>
 
                 <div className="flex gap-4">
+
                     <Button className="hover:bg-yellow-500 rounded-full p-1" variant={"ghost"}
                         onClick={() => toggleItem(itemIndex)}
                     >
