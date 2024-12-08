@@ -1,10 +1,13 @@
-import { PersonStanding } from 'lucide-react';
+import { Hand, HeartHandshake, PersonStanding, SquareMenu } from 'lucide-react';
 import './App.css';
 import { ScrollArea } from './components/ui/scroll-area';
 import { Toaster } from './components/ui/toaster';
 import TemplateList from './domain/template-messages/components/template-list.component';
 import { Button } from './components/ui/button';
 import { useState } from 'react';
+import ButtonQuickAction from './domain/template-messages/components/button-quick-action';
+import { linKCardapioText, pixText } from './db/mock.db';
+import PixSvgIcon from './domain/template-messages/components/pix-svg-icon';
 
 export default function App() {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -21,15 +24,50 @@ export default function App() {
 
   return (
     <>
-      <Button className='bg-yellow-500 rounded-full p-2 text-black hover:bg-yellow-200 h-12 w-12 fixed right-4 top-4 z-10100'
-        onClick={
-          (e) => {
-            toggleSidebar(e, 'button')
-          }
-        }
-      >
-        <PersonStanding />
-      </Button>
+      <div className='fixed right-4 top-4 z-10100'>
+        <div className='flex flex-col gap-4 items-center'>
+          <Button className='bg-yellow-500 rounded-full p-2 text-black hover:bg-yellow-200 h-12 w-12 '
+            onClick={
+              (e) => {
+                toggleSidebar(e, 'button')
+              }
+            }
+          >
+            <PersonStanding />
+          </Button>
+          <ButtonQuickAction
+            templateText={{
+              title: 'Boa noite',
+              content: 'Boa noite, como vai?'
+            }}
+            showToast={true}
+          >
+            <Hand size={18} />
+          </ButtonQuickAction>
+          <ButtonQuickAction
+            templateText={linKCardapioText()}
+            showToast={true}
+          >
+            <SquareMenu size={18} />
+          </ButtonQuickAction>
+          <ButtonQuickAction
+            templateText={pixText()}
+            showToast={true}
+          >
+            <PixSvgIcon width={18} height={18} />
+          </ButtonQuickAction>
+          <ButtonQuickAction
+            templateText={{
+              title: 'Obrigado pedido',
+              content: 'Muito obrigado pelo pedido.'
+            }}
+            showToast={true}
+          >
+            <HeartHandshake size={18} />
+          </ButtonQuickAction>
+
+        </div>
+      </div>
       {showSidebar && <Sidebar toggleSidebar={(e) => {
         toggleSidebar(e, 'sidebar-container')
       }} />}
@@ -37,6 +75,9 @@ export default function App() {
   )
 
 }
+
+
+
 
 
 
