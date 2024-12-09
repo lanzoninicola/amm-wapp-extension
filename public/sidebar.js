@@ -104,7 +104,9 @@ Buon appetito! 🍕`}),Of=()=>({title:"Pix",content:`Chave PIX
 *CNPJ* 49850105000129
 *Nome* Gustavo Bergamaschi
 
-Obrigado!`}),Og=[{group:"pre vendas",items:[If(),{title:"Como funciona",content:`Somos uma pizzaria delivery que oferece uma pizza do estilo romano de Roma, é totalmente diferente das pizzas tradicionais da cidade.
+Enviar comprovante por gentileza.
+
+Muito obrigado!`}),Og=[{group:"pre vendas",items:[If(),{title:"Como funciona",content:`Somos uma pizzaria delivery que oferece uma pizza do estilo romano de Roma, é totalmente diferente das pizzas tradicionais da cidade.
 
 O formato da nossa pizza é retangular, com massa de farinha especial e molho de tomate importado da Itália.
 
