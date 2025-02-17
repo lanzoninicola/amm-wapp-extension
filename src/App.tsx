@@ -1,4 +1,4 @@
-import { Hand, HeartHandshake, PersonStanding, SquareMenu } from 'lucide-react';
+import { Bike, Hand, HeartHandshake, PersonStanding, Proportions, SquareMenu } from 'lucide-react';
 import './App.css';
 import { ScrollArea } from './components/ui/scroll-area';
 import { Toaster } from './components/ui/toaster';
@@ -6,7 +6,7 @@ import TemplateList from './domain/template-messages/components/template-list.co
 import { Button } from './components/ui/button';
 import { useState } from 'react';
 import ButtonQuickAction from './domain/template-messages/components/button-quick-action';
-import { linKCardapioText, pixText } from './db/mock.db';
+import { linKCardapioText, pixText, pizzaSize } from './db/mock.db';
 import PixSvgIcon from './domain/template-messages/components/pix-svg-icon';
 
 export default function App() {
@@ -24,8 +24,8 @@ export default function App() {
 
   return (
     <>
-      <div className='fixed right-4 top-4 z-10100'>
-        <div className='flex flex-col gap-4 items-center'>
+      <div className='fixed right-1 top-1 z-10100 hover:backdrop-blur-lg'>
+        <div className='flex flex-col gap-4 items-center h-screen px-3 py-3'>
           <Button className='bg-yellow-500 rounded-full p-2 text-black hover:bg-yellow-200 h-12 w-12 '
             onClick={
               (e) => {
@@ -51,6 +51,12 @@ export default function App() {
             <SquareMenu size={18} />
           </ButtonQuickAction>
           <ButtonQuickAction
+            templateText={pizzaSize()}
+            showToast={true}
+          >
+            <Proportions width={18} height={18} />
+          </ButtonQuickAction>
+          <ButtonQuickAction
             templateText={pixText()}
             showToast={true}
           >
@@ -58,8 +64,17 @@ export default function App() {
           </ButtonQuickAction>
           <ButtonQuickAction
             templateText={{
-              title: 'Obrigado pedido',
-              content: 'Muito obrigado pelo pedido.'
+              title: 'Saindo para entrega',
+              content: 'Seu pedido está a caminho! Obrigado por escolher A Modo Mio!\n\nAmou a pizza? Deixe sua opinião no Google, sua avaliação em 2 min faz toda a diferença! 🙌\n\n👉 https://g.page/r/CceZSxdctFZHEAE/review'
+            }}
+            showToast={true}
+          >
+            <Bike size={18} />
+          </ButtonQuickAction>
+          <ButtonQuickAction
+            templateText={{
+              title: 'Agredecimento pedido',
+              content: 'Muito obrigado pelo pedido!\n\nAmou a pizza? Deixe sua opinião no Google, sua avaliação em 2 min faz toda a diferença! 🙌\n\n👉 https://g.page/r/CceZSxdctFZHEAE/review'
             }}
             showToast={true}
           >

@@ -14,6 +14,7 @@ export default function ButtonQuickAction({
     templateText,
     showToast
 }: ButtonQuickActionProps) {
+
     const [hovered, setHovered] = useState(false)
     const [copied, setCopied] = useState(false)
 
@@ -43,10 +44,9 @@ export default function ButtonQuickAction({
     }
 
     return (
-
         <div className={
             cn(
-                'relative grid place-items-center  bg-none rounded-full  text-black  h-10 w-10 cursor-pointer',
+                'grid place-items-center  bg-none rounded-full  text-black  h-10 w-10 cursor-pointer  ',
                 "hover:border hover:bg-yellow-200",
                 copied && 'bg-yellow-200'
             )
@@ -59,16 +59,17 @@ export default function ButtonQuickAction({
             <div className={
                 cn(
                     "hidden",
-                    "absolute right-[50px] top-1/2 transform -translate-y-1/2 text-right min-w-6",
+                    "absolute w-[120px] right-[70px]",
                     hovered && "block animate-in",
                 )
             }>
-                <p className="text-xs uppercase font-semibold tracking-wide">
+                <p className="text-xs uppercase font-semibold tracking-wide text-right">
                     {templateText.title}
                 </p>
 
             </div>
         </div>
+
 
     )
 }

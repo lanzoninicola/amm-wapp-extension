@@ -10,7 +10,14 @@ export const linKCardapioText = () => {
 export const pixText = () => {
     return {
         title: "Pix",
-        content: "Chave PIX\n\n*CNPJ* 49850105000129\n*Nome* Gustavo Bergamaschi\n\nEnviar comprovante por gentileza.\n\nMuito obrigado!"
+        content: "Chave PIX\n\n*CNPJ* 49850105000129\n*Nome* Gustavo Bergamaschi\n\nPeço a gentileza de enviar o comprovante.\n\nMuito obrigado!"
+    }
+}
+
+export const pizzaSize = () => {
+    return {
+        title: "Tamanhos",
+        content: "- *INDIVIDUAL*: serve até 1 pessoas, com no máximo um sabor.\n- *MÉDIO* (aprox. 40x20cm ): serve até 2 pessoas, com no máximo dois sabores.\n- *FAMÍLIA* (aprox. 60x40cm): serve até 6 pessoas, com no máximo quatro sabores."
     }
 }
 
@@ -19,7 +26,6 @@ export const mockDatabase = [
         group: "pre vendas",
         items: [
             linKCardapioText(),
-
             {
                 title: "Como funciona",
                 content: "Somos uma pizzaria delivery que oferece uma pizza do estilo romano de Roma, é totalmente diferente das pizzas tradicionais da cidade.\n\nO formato da nossa pizza é retangular, com massa de farinha especial e molho de tomate importado da Itália.\n\nO processo de preparo é italiano, como da tradição, o nosso pizzaiolo è Italiano, nascido e criado em Verona, apaixonado por pizzas.\n\nOs tamanhos disponíveis são:\n\n- *MÉDIO* (40x20cm): serve até 2 pessoas, com no máximo dois sabores.\n- *FAMÍLIA* (60x40cm): serve até 6 pessoas, com no máximo quatro sabores.\n\nOferecemos também a pizza *Al Taglio*, disponível apenas no balcão. São fatias de pizza de 10x20cm, ideais para uma pessoa. Esse último segue um cardápio que muda semanalmente.\n\nNosso hórario de atendimento é *de quarta a domingo, das 18h as 22h*. \n\nSe tiver alguma dúvida ou precisar de uma recomendação, estou aqui para ajudar! \n\nAcesse nosso perfil no Instagram https://www.instagram.com/amodomiopb/ para nos seguir. Você também encontrará fotos das nossas pizzas.\n\nBuon appetito! 🍕"
@@ -28,6 +34,15 @@ export const mockDatabase = [
                 title: "Hórario de atendimento",
                 content: "Nosso hórario de atendimento é de quarta a domingo, das 18h as 22h."
             },
+            {
+                title: "Mensagem recebido no fechamento",
+                content: "Olá! Agradecemos muito por entrar em contato com nós. Lamentamos não ter respondido antes, pois *estávamos fora do nosso horário de funcionamento*. 😞\n\nAgora estamos abertos e felizes em atender seu pedido! Por favor, nos informe o que você gostaria de pedir ou se há algo em que podemos ajudar.\n\nObrigado por escolher a pizzaria A Modo Mio! ❤️."
+            },
+            {
+                title: "Info restaurante",
+                content: "Olá, tudo bem?\n\n*Trabalhamos exclusivamente com delivery*, mas para quem prefere comer no local, temos duas pequenas bancadas externas, ideais para uma refeição rápida. No entanto, a experiência não é como em um restaurante, pois nosso foco principal é a entrega.\n\nSe precisar de algo, estamos à disposição!\n\nObriagdo!"
+            },
+            pizzaSize(),
             {
                 title: "Para fazer um pedido",
                 content: ""
@@ -43,7 +58,7 @@ export const mockDatabase = [
             },
             {
                 title: "Saindo para entrega",
-                content: "Olá, a sua pizza está saindo para entrega."
+                content: "Seu pedido está a caminho! Obrigado por escolher A Modo Mio!\n\nAmou a pizza? Deixe sua opinião no Google, sua avaliação em 2 min faz toda a diferença! 🙌\n\n👉 https://g.page/r/CceZSxdctFZHEAE/review."
             }
         ]
     },
