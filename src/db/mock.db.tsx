@@ -21,6 +21,15 @@ export const pizzaSize = () => {
     }
 }
 
+export const cortarPizza = () => {
+    return {
+        title: 'Cortar pizza',
+        content: '*Dica boa*: corta a pizza com tesoura! Assim você mantém os ingredientes no lugar, consegue ver direitinho a massa por dentro e ainda facilita na hora de comer.'
+    }
+}
+
+
+
 export const mockDatabase = [
     {
         group: "pre vendas",
@@ -65,7 +74,7 @@ export const mockDatabase = [
     {
         group: "post vendas",
         items: [
-
+            cortarPizza(),
             {
                 title: "Feedback WhatsApp",
                 content: "Agradecemos por ter pedido nossa pizza! Por gentileza, nos envie um feedback aqui pelo WhatsApp sobre como foi a sua experiência."
@@ -74,6 +83,7 @@ export const mockDatabase = [
                 title: "Feedback Google",
                 content: "Se você gostou da nossa pizza e quer apoiar nosso crescimento, por que não deixar um comentário no Google pelo link https://g.page/r/CceZSxdctFZHEAE/review? São 2 minutos que, para nós, faz toda a diferença."
             },
+
             pixText()
         ]
     },

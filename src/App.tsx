@@ -1,4 +1,4 @@
-import { Bike, Hand, HeartHandshake, PersonStanding, Proportions, SquareMenu } from 'lucide-react';
+import { Bike, Hand, HeartHandshake, PersonStanding, Proportions, Scissors, SquareMenu } from 'lucide-react';
 import './App.css';
 import { ScrollArea } from './components/ui/scroll-area';
 import { Toaster } from './components/ui/toaster';
@@ -6,7 +6,7 @@ import TemplateList from './domain/template-messages/components/template-list.co
 import { Button } from './components/ui/button';
 import { useState } from 'react';
 import ButtonQuickAction from './domain/template-messages/components/button-quick-action';
-import { linKCardapioText, pixText, pizzaSize } from './db/mock.db';
+import { cortarPizza, linKCardapioText, pixText, pizzaSize } from './db/mock.db';
 import PixSvgIcon from './domain/template-messages/components/pix-svg-icon';
 
 export default function App() {
@@ -70,6 +70,12 @@ export default function App() {
             showToast={true}
           >
             <Bike size={18} />
+          </ButtonQuickAction>
+          <ButtonQuickAction
+            templateText={cortarPizza()}
+            showToast={true}
+          >
+            <Scissors size={18} />
           </ButtonQuickAction>
           <ButtonQuickAction
             templateText={{

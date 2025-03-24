@@ -9,7 +9,7 @@ interface TabsProps {
 const Tabs: React.FC<TabsProps> = ({ activeTab, setActiveTab }: TabsProps) => {
 
     return (
-        <div className="mb-4 flex items-center [&>a:first-child]:text-primary">
+        <div className="grid grid-cols-2 mb-4">
             <TabItem label="list" setActiveTab={setActiveTab} isActive={activeTab === "list"} />
             <TabItem label="search" setActiveTab={setActiveTab} isActive={activeTab === "search"} />
         </div>
@@ -29,7 +29,7 @@ function TabItem({ label, setActiveTab, isActive }: TabItemProps) {
     return (
         <span onClick={() => setActiveTab(label)} className={
             cn(
-                "flex h-7 items-center justify-center rounded-full px-4 text-center text-sm transition-colors hover:text-primary hover:cursor-pointer hover:underline",
+                "flex h-7 items-center justify-center rounded-sm px-4 text-center text-[12px] transition-colors hover:text-primary hover:cursor-pointer hover:underline uppercase tracking-widest",
                 isActive === true && "bg-muted font-medium text-primary"
             )
         }>
