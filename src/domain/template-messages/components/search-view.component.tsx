@@ -42,7 +42,7 @@ const SearchView: React.FC<SearchViewProps> = ({ templates }) => {
                         <ul className="flex flex-col gap-2">
                             {group.items.map((item, itemIndex) => (
                                 <li key={itemIndex}>
-                                    <ItemCard item={item} itemIndex={itemIndex} groupName={group.group} />
+                                    <ItemCard item={item} itemIndex={itemIndex} />
                                 </li>
                             ))}
                         </ul>

@@ -25,7 +25,7 @@ export default function App() {
   return (
     <>
       <div className='fixed right-1 top-1 z-10100 hover:backdrop-blur-lg'>
-        <div className='flex flex-col gap-4 items-center h-screen px-3 py-3'>
+        <div className='flex flex-col gap-4 items-center px-3 py-3 '>
           <Button className='bg-yellow-500 rounded-full p-2 text-black hover:bg-yellow-200 h-12 w-12 '
             onClick={
               (e) => {
@@ -109,7 +109,6 @@ function Sidebar({ toggleSidebar }: SidebarProps) {
         data-element='sidebar'
       >
         <ScrollArea className="calc(h-screen_-_50px) w-full p-4 overflow-hidden">
-          <h2 className="font-heading scroll-m-20 text-xl font-semibold tracking-tight">Assistente</h2>
           <TemplateList />
         </ScrollArea>
         <Toaster />

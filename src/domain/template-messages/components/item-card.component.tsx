@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { TemplateItem } from "../template-messages.types";
-import { Copy, Expand } from "lucide-react";
+import { Copy } from "lucide-react";
 import { useToast } from "../../../components/ui/use-toast";
 import { Button } from "../../../components/ui/button";
+
 
 interface ItemCardProps {
     itemIndex: number;
     item: TemplateItem
-    groupName?: string
     context?: "list" | "search"
 }
 
-export default function ItemCard({ itemIndex, item, groupName }: ItemCardProps) {
+export default function ItemCard({ itemIndex, item }: ItemCardProps) {
 
     const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set());
     const { toast } = useToast();
@@ -45,45 +45,33 @@ export default function ItemCard({ itemIndex, item, groupName }: ItemCardProps) 
 
             })
         });
-
-
-
-
     }
 
+
+
     return (
-        <div className="flex flex-col items-start gap-2 rounded-lg p-3 text-left text-sm transition-all hover:bg-accent" style={{
-            borderStyle: "groove",
-        }}
+        <div className="flex flex-col items-start gap-2 rounded-lg pr-[0.5rem] py-2 text-left text-sm transition-all hover:bg-accent"
+            style={{
+                borderStyle: "groove",
+            }}
+            onClick={() => toggleItem(itemIndex)}
+
         >
 
             <div className="flex gap-2 justify-between items-center w-full">
-                <div className="flex flex-col gap-1">
-                    <h2 className="font-heading scroll-m-20 text-sm font-semibold tracking-tight leading-none uppercase">
-                        {item.title}
-                    </h2>
-                    <span className="text-xs text-muted-foreground uppercase tracking-tight">{groupName}</span>
-
-                </div>
-
-                <div className="flex gap-4">
-                    <Button className="hover:bg-yellow-500 rounded-full p-1" variant={"ghost"}
-                        onClick={() => toggleItem(itemIndex)}
-                    >
-                        <Expand className="h-4 w-4 text-muted-foreground cursor-pointer " />
-                    </Button>
-                    <Button className="hover:bg-yellow-500 rounded-full p-1" variant={"ghost"}
-                        onClick={copyContent}
-                    >
-                        <Copy className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-yellow-500" />
-                    </Button>
-
-
-                </div>
+                <h2 className="font-heading scroll-m-20 text-[12px] font-semibold tracking-tight leading-none uppercase">
+                    {item.title}
+                </h2>
+                <Button className="hover:bg-yellow-500 rounded-full p-1 h-5 w-5" variant={"ghost"}
+                    onClick={copyContent}
+                >
+                    <Copy className="text-muted-foreground cursor-pointer hover:text-yellow-500" />
+                </Button>
             </div>
             <p className="text-xs text-muted-foreground">
                 {expandedItems.has(itemIndex) ? item.content : truncateContent(item.content)}
             </p>
+
         </div>
     )
 }
