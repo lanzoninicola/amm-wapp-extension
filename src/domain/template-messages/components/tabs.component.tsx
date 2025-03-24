@@ -10,8 +10,8 @@ const Tabs: React.FC<TabsProps> = ({ activeTab, setActiveTab }: TabsProps) => {
 
     return (
         <div className="grid grid-cols-2 mb-4">
-            <TabItem label="list" setActiveTab={setActiveTab} isActive={activeTab === "list"} />
-            <TabItem label="search" setActiveTab={setActiveTab} isActive={activeTab === "search"} />
+            <TabItem label="lista" setActiveTab={setActiveTab} isActive={activeTab === "list"} />
+            <TabItem label="procurar" setActiveTab={setActiveTab} isActive={activeTab === "search"} />
         </div>
     );
 };
