@@ -13,11 +13,9 @@ export default function App() {
   const [showSidebar, setShowSidebar] = useState(false);
 
   const toggleSidebar = (e: React.MouseEvent, fromEl: string = '') => {
-
     if (fromEl) {
       console.log({ fromEl })
     }
-
     e.stopPropagation();
     setShowSidebar(!showSidebar)
   };

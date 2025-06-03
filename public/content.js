@@ -1,25 +1,25 @@
 // public/content.js
 
-function createRoot() {
+function createSidebarRoot() {
 
     const body = document.querySelector('body')
     body.classList.add('relative')
 
     const root = document.createElement("div");
-    root.id = "react-amm-wapp-root"
+    root.id = "amm-wapp-root-sidebar"
     root.style.position = 'relative';
     root.style.zIndex = '10000';
     document.body.appendChild(root);
 
-    injectReactApp(root);
+    injectReactApp(root, 'sidebar.js');
 }
 
 
-function injectReactApp(sidebar) {
+function injectReactApp(htmlRootElement, jsFileName) {
     // Inject the bundled React app
     const script = document.createElement('script');
-    script.src = chrome.runtime.getURL('sidebar.js');
-    sidebar.appendChild(script);
+    script.src = chrome.runtime.getURL(jsFileName);
+    htmlRootElement.appendChild(script);
 }
 
-createRoot()
+createSidebarRoot()
