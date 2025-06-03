@@ -24,14 +24,14 @@
                 "content.js"
             ],
             "css": [
-                "sidebar.css"
+                "amodomio-extension.css"
             ]
         }
     ],
     "web_accessible_resources": [
         {
             "resources": [
-                "sidebar.js"
+                "amodomio-extension.js"
             ],
             "matches": [
                 "https://web.whatsapp.com/*"

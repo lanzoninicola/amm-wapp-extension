@@ -1,14 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import SidebarApp from './SidebarApp.tsx';
+import AppSidebar from './AppSidebar.tsx';
 import './index.css';
+import AppAssistenteEscolha from './AppAssistenteEscolha.tsx';
 
 const env = process.env.NODE_ENV;
 
-renderSidebar();
+render();
 
-function renderSidebar() {
-  const id = "#amm-wapp-root-sidebar";
+function render() {
+  const id = "#amm-wapp-root";
 
   if (env === "development") {
     const root = document.createElement("div");
@@ -19,14 +20,19 @@ function renderSidebar() {
   }
 
   document.querySelectorAll<HTMLDivElement>(id)
-    .forEach(renderSidebarWithReact);
+    .forEach(runReact);
+
+
 }
 
-function renderSidebarWithReact(node: HTMLDivElement) {
+function runReact(node: HTMLDivElement) {
   ReactDOM.createRoot(node).render(
     <React.StrictMode>
-      <SidebarApp />
+      <AppSidebar />
+      <AppAssistenteEscolha />
     </React.StrictMode>
   );
 }
+
+
 

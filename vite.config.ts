@@ -13,7 +13,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        sidebar: resolve(__dirname, "src/main.tsx"),
+        "amodomio-extension": resolve(__dirname, "src/main.tsx"),
       },
       output: {
         entryFileNames: "[name].js",
