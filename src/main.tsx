@@ -1,3 +1,4 @@
+import "./content-style.css";
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import AppAssistenteEscolha from "./AppAssistenteEscolha";
