@@ -1,51 +1,67 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Draggable from 'react-draggable';
 
-interface Todo {
-  userId: number;
-  id: number;
-  title: string;
-  completed: boolean;
-}
+// interface Todo {
+//   userId: number;
+//   id: number;
+//   title: string;
+//   completed: boolean;
+// }
 
 export default function AppAssistenteEscolha() {
 
-  const data: Todo | null = useData('https://jsonplaceholder.typicode.com/todos/1');
+  const [result, setResult] = useState<string>("");
+
+  const fetchDataFromBackground = () => {
+
+    console.log("Fetching data from background script...");
+
+    // @ts-expect-error if (!chrome || !chrome.runtime || !chrome.runtime.sendMessage) {
+    console.log("chrome:", chrome);
+    // @ts-expect-error if (!chrome || !chrome.runtime || !chrome.runtime.sendMessage) {
+    console.log("chrome.runtime:", chrome?.runtime);
+    // @ts-expect-error if (!chrome || !chrome.runtime || !chrome.runtime.sendMessage) {
+    console.log("chrome.runtime.sendMessage:", chrome?.runtime?.sendMessage);
+
+
+    // @ts-expect-error if (!chrome || !chrome.runtime || !chrome.runtime.sendMessage) {
+    chrome.runtime.sendMessage({ type: "FETCH_ORDER" }, (response) => {
+
+      // @ts-expect-error if (!chrome || !chrome.runtime || !chrome.runtime.lastError) {
+      if (chrome.runtime.lastError) {
+        // @ts-expect-error if (!chrome || !chrome.runtime || !chrome.runtime.lastError.message) {
+        console.error("Erro ao enviar mensagem para o background script:", chrome.runtime.lastError);
+        // @ts-expect-error if (!chrome || !chrome.runtime || !chrome.runtime.lastError.message) {
+        setResult("Erro: " + chrome.runtime.lastError.message);
+        return;
+      }
+
+      if (response?.error) {
+        setResult("Erro ao buscar dados: " + response.error);
+      } else {
+        console.log("Dados recebidos:", response.data);
+        setResult(JSON.stringify(response.data, null, 2));
+      }
+    });
+  };
+
 
   return (
     <Draggable>
       <div className="w-[100px] h-[100px] bg-red-500 z-[999999] fixed cursor-move">
         {/* conteúdo opcional aqui */}
 
-        <div className="text-white p-2">
-          {data ? (
-            <div>
-              <h3 className="text-lg font-bold">Assistente Escolha</h3>
-              <p>{data?.title || "titolo"}</p>
-            </div>
-          ) : (
-            <p>Carregando...</p>
-          )}
-        </div>
+        <button
+          className="bg-blue-500 text-white p-2 rounded"
+          onClick={fetchDataFromBackground}
+        >
+          Buscar Dados
+        </button>
+        <pre className="text-white">
+          {result || "Clique no botão para buscar dados."}
+        </pre>
       </div>
     </Draggable>
   );
 }
 
-
-function useData(url: string): Todo | null {
-  const [data, setData] = useState(null);
-
-
-  useEffect(() => {
-    fetch(url)
-      .then(response => response.json())
-      .then(json => {
-        setData(json);
-      })
-
-  }, [url]);
-
-
-  return data;
-}
