@@ -1,38 +1,25 @@
+import "./content-style.css";
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import AppSidebar from './AppSidebar.tsx';
-import './index.css';
-import AppAssistenteEscolha from './AppAssistenteEscolha.tsx';
+import AppAssistenteEscolha from "./AppAssistenteEscolha";
+import AppSidebar from "./AppSidebar"
 
-const env = process.env.NODE_ENV;
-
-render();
-
-function render() {
-  const id = "#amm-wapp-root";
-
-  if (env === "development") {
-    const root = document.createElement("div");
-    root.id = id
-    root.style.position = 'relative';
-    root.style.zIndex = '10000';
-    document.body.appendChild(root);
-  }
-
-  document.querySelectorAll<HTMLDivElement>(id)
-    .forEach(runReact);
+console.log("🚀 React content script iniciado");
 
 
-}
+// const env = process.env.NODE_ENV;
 
-function runReact(node: HTMLDivElement) {
-  ReactDOM.createRoot(node).render(
-    <React.StrictMode>
-      <AppSidebar />
-      <AppAssistenteEscolha />
-    </React.StrictMode>
-  );
-}
+const container = document.createElement("div");
+container.id = "amodomio-root";
+container.style.position = "fixed";
+container.style.top = "0";
+container.style.left = "0";
+container.style.zIndex = "999999";
+document.body.appendChild(container);
 
-
-
+ReactDOM.createRoot(container).render(
+  <React.StrictMode>
+    <AppSidebar />
+    <AppAssistenteEscolha />
+  </React.StrictMode>
+);

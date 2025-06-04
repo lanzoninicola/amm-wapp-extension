@@ -11,17 +11,17 @@ export default defineConfig({
     },
   },
   build: {
+    outDir: "public",
+    emptyOutDir: false,
     rollupOptions: {
       input: {
-        "amodomio-extension": resolve(__dirname, "src/main.tsx"),
+        main: resolve(__dirname, "src/main.tsx"),
       },
       output: {
+        format: "iife",
         entryFileNames: "[name].js",
-        chunkFileNames: "[name].js",
         assetFileNames: "[name].[ext]",
       },
     },
-    outDir: "public",
-    emptyOutDir: false,
   },
 });

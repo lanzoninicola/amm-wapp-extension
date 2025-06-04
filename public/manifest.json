@@ -1,41 +1,42 @@
 {
-    "manifest_version": 3,
-    "name": "A Modo Mio - Assistente atendimento whatsapp",
-    "version": "1.0",
-    "description": "Access and manage message templates in WhatsApp Web.",
-    "permissions": [
-        "storage",
-        "activeTab",
-        "scripting"
-    ],
-    "background": {
-        "service_worker": "background.js"
-    },
-    "action": {
-        "default_popup": "index.html",
-        "default_icon": "icon.png"
-    },
-    "content_scripts": [
-        {
-            "matches": [
-                "https://web.whatsapp.com/*"
-            ],
-            "js": [
-                "content.js"
-            ],
-            "css": [
-                "amodomio-extension.css"
-            ]
-        }
-    ],
-    "web_accessible_resources": [
-        {
-            "resources": [
-                "amodomio-extension.js"
-            ],
-            "matches": [
-                "https://web.whatsapp.com/*"
-            ]
-        }
-    ]
+  "manifest_version": 3,
+  "name": "A Modo Mio - Assistente atendimento whatsapp",
+  "version": "1.0",
+  "description": "Access and manage message templates in WhatsApp Web.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://web.whatsapp.com/*",
+    "https://jsonplaceholder.typicode.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "icon.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://web.whatsapp.com/*"
+      ],
+      "js": [
+        "main.js"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "content.js"
+      ],
+      "matches": [
+        "https://web.whatsapp.com/*"
+      ]
+    }
+  ]
 }
