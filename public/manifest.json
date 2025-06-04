@@ -25,17 +25,14 @@
         "https://web.whatsapp.com/*"
       ],
       "js": [
-        "content.js"
-      ],
-      "css": [
-        "amodomio-extension.css"
+        "main.js"
       ]
     }
   ],
   "web_accessible_resources": [
     {
       "resources": [
-        "amodomio-extension.js"
+        "content.js"
       ],
       "matches": [
         "https://web.whatsapp.com/*"

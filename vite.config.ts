@@ -15,11 +15,12 @@ export default defineConfig({
     emptyOutDir: false,
     rollupOptions: {
       input: {
-        content: resolve(__dirname, "public/content.tsx"),
+        main: resolve(__dirname, "src/main.tsx"),
       },
       output: {
         format: "iife",
         entryFileNames: "[name].js",
+        assetFileNames: "[name].[ext]",
       },
     },
   },
