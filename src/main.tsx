@@ -1,7 +1,7 @@
 import "./content-style.css";
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import AppAssistenteEscolha from "./AppAssistenteEscolha";
+
 import AppSidebar from "./AppSidebar"
 
 console.log("🚀 React content script iniciado");
@@ -20,6 +20,6 @@ document.body.appendChild(container);
 ReactDOM.createRoot(container).render(
   <React.StrictMode>
     <AppSidebar />
-    <AppAssistenteEscolha />
+    {/* <AppAssistenteEscolha /> */}
   </React.StrictMode>
 );

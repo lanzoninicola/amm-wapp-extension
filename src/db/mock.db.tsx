@@ -10,7 +10,7 @@ export const linKCardapioText = () => {
 export const pixText = () => {
     return {
         title: "Pix",
-        content: "Chave PIX\n\n*CNPJ* 49850105000129\n*Nome* Gustavo Bergamaschi\n\nPeço a gentileza de enviar o comprovante.\n\nMuito obrigado!"
+        content: "Chave PIX\n\n*CNPJ* 49850105000129\n*Nome* A Modo Mio Ltda\n\nPeço a gentileza de enviar o comprovante.\n\nMuito obrigado!"
     }
 }
 
