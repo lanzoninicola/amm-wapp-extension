@@ -36,7 +36,7 @@ export default function useOrcamentoApi({ mockResponse = false }): {
   };
 }
 
-type MenuItemPriceSummary = {
+type ToppingWithPrice = {
   menuItemId: string;
   name: string;
   groupName?: string;
@@ -48,7 +48,7 @@ type MenuItemPriceSummary = {
   priceExpectedAmount: number;
 };
 
-const mockPizzaOptions: Record<string, MenuItemPriceSummary[]> = {
+const mockPizzaOptions: Record<string, ToppingWithPrice[]> = {
   "pizza-small": [
     {
       menuItemId: "1",

@@ -1,4 +1,4 @@
-export type MenuItemPriceSummary = {
+export type ToppingWithPrice = {
   menuItemId: string;
   name: string;
   groupName?: string;
@@ -12,7 +12,7 @@ export type MenuItemPriceSummary = {
 
 export type PizzaSize = {
   id: string;
-  key: string | null;
+  key: string;
   name: string;
   nameAbbreviated: string | null;
   description: string | null;
@@ -24,7 +24,7 @@ export type PizzaSize = {
   visible: boolean;
 };
 
-export type PizzaOptionsBySize = Record<string, MenuItemPriceSummary[]>;
+export type PizzaOptionsBySize = Record<string, ToppingWithPrice[]>;
 
 export type OrcamentoResponseApi = ApiResponse<{
   options: PizzaOptionsBySize;

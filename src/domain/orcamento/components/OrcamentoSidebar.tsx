@@ -1,228 +1,180 @@
-import { Button } from "../../../components/ui/button";
-import { Checkbox } from "../../../components/ui/checkbox";
-import { Input } from "../../../components/ui/input";
-import { useToast } from "../../../components/ui/use-toast";
-import { cn } from "../../../lib/utils";
-import { MenuItemPriceSummary, PizzaSize, SaborSelecionado } from "../../types";
-import { useOrcamento } from "../hooks/useOrcamento";
-import useOrcamentoApi from "../hooks/useOrcamentoApi";
 
+import { useState } from "react";
+import { Button } from "../../../components/ui/button";
+import { useToast } from "../../../components/ui/use-toast";
+import { PizzaOptionsBySize, PizzaSize, ToppingWithPrice } from "../../types";
+import useOrcamentoApi from "../hooks/useOrcamentoApi";
+import { PizzaBuilder } from "./PizzaBuilder";
+import { ResumoOrcamento } from "./ResumoOrcamento";
+import { Menu, MinusIcon, PlusIcon } from "lucide-react";
+import { on } from "events";
+import { cn } from "../../../lib/utils";
+
+export type PizzaOrcamento = {
+  id: string;
+  size: PizzaSize;
+  sabores: ToppingWithPrice[];
+  quantidade: number;
+};
 
 export function OrcamentoSidebar() {
   const { data, error, loading } = useOrcamentoApi({ mockResponse: true });
-
-
-  const {
-    size,
-    setSize,
-    sabores,
-    updateQuantidade,
-    bairro,
-    setBairro,
-    mensagem,
-    gerarMensagem,
-    calcularTotal
-  } = useOrcamento(data?.payload?.options || null);
-
   const { toast } = useToast();
 
-  const pizzaOptions = data?.payload?.options || null;
+  const [pizzas, setPizzas] = useState<PizzaOrcamento[]>([]);
+  const [mostrarFormulario, setMostrarFormulario] = useState(true);
+  const [showWhatsAppMessage, setShowWhatsAppMessage] = useState(false);
+  const [showResumo, setShowResumo] = useState(false);
+
   const sizes = data?.payload?.sizes || [];
-  const bairros = data?.payload?.bairros || [];
+  const pizzaOptions = data?.payload?.options || {};
 
   if (loading) return <p>Carregando...</p>;
   if (error && error !== null) return <p className="text-red-500">Erro ao carregar os dados: {error}</p>;
   if (!data || Object.keys(data).length === 0) return <p>Nenhum dado disponível.</p>;
 
+  const buscarPrecoBase = (size: string): number => {
+    const options = pizzaOptions?.[size] || [];
+    if (options.length === 0) return 0;
+    return options[0].priceAmount ?? 0;
+  };
 
-  const isMensagemValida = sabores.some(s => s.quantidade > 0);
-  const pizzasSelecionadas = (pizzaOptions && pizzaOptions[size] || []).filter(p => sabores.find(s => s.id === p.menuItemId));
+  const adicionarPizza = ({
+    size,
+    sabores,
 
-  const subtotal = pizzasSelecionadas.reduce((acc, p) => {
-    const s = sabores.find(s => s.id === p.menuItemId);
-    return acc + p.priceAmount * (s?.quantidade || 0);
-  }, 0);
+  }: {
+    size: PizzaSize;
+    sabores: ToppingWithPrice[];
+  }) => {
+    if (!size || sabores.length === 0) {
+      toast({ title: "Preencha todos os campos antes de adicionar." });
+      return;
+    }
 
-  const taxaEntrega = bairro && bairro.toLowerCase() !== "centro" ? 8 : 0;
+    setPizzas(prev => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        size,
+        sabores,
+        quantidade: 1
+      }
+    ]);
+    setMostrarFormulario(false);
+  };
 
+
+
+  const gerarMensagem = (): string => {
+    if (pizzas.length === 0) return "Nenhuma pizza adicionada.";
+
+    const partes = pizzas.map((pizza) => {
+      const sabores = pizza.sabores.map(s => s.name).join(", ");
+      return `${pizza.quantidade}x ${pizza.size.key.toUpperCase()} com ${pizza.sabores.length} sabores (${sabores})`;
+    });
+
+    const total = pizzas.reduce((acc, p) => acc + buscarPrecoBase(p.size.key) * p.quantidade, 0).toFixed(2);
+
+    return `Pedido:\n${partes.map(p => "- " + p).join("\n")}\nTotal estimado: R$ ${total}`;
+  };
+
+  const copiarMensagem = () => {
+    const texto = gerarMensagem().replace(/\n/g, "\n");
+    navigator.clipboard.writeText(texto);
+    toast({ title: "Mensagem copiada para a área de transferência!" });
+  };
+
+  const MenuItem = ({ onClick, children, highlightCondition }: { onClick: () => void; children: React.ReactNode; highlightCondition: boolean }) => {
+    return (
+      <span onClick={onClick}
+        className={
+          cn(
+            "cursor-pointer text-center text-[11px] uppercase tracking-wide hover:bg-gray-200 px-2 py-1 rounded transition-colors",
+            highlightCondition && "font-semibold underline "
+          )
+        }>
+        {children}
+      </span>
+    )
+  }
+
+  function selectMenuOption(option: string) {
+    switch (option) {
+      case "adicionar-pizzas":
+        setMostrarFormulario(true);
+        setShowResumo(false);
+        setShowWhatsAppMessage(false);
+        break;
+      case "resumo":
+        setMostrarFormulario(false);
+        setShowResumo(true);
+        setShowWhatsAppMessage(false);
+        break;
+      case "mensagem":
+        setMostrarFormulario(false);
+        setShowResumo(false);
+        setShowWhatsAppMessage(true);
+        break;
+      default:
+        setMostrarFormulario(false);
+        setShowResumo(false);
+        setShowWhatsAppMessage(false);
+        break;
+    }
+  }
 
   return (
-    <div className="fixed top-4 left-4 w-[400px] h-full bg-gray-100 p-4 shadow-lg z-50">
-      <Button
-        variant="outline"
-        className="bg-white/90 mb-6"
-      >
-        Orçamento
-      </Button>
-      <div className=" max-w-md top-52 left-60">
+    <div className="fixed top-4 left-4 p-3 bg-white rounded-xl shadow-lg " style={{ width: "400px", maxHeight: "calc(100vh - 8rem)", overflowY: "auto" }}>
 
 
-        <SizeSelector
+
+      <div className="flex flex-col">
+
+        <div className="grid grid-cols-3 w-full  mb-4">
+          <MenuItem onClick={() => selectMenuOption("adicionar-pizzas")} highlightCondition={mostrarFormulario}>
+            Adicionar Pizzas
+          </MenuItem>
+          <MenuItem onClick={() => selectMenuOption("resumo")} highlightCondition={showResumo}>
+            {`Resumo (${pizzas.length}) `}
+          </MenuItem>
+          <MenuItem onClick={() => selectMenuOption("mensagem")} highlightCondition={showWhatsAppMessage}>
+            Mensagem
+          </MenuItem>
+
+        </div>
+
+        {
+          showResumo && (
+            <ResumoOrcamento pizzas={pizzas} />
+          )
+        }
+      </div>
+
+      {mostrarFormulario && (
+        <PizzaBuilder
+          pizzas={pizzas}
+          setPizzas={setPizzas}
+          buscarPrecoBase={buscarPrecoBase}
           sizes={sizes}
-          size={size}
-          setSize={setSize}
+          options={data.payload.options as PizzaOptionsBySize}
+          onAddPizza={adicionarPizza}
         />
+      )}
 
-        {size && (
-          <ToppingSelector
-            pizzaOptions={pizzaOptions}
-            size={size}
-            sabores={sabores}
-            updateQuantidade={updateQuantidade}
-          />
-        )}
 
-        {pizzasSelecionadas.length > 0 && (
-          <div className="mt-4 text-sm">
-            <h4 className="font-semibold mb-1">Resumo do pedido:</h4>
-            <ul className="list-disc list-inside text-muted-foreground">
-              {pizzasSelecionadas.map((p) => {
-                const s = sabores.find((s) => s.id === p.menuItemId);
-                return (
-                  <li key={p.menuItemId}>
-                    {s?.quantidade}x {p.name} — R$ {(p.priceAmount * (s?.quantidade || 0)).toFixed(2).replace(".", ",")}
-                  </li>
-                );
-              })}
-            </ul>
-            <div className="mt-2">
-              <p className="text-muted-foreground">Subtotal: R$ {subtotal.toFixed(2).replace(".", ",")}</p>
-              <p className="text-muted-foreground">Entrega: R$ {taxaEntrega.toFixed(2).replace(".", ",")}</p>
-            </div>
-          </div>
-        )}
 
-        <Input
-          placeholder="Informe o bairro (opcional)"
-          value={bairro}
-          onChange={(e) => setBairro(e.target.value)}
-          className="mt-4"
-        />
-
-        <div className="mt-2 text-right text-sm text-muted-foreground">
-          Total estimado: R$ {calcularTotal().toFixed(2).replace(".", ",")}
+      {showWhatsAppMessage === true && pizzas.length > 0 && (
+        <div className="mt-6">
+          <h4 className="font-bold mb-2">Mensagem final</h4>
+          <pre className="bg-gray-100 p-3 rounded text-sm whitespace-pre-wrap">
+            {gerarMensagem()}
+          </pre>
+          <Button onClick={copiarMensagem} className="mt-2">
+            Copiar mensagem
+          </Button>
         </div>
-
-        <Button
-          onClick={() => {
-            gerarMensagem();
-            toast({ title: "Mensagem copiada!", description: mensagem });
-          }}
-          className="mt-4 w-full"
-          disabled={!isMensagemValida || !size}
-        >
-          Gerar e copiar mensagem
-        </Button>
-
-        {mensagem && (
-          <p className="text-sm text-muted-foreground mt-2">{mensagem}</p>
-        )}
-        <div />
-      </div>
-    </div>
-  );
-}
-
-
-function SizeSelector({ sizes, size, setSize }: { sizes: PizzaSize[], size: PizzaSize["name"], setSize: (size: string) => void }) {
-
-  if (!sizes || sizes.length === 0) {
-    return <p className="text-red-500">Nenhum tamanho de pizza disponível.</p>;
-  }
-
-  return (
-    <div className="grid grid-cols-3 gap-2">
-
-      {sizes.sort(
-        (a, b) => a.sortOrderIndex - b.sortOrderIndex
-      ).map((s) => (
-        <div
-          key={s.id}
-          className="grid place-items-center shadow-lg rounded-xl py-2 bg-white hover:bg-slate-50 cursor-pointer"
-          onClick={() => setSize(s.id)}
-        >
-
-          <span className={
-            cn(
-              "font-neue tracking-wider font-semibold row-span-1",
-              s.key === "pizza-small" && "text-[14px]",
-              s.key === "pizza-medium" && "text-xl",
-              s.key === "pizza-bigger" && "text-3xl"
-
-            )
-          }>
-            {s.nameAbbreviated || s.name}
-          </span>
-        </div>
-      ))}
-
-
-
-
-    </div>
-  )
-
-}
-
-interface ToppingSelectorProps {
-  pizzaOptions: Record<string, MenuItemPriceSummary[]>;
-  size: string;
-  sabores: SaborSelecionado[];
-  updateQuantidade: (id: string, quantidade: number) => void;
-}
-
-function ToppingSelector({
-  pizzaOptions,
-  size,
-  sabores,
-  updateQuantidade
-}: ToppingSelectorProps) {
-
-  const options = pizzaOptions[size] || [];
-
-  if (options.length === 0) {
-    return <p className="text-red-500">Nenhum sabor disponível para este tamanho.</p>;
-  }
-
-  return (
-    <div className="h-[200px] overflow-y-auto bg-white p-4 mt-4 rounded-xl shadow-md">
-      <div className="grid gap-2 mt-4">
-        {pizzaOptions && pizzaOptions[size].map((p) => {
-          const selected = sabores.find((s) => s.id === p.menuItemId);
-          return (
-            <div
-              key={p.menuItemId}
-              className="flex items-center justify-between gap-2 border-b pb-1"
-            >
-              <label className="flex items-center gap-2">
-                <Checkbox
-                  checked={!!selected}
-                  onCheckedChange={(checked) =>
-                    updateQuantidade(p.menuItemId, checked ? 1 : 0)
-                  }
-                />
-                {p.name}
-              </label>
-              {selected && (
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-muted-foreground">
-                    R$ {(p.priceAmount * selected.quantidade).toFixed(2).replace(".", ",")}
-                  </span>
-                  <Input
-                    type="number"
-                    min={1}
-                    className="w-16"
-                    value={selected.quantidade}
-                    onChange={(e) =>
-                      updateQuantidade(p.menuItemId, parseInt(e.target.value) || 1)
-                    }
-                  />
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
+      )}
     </div>
   );
 }
