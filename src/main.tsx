@@ -1,8 +1,8 @@
 import "./content-style.css";
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import AppAssistenteEscolha from "./AppAssistenteEscolha";
-import AppSidebar from "./AppSidebar"
+// import AppMenu from "./AppMenu";
+import { OrcamentoSidebar } from "./domain/orcamento/components/OrcamentoSidebar";
 
 console.log("🚀 React content script iniciado");
 
@@ -15,11 +15,24 @@ container.style.position = "fixed";
 container.style.top = "0";
 container.style.left = "0";
 container.style.zIndex = "999999";
-document.body.appendChild(container);
+
+// append the container after the first div child element located after the body element
+
+const bodyDivs = Array.from(document.body.children).filter(el => el.tagName === "DIV");
+
+if (bodyDivs.length > 0) {
+  // Insert after the first div
+  const firstDiv = bodyDivs[0];
+  firstDiv.insertAdjacentElement('afterend', container);
+} else {
+  // Fallback if no div found
+  document.body.appendChild(container);
+}
 
 ReactDOM.createRoot(container).render(
   <React.StrictMode>
-    <AppSidebar />
-    <AppAssistenteEscolha />
+    <OrcamentoSidebar />
+    {/* <AppSidebar />
+    <AppAssistenteEscolha /> */}
   </React.StrictMode>
 );
