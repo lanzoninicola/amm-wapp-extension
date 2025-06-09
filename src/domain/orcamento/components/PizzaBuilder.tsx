@@ -4,26 +4,23 @@ import { PizzaOptionsBySize, PizzaSize, ToppingWithPrice } from "../../types";
 import { Button } from "../../../components/ui/button";
 import { SizeSelector } from "./SizeSelector";
 import { ToppingSelector } from "./ToppingSelector";
-import { PizzaOrcamento } from "./OrcamentoSidebar";
 import { PizzaResumo } from "./PizzaResumo";
 
 interface PizzaBuilderProps {
-  pizzas: PizzaOrcamento[];
-  setPizzas: (pizzas: PizzaOrcamento[]) => void;
-  buscarPrecoBase: (size: string) => number;
   sizes: PizzaSize[];
   options: PizzaOptionsBySize;
   onAddPizza: (pizza: {
     size: PizzaSize;
     sabores: ToppingWithPrice[];
   }) => void;
+  onRemovePizza: (id: string) => void;
 }
 
 export function PizzaBuilder({
-  setPizzas,
   sizes,
   options,
-  onAddPizza
+  onAddPizza,
+  onRemovePizza
 }: PizzaBuilderProps) {
   const [size, setSize] = useState<PizzaSize | null>(null);
   const [saboresSelecionados, setSaboresSelecionados] = useState<ToppingWithPrice[]>([]);
@@ -34,10 +31,6 @@ export function PizzaBuilder({
         ? prev.filter(s => s.menuItemId !== sabor.menuItemId)
         : [...prev, sabor]
     );
-  };
-
-  const removerPizza = (id: string) => {
-    setPizzas(prev => prev.filter(p => p.id !== id));
   };
 
 
@@ -65,19 +58,19 @@ export function PizzaBuilder({
           />
         )}
 
-        <div className="flex flex-col">
-
+        <div className="flex items-start">
+          <Button
+            variant="destructive"
+            className="absolute top-2 right-2"
+            onClick={() => onRemovePizza(pizza.id)}
+          >
+            Remover
+          </Button>
           <PizzaResumo
             size={size}
             toppings={saboresSelecionados}
           />
-          {/* <Button
-  variant="destructive"
-  className="absolute top-2 right-2"
-  onClick={() => removerPizza(pizza.id)}
->
-  Remover
-</Button> */}
+
         </div>
 
 

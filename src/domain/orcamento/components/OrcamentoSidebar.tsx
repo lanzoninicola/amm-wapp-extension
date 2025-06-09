@@ -1,13 +1,11 @@
 
 import { useState } from "react";
-import { Button } from "../../../components/ui/button";
 import { useToast } from "../../../components/ui/use-toast";
 import { PizzaOptionsBySize, PizzaSize, ToppingWithPrice } from "../../types";
 import useOrcamentoApi from "../hooks/useOrcamentoApi";
 import { PizzaBuilder } from "./PizzaBuilder";
 import { ResumoOrcamento } from "./ResumoOrcamento";
-import { Menu, MinusIcon, PlusIcon } from "lucide-react";
-import { on } from "events";
+import { CopyIcon } from "lucide-react";
 import { cn } from "../../../lib/utils";
 
 export type PizzaOrcamento = {
@@ -18,8 +16,11 @@ export type PizzaOrcamento = {
 };
 
 export function OrcamentoSidebar() {
-  const { data, error, loading } = useOrcamentoApi({ mockResponse: true });
+  const { data, error, loading } = useOrcamentoApi({ mockResponse: false });
+
+  console.log({ data })
   const { toast } = useToast();
+
 
   const [pizzas, setPizzas] = useState<PizzaOrcamento[]>([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(true);
@@ -27,22 +28,16 @@ export function OrcamentoSidebar() {
   const [showResumo, setShowResumo] = useState(false);
 
   const sizes = data?.payload?.sizes || [];
-  const pizzaOptions = data?.payload?.options || {};
 
   if (loading) return <p>Carregando...</p>;
   if (error && error !== null) return <p className="text-red-500">Erro ao carregar os dados: {error}</p>;
   if (!data || Object.keys(data).length === 0) return <p>Nenhum dado disponível.</p>;
 
-  const buscarPrecoBase = (size: string): number => {
-    const options = pizzaOptions?.[size] || [];
-    if (options.length === 0) return 0;
-    return options[0].priceAmount ?? 0;
-  };
+
 
   const adicionarPizza = ({
     size,
     sabores,
-
   }: {
     size: PizzaSize;
     sabores: ToppingWithPrice[];
@@ -71,7 +66,7 @@ export function OrcamentoSidebar() {
 
     const partes = pizzas.map((pizza) => {
       const sabores = pizza.sabores.map(s => s.name).join(", ");
-      return `${pizza.quantidade}x ${pizza.size.key.toUpperCase()} com ${pizza.sabores.length} sabores (${sabores})`;
+      return `${pizza.quantidade}x ${pizza.size.name.toUpperCase()} com ${pizza.sabores.length} sabores (${sabores})`;
     });
 
     const total = pizzas.reduce((acc, p) => acc + buscarPrecoBase(p.size.key) * p.quantidade, 0).toFixed(2);
@@ -84,6 +79,8 @@ export function OrcamentoSidebar() {
     navigator.clipboard.writeText(texto);
     toast({ title: "Mensagem copiada para a área de transferência!" });
   };
+
+
 
   const MenuItem = ({ onClick, children, highlightCondition }: { onClick: () => void; children: React.ReactNode; highlightCondition: boolean }) => {
     return (
@@ -124,8 +121,13 @@ export function OrcamentoSidebar() {
     }
   }
 
+  const removerPizza = (id: string) => {
+    setPizzas(prev => prev.filter(pizza => pizza.id !== id));
+    toast({ title: "Pizza removida do orçamento." });
+  };
+
   return (
-    <div className="fixed top-4 left-4 p-3 bg-white rounded-xl shadow-lg " style={{ width: "400px", maxHeight: "calc(100vh - 8rem)", overflowY: "auto" }}>
+    <div className="fixed top-4 left-4 p-3 bg-white rounded-xl shadow-lg " style={{ width: "500px", maxHeight: "calc(100vh - 2rem)", overflowY: "auto" }}>
 
 
 
@@ -146,33 +148,35 @@ export function OrcamentoSidebar() {
 
         {
           showResumo && (
-            <ResumoOrcamento pizzas={pizzas} />
+            <ResumoOrcamento pizzas={pizzas} onRemovePizza={removerPizza} />
           )
         }
       </div>
 
       {mostrarFormulario && (
         <PizzaBuilder
-          pizzas={pizzas}
-          setPizzas={setPizzas}
-          buscarPrecoBase={buscarPrecoBase}
           sizes={sizes}
           options={data.payload.options as PizzaOptionsBySize}
           onAddPizza={adicionarPizza}
+          onRemovePizza={removerPizza}
         />
       )}
 
 
 
-      {showWhatsAppMessage === true && pizzas.length > 0 && (
+      {showWhatsAppMessage === true && (
+
         <div className="mt-6">
-          <h4 className="font-bold mb-2">Mensagem final</h4>
+          <div className="flex items-start justify-between mb-2">
+            <h4 className="font-bold mb-2">Mensagem final</h4>
+            <button onClick={copiarMensagem} className="mt-2">
+              <CopyIcon className="w-4 h-4 text-gray-500 hover:text-gray-800 transition-colors" />
+            </button>
+          </div>
           <pre className="bg-gray-100 p-3 rounded text-sm whitespace-pre-wrap">
             {gerarMensagem()}
           </pre>
-          <Button onClick={copiarMensagem} className="mt-2">
-            Copiar mensagem
-          </Button>
+
         </div>
       )}
     </div>

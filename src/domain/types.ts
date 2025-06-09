@@ -22,6 +22,7 @@ export type PizzaSize = {
   pizzaDoughCostAmount: number;
   packagingCostAmount: number;
   visible: boolean;
+  maxToppingsAmount: number;
 };
 
 export type PizzaOptionsBySize = Record<string, ToppingWithPrice[]>;
