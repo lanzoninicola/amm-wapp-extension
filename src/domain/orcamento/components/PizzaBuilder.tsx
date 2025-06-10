@@ -10,10 +10,7 @@ import { PizzaOrcamento } from "./OrcamentoSidebar";
 interface PizzaBuilderProps {
   sizes: PizzaSize[];
   options: PizzaOptionsBySize;
-  onAddPizza: (pizza: {
-    size: PizzaSize;
-    sabores: ToppingWithPrice[];
-  }) => void;
+  onAddPizza: (pizza: PizzaOrcamento) => void;
   onRemovePizza: (id: string) => void;
 }
 
@@ -28,11 +25,17 @@ export function PizzaBuilder({
   const [saboresSelecionados, setSaboresSelecionados] = useState<ToppingWithPrice[]>([]);
 
   const toggleSabor = (sabor: ToppingWithPrice) => {
-    setSaboresSelecionados(prev =>
-      prev.find(s => s.menuItemId === sabor.menuItemId)
-        ? prev.filter(s => s.menuItemId !== sabor.menuItemId)
-        : [...prev, sabor]
-    );
+
+    const ss = [...saboresSelecionados]
+    const nextSaboresSelecionados = ss.find(s => s.menuItemId === sabor.menuItemId)
+      ? ss.filter(s => s.menuItemId !== sabor.menuItemId)
+      : [...ss, sabor]
+
+    if (nextSaboresSelecionados.length > (size?.maxToppingsAmount ?? 0)) {
+      return
+    }
+
+    setSaboresSelecionados(nextSaboresSelecionados);
   };
 
 
@@ -50,45 +53,72 @@ export function PizzaBuilder({
           <ToppingSelector
             toppings={options[size.key] || []}
             onToppingSelection={(id: string) => {
+
+              // se nenhum sabor foi selecionado crio já um objeto pizza com ID
+              if (saboresSelecionados.length === 0) {
+                setCurrentPizza({
+                  id: crypto.randomUUID(),
+                  size,
+                  sabores: [],
+                  quantidade: 1
+                })
+              }
+
+
               const sabor = options[size.key].find(option => option.menuItemId === id);
+
               if (sabor) {
                 toggleSabor(sabor);
               }
-
             }}
 
           />
         )}
 
-        <div className="flex items-start">
-          <Button
-            variant="destructive"
-            className="absolute top-2 right-2"
-            onClick={() => onRemovePizza(pizza.id)}
-          >
-            Remover
-          </Button>
-          <PizzaResumo
-            size={size}
-            toppings={saboresSelecionados}
-          />
+        <PizzaResumo
+          size={size}
+          toppings={saboresSelecionados}
+        />
 
+        <div className="flex gap-2 items-start w-full">
+          <Button
+            variant="outline"
+            onClick={() => {
+              if (currentPizza) {
+                onRemovePizza(currentPizza.id);
+                setSize(null);
+                setSaboresSelecionados([]);
+                setCurrentPizza(null);
+              }
+            }}
+            className="w-full bg-red-50 border-red-100"
+            disabled={!currentPizza}
+          >
+            ANULAR
+          </Button>
+
+          <Button
+            onClick={() => {
+              if (size && saboresSelecionados.length > 0) {
+                onAddPizza({
+                  ...currentPizza,
+                  size,
+                  sabores: saboresSelecionados
+                } as PizzaOrcamento);
+                setSize(null);
+                setSaboresSelecionados([]);
+                setCurrentPizza(null);
+              }
+            }}
+            className="w-full bg-slate-100"
+            disabled={!size || saboresSelecionados.length === 0}
+          >
+            OK
+          </Button>
         </div>
 
 
-        <Button
 
-          onClick={() => {
-            if (size && saboresSelecionados.length > 0) {
-              onAddPizza({ size, sabores: saboresSelecionados });
-              setSize(null);
-              setSaboresSelecionados([]);
-            }
-          }}
-          className="mt-2 bg-slate-100"
-        >
-          OK
-        </Button>
       </div>
     </>
   );

@@ -136,6 +136,7 @@ const mockSizes = [
     pizzaDoughCostAmount: 5.0,
     packagingCostAmount: 2.0,
     visible: true,
+    maxToppingsAmount: 1,
   },
   {
     id: "pizza-medium",
@@ -149,6 +150,7 @@ const mockSizes = [
     pizzaDoughCostAmount: 7.0,
     packagingCostAmount: 2.5,
     visible: true,
+    maxToppingsAmount: 2,
   },
   {
     id: "pizza-bigger",
@@ -162,5 +164,6 @@ const mockSizes = [
     pizzaDoughCostAmount: 9.0,
     packagingCostAmount: 3.0,
     visible: true,
+    maxToppingsAmount: 4,
   },
 ];

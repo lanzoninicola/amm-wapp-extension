@@ -16,12 +16,12 @@ export type PizzaOrcamento = {
 };
 
 export function OrcamentoSidebar() {
-  const { data, error, loading } = useOrcamentoApi({ mockResponse: false });
+  const { data, error, loading } = useOrcamentoApi({ mockResponse: true });
 
   console.log({ data })
   const { toast } = useToast();
 
-  const [currentPizza, setCurrentPizza] = useState<PizzaOrcamento>(null)
+
   const [pizzas, setPizzas] = useState<PizzaOrcamento[]>([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(true);
   const [showWhatsAppMessage, setShowWhatsAppMessage] = useState(false);
@@ -35,26 +35,15 @@ export function OrcamentoSidebar() {
 
 
 
-  const adicionarPizza = ({
-    size,
-    sabores,
-  }: {
-    size: PizzaSize;
-    sabores: ToppingWithPrice[];
-  }) => {
-    if (!size || sabores.length === 0) {
+  const adicionarPizza = (pizza: PizzaOrcamento) => {
+    if (!pizza.size || pizza.sabores.length === 0) {
       toast({ title: "Preencha todos os campos antes de adicionar." });
       return;
     }
 
     setPizzas(prev => [
       ...prev,
-      {
-        id: crypto.randomUUID(),
-        size,
-        sabores,
-        quantidade: 1
-      }
+      pizza
     ]);
     setMostrarFormulario(false);
   };
