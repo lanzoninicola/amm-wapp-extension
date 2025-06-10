@@ -13,6 +13,8 @@ export default function useOrcamentoApi({ mockResponse = false }): {
     }
   );
 
+  console.log({ data });
+
   if (mockResponse) {
     return {
       data: {

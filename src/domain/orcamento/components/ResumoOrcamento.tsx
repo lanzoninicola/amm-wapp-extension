@@ -43,12 +43,13 @@ export function ResumoOrcamento({ pizzas, bairros, currentBairro, setCurrentBair
           return (
             <li key={idx} className="flex flex-row gap-2 p-1 items-start justify-between border-b ">
               <div className="text-sm flex items-start gap-2">
-                <XIcon
-                  width={14}
-                  height={14}
-                  className="text-red-500 hover:font-semibold cursor-pointer hover:text-red-400"
-                  onClick={() => onRemovePizza(pizza.id)}
-                />
+                <button onClick={() => onRemovePizza(pizza.id)}>
+                  <XIcon
+                    width={14}
+                    height={14}
+                    className="text-red-500 hover:font-semibold hover:text-red-400"
+                  />
+                </button>
                 <div className="flex flex-col">
                   <p className="font-semibold uppercase text-xs">
                     Pizza {pizza.size.name} ({pizza.sabores.length} sabores)
@@ -65,7 +66,10 @@ export function ResumoOrcamento({ pizzas, bairros, currentBairro, setCurrentBair
       <section>
         <p
           className="text-xs text-muted text-right cursor-pointer hover:underline mb-2"
-          onClick={() => setShowBairroSelection(!showBairroSelection)}
+          onClick={() => {
+            setShowBairroSelection(!showBairroSelection)
+            setShowMessage(false)
+          }}
         >
           {showBairroSelection ? "Ocultar lista bairros" : "Com taxa de entrega"}
         </p>
@@ -76,12 +80,13 @@ export function ResumoOrcamento({ pizzas, bairros, currentBairro, setCurrentBair
 
         {currentBairro && (
           <div className="text-sm flex items-start gap-2 mt-4 p-1">
-            <XIcon
-              width={14}
-              height={14}
-              className="text-red-500 hover:font-semibold cursor-pointer hover:text-red-400"
-              onClick={() => setCurrentBairro(null)}
-            />
+            <button onClick={() => setCurrentBairro(null)}>
+              <XIcon
+                width={14}
+                height={14}
+                className="text-red-500 hover:font-semibold cursor-pointer hover:text-red-400"
+              />
+            </button>
             <div className="flex justify-between w-full items-start">
               <div className="flex flex-col">
                 <p className="text-[11px] leading-none">Entrega bairro:</p>
@@ -108,11 +113,19 @@ export function ResumoOrcamento({ pizzas, bairros, currentBairro, setCurrentBair
         </div>
         {messageCopied && <div className="flex items-center justify-between w-full bg-green-100 p-2 mb-2">
           <div className=" text-green-800 rounded text-xs">Mensagem copiada!</div>
-          <XIcon className="w-4 h-4 text-gray-500 hover:text-gray-800 transition-colors cursor-pointer" onClick={() => setMessageCopied(false)} />
+          <button
+            onClick={() => setMessageCopied(false)}
+          >
+            <XIcon className="w-4 h-4 text-gray-500 hover:text-gray-800 transition-colors" />
+
+          </button>
         </div>}
         <div className="flex flex-col gap-2">
           <p className="text-xs text-muted text-right cursor-pointer hover:underline"
-            onClick={() => setShowMessage(!showMessage)}
+            onClick={() => {
+              setShowMessage(!showMessage)
+              setShowBairroSelection(false)
+            }}
           >
             {showMessage ? "Ocultar" : "Mostrar"} mensagem
           </p>

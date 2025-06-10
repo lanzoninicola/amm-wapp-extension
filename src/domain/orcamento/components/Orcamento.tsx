@@ -21,7 +21,7 @@ interface OrcamentoProps {
 }
 
 export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
-  const { data, error, loading } = useOrcamentoApi({ mockResponse: true });
+  const { data, error, loading } = useOrcamentoApi({ mockResponse: false });
 
   const [pizzas, setPizzas] = useState<PizzaOrcamento[]>([]);
   const [currentBairro, setCurrentBairro] = useState<BairroWithFeeAndDistance | null>(null)

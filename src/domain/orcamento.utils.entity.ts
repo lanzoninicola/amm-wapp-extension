@@ -43,10 +43,10 @@ export class OrcamentoUtils {
     if (bairro) {
       resumoText += `Entrega: ${
         bairro.name
-      } - R$ ${bairro.deliveryFee.amount.toFixed(2)}`;
+      } - R$ ${bairro.deliveryFee.amount.toFixed(2)}\n`;
     }
 
-    resumoText += `\nTotal estimado: R$ ${total.toFixed(2)}`;
+    resumoText += `Total estimado: R$ ${total.toFixed(2)}`;
 
     return resumoText;
   }
