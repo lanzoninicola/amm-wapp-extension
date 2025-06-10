@@ -25,12 +25,38 @@ export type PizzaSize = {
   maxToppingsAmount: number;
 };
 
+export interface BairroWithFeeAndDistance {
+  id: string;
+  name: string;
+  city: string;
+  state: string;
+  zipCode: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  deliveryFee: {
+    id: string;
+    bairroId: string;
+    pizzeriaLocationId: string;
+    amount: number;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  distance: {
+    id: string;
+    bairroId: string;
+    pizzeriaLocationId: string;
+    distanceInKm: number;
+    estimatedTimeInMin: number | null;
+    createdAt: Date;
+  };
+}
+
 export type PizzaOptionsBySize = Record<string, ToppingWithPrice[]>;
 
 export type OrcamentoResponseApi = ApiResponse<{
   options: PizzaOptionsBySize;
   sizes: PizzaSize[];
-  bairros: string[];
+  bairros: BairroWithFeeAndDistance[];
 }>;
 
 export type SaborSelecionado = {

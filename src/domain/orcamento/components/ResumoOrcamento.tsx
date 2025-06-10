@@ -2,22 +2,27 @@ import { CopyIcon, XIcon } from "lucide-react";
 import { PizzaOrcamento } from "./Orcamento";
 import { OrcamentoUtils } from "../../orcamento.utils.entity";
 import { useState } from "react";
+import { BairroWithFeeAndDistance } from "../../types";
 
 
 interface ResumoOrcamentoProps {
   pizzas: PizzaOrcamento[];
+  bairros: BairroWithFeeAndDistance[]
   onRemovePizza: (id: string) => void; // Função para remover pizza do orçamento
 }
 
-export function ResumoOrcamento({ pizzas, onRemovePizza }: ResumoOrcamentoProps) {
+export function ResumoOrcamento({ pizzas, bairros, onRemovePizza }: ResumoOrcamentoProps) {
   const [messageCopied, setMessageCopied] = useState(false)
   const [showMessage, setShowMessage] = useState(false)
+  const [showBairroSelection, setShowBairroSelection] = useState(false)
+  const [currentBairro, setCurrentBairro] = useState<BairroWithFeeAndDistance | null>(null)
+
 
   if (pizzas.length === 0) {
     return <p className="text-muted text-xs mb-4">Nenhuma pizza adicionada ao orçamento.</p>;
   }
 
-  const total = OrcamentoUtils.calcularTotalOrcamento(pizzas)
+  const total = OrcamentoUtils.calcularTotalOrcamento(pizzas, currentBairro)
 
   const copiarMensagem = () => {
     const mensagem = OrcamentoUtils.generateWappMessage(pizzas);
@@ -28,7 +33,7 @@ export function ResumoOrcamento({ pizzas, onRemovePizza }: ResumoOrcamentoProps)
 
   return (
     <>
-      <ul className="flex flex-col gap-0">
+      <ul className="flex flex-col gap-0 mb-4">
         {pizzas.map((pizza: PizzaOrcamento, idx: number) => {
           const pizzaSellingAmount = OrcamentoUtils.calcularPrecoPizza(pizza);
 
@@ -53,7 +58,60 @@ export function ResumoOrcamento({ pizzas, onRemovePizza }: ResumoOrcamentoProps)
           );
         })}
       </ul>
-      <div className="flex flex-col mt-4 ">
+
+      <section>
+        <p
+          className="text-xs text-muted text-right cursor-pointer hover:underline mb-2"
+          onClick={() => setShowBairroSelection(!showBairroSelection)}
+        >
+          {showBairroSelection ? "Ocultar" : "Mostrar"} bairros
+        </p>
+
+        {showBairroSelection && (
+          <div className="h-[56px] px-2 py-2 overflow-auto border rounded-lg">
+            <ul className="flex flex-col">
+              {bairros.map((b) => (
+                <li key={b.id}>
+                  <button
+                    onClick={() => setCurrentBairro(b)}
+                    className="w-full border-b hover:bg-blue-200"
+                  >
+                    <div className="flex justify-between p-2">
+                      <span className="text-xs uppercase font-mono">{b.name}</span>
+                      <span className="text-xs uppercase font-mono font-semibold">
+                        {b.deliveryFee.amount}
+                      </span>
+                    </div>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {currentBairro && (
+          <div className="text-sm flex items-start gap-2 mt-4 p-1">
+            <XIcon
+              width={14}
+              height={14}
+              className="hover:text-red-500 hover:font-semibold cursor-pointer"
+              onClick={() => setCurrentBairro(null)}
+            />
+            <button className="flex justify-between w-full">
+              <p className="font-semibold uppercase text-xs">
+                {currentBairro?.name}
+              </p>
+              <p className="text-right text-xs text-muted">
+                R$ {currentBairro?.deliveryFee.amount.toFixed(2)}
+              </p>
+            </button>
+          </div>
+        )}
+      </section>
+
+
+      <section className="flex flex-col mt-4 border-t pt-2 ">
+
         <div className="flex gap-2 justify-end items-center mb-1">
           <span className="text-right font-semibold text-[0.95rem]">Total: R$ {total.toFixed(2)}</span>
           <button onClick={copiarMensagem}>
@@ -72,12 +130,12 @@ export function ResumoOrcamento({ pizzas, onRemovePizza }: ResumoOrcamentoProps)
           </p>
           {showMessage && (
             <pre className="bg-gray-100 p-3 rounded text-sm whitespace-pre-wrap">
-              {OrcamentoUtils.generateWappMessage(pizzas)}
+              {OrcamentoUtils.generateWappMessage(pizzas, currentBairro)}
             </pre>
           )}
         </div>
 
-      </div>
+      </section>
 
     </>
   );

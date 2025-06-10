@@ -1,5 +1,5 @@
 import useFetchBackground from "../../../utils/use-fetch-background.";
-import { OrcamentoResponseApi } from "../../types";
+import { BairroWithFeeAndDistance, OrcamentoResponseApi } from "../../types";
 
 export default function useOrcamentoApi({ mockResponse = false }): {
   data: OrcamentoResponseApi | null;
@@ -19,9 +19,9 @@ export default function useOrcamentoApi({ mockResponse = false }): {
         status: "200",
         message: "Mocked data",
         payload: {
-          options: mockPizzaOptions,
-          sizes: mockSizes,
-          bairros: ["Centro", "Zona Sul", "Zona Norte"],
+          options: pizzaOptionsMock,
+          sizes: sizesMock,
+          bairros: bairrosWithFeesMock,
         },
       },
       loading: false,
@@ -48,7 +48,7 @@ type ToppingWithPrice = {
   priceExpectedAmount: number;
 };
 
-const mockPizzaOptions: Record<string, ToppingWithPrice[]> = {
+const pizzaOptionsMock: Record<string, ToppingWithPrice[]> = {
   "pizza-small": [
     {
       menuItemId: "1",
@@ -123,7 +123,7 @@ const mockPizzaOptions: Record<string, ToppingWithPrice[]> = {
   ],
 };
 
-const mockSizes = [
+const sizesMock = [
   {
     id: "pizza-small",
     key: "pizza-small",
@@ -165,5 +165,58 @@ const mockSizes = [
     packagingCostAmount: 3.0,
     visible: true,
     maxToppingsAmount: 4,
+  },
+];
+
+export const bairrosWithFeesMock: BairroWithFeeAndDistance[] = [
+  {
+    id: "bairro-001",
+    name: "Centro",
+    city: "Pato Branco",
+    state: "PR",
+    zipCode: "85501-000",
+    createdAt: new Date("2023-01-01T12:00:00Z"),
+    updatedAt: new Date("2024-01-01T12:00:00Z"),
+    deliveryFee: {
+      id: "fee-001",
+      bairroId: "bairro-001",
+      pizzeriaLocationId: "pizzeria-001",
+      amount: 5.5,
+      createdAt: new Date("2023-01-01T12:00:00Z"),
+      updatedAt: new Date("2024-01-01T12:00:00Z"),
+    },
+    distance: {
+      id: "dist-001",
+      bairroId: "bairro-001",
+      pizzeriaLocationId: "pizzeria-001",
+      distanceInKm: 2.8,
+      estimatedTimeInMin: 10,
+      createdAt: new Date("2023-01-01T12:00:00Z"),
+    },
+  },
+  {
+    id: "bairro-002",
+    name: "Bairro Industrial",
+    city: "Pato Branco",
+    state: "PR",
+    zipCode: "85502-000",
+    createdAt: new Date("2023-02-01T12:00:00Z"),
+    updatedAt: new Date("2024-02-01T12:00:00Z"),
+    deliveryFee: {
+      id: "fee-002",
+      bairroId: "bairro-002",
+      pizzeriaLocationId: "pizzeria-001",
+      amount: 7.0,
+      createdAt: new Date("2023-02-01T12:00:00Z"),
+      updatedAt: new Date("2024-02-01T12:00:00Z"),
+    },
+    distance: {
+      id: "dist-002",
+      bairroId: "bairro-002",
+      pizzeriaLocationId: "pizzeria-001",
+      distanceInKm: 4.1,
+      estimatedTimeInMin: 15,
+      createdAt: new Date("2023-02-01T12:00:00Z"),
+    },
   },
 ];

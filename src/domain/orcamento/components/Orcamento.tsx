@@ -4,7 +4,7 @@ import { PizzaOptionsBySize, PizzaSize, ToppingWithPrice } from "../../types";
 import useOrcamentoApi from "../hooks/useOrcamentoApi";
 import { PizzaBuilder } from "./pizza-builder";
 import { ResumoOrcamento } from "./ResumoOrcamento";
-import { AlertCircleIcon, Divide, Loader2, XIcon } from "lucide-react";
+import { AlertCircleIcon, Loader2, XIcon } from "lucide-react";
 import { cn } from "../../../lib/utils";
 
 export type PizzaOrcamento = {
@@ -28,6 +28,7 @@ export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
 
   const sizes = data?.payload?.sizes || [];
   const pizzaOptions = data?.payload?.options || {};
+  const bairros = data?.payload?.bairros || [];
 
   const adicionarPizza = (pizza: PizzaOrcamento) => {
     if (!pizza.size || pizza.sabores.length === 0) {
@@ -115,8 +116,8 @@ export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
           )}
 
           {
-            currentActiveMenu === "resumo" && (
-              <ResumoOrcamento pizzas={pizzas} onRemovePizza={removerPizza} />
+            pizzas.length > 0 && currentActiveMenu === "resumo" && (
+              <ResumoOrcamento pizzas={pizzas} onRemovePizza={removerPizza} bairros={bairros} />
             )
           }
 

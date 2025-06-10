@@ -1,13 +1,17 @@
 import { PizzaOrcamento } from "./orcamento/components/Orcamento";
+import { BairroWithFeeAndDistance } from "./types";
 
 export class OrcamentoUtils {
-  static calcularTotalOrcamento(pizzas: PizzaOrcamento[]): number {
+  static calcularTotalOrcamento(
+    pizzas: PizzaOrcamento[],
+    bairro: BairroWithFeeAndDistance | null = null
+  ): number {
     return pizzas.reduce((acc, pizza) => {
       const pizzaSellingAmount = pizza.sabores.reduce(
         (max, s) => Math.max(max, s.priceAmount),
         0
       );
-      return acc + pizzaSellingAmount;
+      return acc + pizzaSellingAmount + (bairro?.deliveryFee.amount ?? 0);
     }, 0);
   }
 
@@ -15,7 +19,10 @@ export class OrcamentoUtils {
     return pizza.sabores.reduce((max, s) => Math.max(max, s.priceAmount), 0);
   }
 
-  static generateWappMessage(pizzas: PizzaOrcamento[]): string {
+  static generateWappMessage(
+    pizzas: PizzaOrcamento[],
+    bairro: BairroWithFeeAndDistance | null = null
+  ): string {
     if (pizzas.length === 0) return "Nenhuma pizza adicionada.";
 
     const partes = pizzas.map((pizza) => {
@@ -27,10 +34,20 @@ export class OrcamentoUtils {
       ).toFixed(2)}`;
     });
 
-    const total = OrcamentoUtils.calcularTotalOrcamento(pizzas);
+    const total = OrcamentoUtils.calcularTotalOrcamento(pizzas, bairro);
 
-    return `Pedido:\n${partes
-      .map((p) => "- " + p)
-      .join("\n")}\nTotal estimado: R$ ${total.toFixed(2)}`;
+    let resumoText = "Pedido:\n";
+
+    resumoText += `${partes.map((p) => "- " + p).join("\n")}\n\n`;
+
+    if (bairro) {
+      resumoText += `Entrega: ${
+        bairro.name
+      } - R$ ${bairro.deliveryFee.amount.toFixed(2)}`;
+    }
+
+    resumoText += `\nTotal estimado: R$ ${total.toFixed(2)}`;
+
+    return resumoText;
   }
 }
