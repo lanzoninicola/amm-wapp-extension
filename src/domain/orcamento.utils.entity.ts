@@ -22,7 +22,9 @@ export class OrcamentoUtils {
       const sabores = pizza.sabores.map((s) => s.name).join(", ");
       return `${pizza.quantidade}x ${pizza.size.name.toUpperCase()} com ${
         pizza.sabores.length
-      } sabores (${sabores})`;
+      } sabores (${sabores}): R$ ${OrcamentoUtils.calcularPrecoPizza(
+        pizza
+      ).toFixed(2)}`;
     });
 
     const total = OrcamentoUtils.calcularTotalOrcamento(pizzas);
