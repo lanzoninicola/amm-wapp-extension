@@ -14,8 +14,6 @@ export default function App() {
     setCurrentActiveFeature(feature)
   }
 
-
-
   return (
     <>
       <AppMenu onFeatureSelection={selectFeature} />

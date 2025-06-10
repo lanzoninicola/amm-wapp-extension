@@ -7,7 +7,6 @@ import { PizzaBuilder } from "./pizza-builder";
 import { ResumoOrcamento } from "./ResumoOrcamento";
 import { AlertCircleIcon, Loader2, XIcon } from "lucide-react";
 import { cn } from "../../../lib/utils";
-import OrcamentoTemplateMessage from "./orcamento-template-message";
 
 export type PizzaOrcamento = {
   id: string;
@@ -15,6 +14,8 @@ export type PizzaOrcamento = {
   sabores: ToppingWithPrice[];
   quantidade: number;
 };
+
+export type OrcamentoMenuItem = "sabores-selector" | "resumo"
 
 interface OrcamentoProps {
   setCurrentActiveFeature?: (feature: string | null) => void;
@@ -27,9 +28,8 @@ export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
 
 
   const [pizzas, setPizzas] = useState<PizzaOrcamento[]>([]);
-  const [mostrarFormulario, setMostrarFormulario] = useState(true);
-  const [showWhatsAppMessage, setShowWhatsAppMessage] = useState(false);
-  const [showResumo, setShowResumo] = useState(false);
+
+  const [currentActiveMenu, setCurrentActiveMenu] = useState<OrcamentoMenuItem | null>(null)
 
   const sizes = data?.payload?.sizes || [];
   const pizzaOptions = data?.payload?.options || {};
@@ -71,8 +71,7 @@ export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
       ...prev,
       pizza
     ]);
-    setMostrarFormulario(false);
-    setShowResumo(true);
+    setCurrentActiveMenu("resumo")
   };
 
   const MenuItem = ({ onClick, children, highlightCondition }: { onClick: () => void; children: React.ReactNode; highlightCondition: boolean }) => {
@@ -89,30 +88,7 @@ export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
     )
   }
 
-  function selectMenuOption(option: string) {
-    switch (option) {
-      case "adicionar-pizzas":
-        setMostrarFormulario(true);
-        setShowResumo(false);
-        setShowWhatsAppMessage(false);
-        break;
-      case "resumo":
-        setMostrarFormulario(false);
-        setShowResumo(true);
-        setShowWhatsAppMessage(false);
-        break;
-      case "mensagem":
-        setMostrarFormulario(false);
-        setShowResumo(false);
-        setShowWhatsAppMessage(true);
-        break;
-      default:
-        setMostrarFormulario(false);
-        setShowResumo(false);
-        setShowWhatsAppMessage(false);
-        break;
-    }
-  }
+
 
   const removerPizza = (id: string) => {
     setPizzas(prev => prev.filter(pizza => pizza.id !== id));
@@ -122,6 +98,7 @@ export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
   return (
     <div className="fixed top-6 left-4 p-3 bg-white rounded-xl shadow-lg " style={{ width: "500px", maxHeight: "calc(100vh - 2rem)", overflowY: "auto" }}>
 
+      {/* Fechar a janela */}
       <div className="h-4 w-full flex justify-end">
         <XIcon className="w-4 h-4 text-gray-700 hover:text-gray-800 transition-colors cursor-pointer"
           onClick={() => setCurrentActiveFeature && setCurrentActiveFeature(null)} />
@@ -130,40 +107,40 @@ export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
 
       <div className="flex flex-col">
 
-        <div className="grid grid-cols-3 w-full  mb-4">
-          <MenuItem onClick={() => selectMenuOption("adicionar-pizzas")} highlightCondition={mostrarFormulario}>
-            Adicionar Pizzas
+        <div className="grid grid-cols-2 w-full mb-4">
+          <MenuItem onClick={() => setCurrentActiveMenu("sabores-selector")} highlightCondition={currentActiveMenu === "sabores-selector"}>
+            Selecionar Sabores
           </MenuItem>
-          <MenuItem onClick={() => selectMenuOption("resumo")} highlightCondition={showResumo}>
+          <MenuItem onClick={() => setCurrentActiveMenu("resumo")} highlightCondition={currentActiveMenu === "resumo"}>
             {`Resumo (${pizzas.length}) `}
           </MenuItem>
-          <MenuItem onClick={() => selectMenuOption("mensagem")} highlightCondition={showWhatsAppMessage}>
+          {/* <MenuItem onClick={() => selectMenuOption("mensagem")} highlightCondition={showWhatsAppMessage}>
             Mensagem
-          </MenuItem>
+          </MenuItem> */}
 
         </div>
 
+
+        {currentActiveMenu === "sabores-selector" && (
+          <PizzaBuilder
+            sizes={sizes}
+            options={pizzaOptions as PizzaOptionsBySize}
+            onAddPizza={adicionarPizza}
+            onRemovePizza={removerPizza}
+          />
+        )}
+
         {
-          showResumo && (
+          currentActiveMenu === "resumo" && (
             <ResumoOrcamento pizzas={pizzas} onRemovePizza={removerPizza} />
           )
         }
+
+        {/* {showWhatsAppMessage === true && (
+          <OrcamentoTemplateMessage pizzas={pizzas} />
+        )} */}
+
       </div>
-
-      {mostrarFormulario && (
-        <PizzaBuilder
-          sizes={sizes}
-          options={pizzaOptions as PizzaOptionsBySize}
-          onAddPizza={adicionarPizza}
-          onRemovePizza={removerPizza}
-        />
-      )}
-
-
-
-      {showWhatsAppMessage === true && (
-        <OrcamentoTemplateMessage pizzas={pizzas} />
-      )}
     </div>
   );
 }

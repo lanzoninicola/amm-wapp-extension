@@ -14,16 +14,7 @@ export default function OrcamentoTemplateMessage({ pizzas }: OrcamentoTemplateMe
   const [messageCopied, setMessageCopied] = useState(false)
 
   const gerarMensagem = (): string => {
-    if (pizzas.length === 0) return "Nenhuma pizza adicionada.";
-
-    const partes = pizzas.map((pizza) => {
-      const sabores = pizza.sabores.map(s => s.name).join(", ");
-      return `${pizza.quantidade}x ${pizza.size.name.toUpperCase()} com ${pizza.sabores.length} sabores (${sabores})`;
-    });
-
-    const total = OrcamentoUtils.calcularTotalOrcamento(pizzas);
-
-    return `Pedido:\n${partes.map(p => "- " + p).join("\n")}\nTotal estimado: R$ ${total.toFixed(2)}`;
+    return OrcamentoUtils.generateWappMessage(pizzas);
   };
 
   const copiarMensagem = () => {

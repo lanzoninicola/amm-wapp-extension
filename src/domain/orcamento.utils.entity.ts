@@ -14,4 +14,21 @@ export class OrcamentoUtils {
   static calcularPrecoPizza(pizza: PizzaOrcamento): number {
     return pizza.sabores.reduce((max, s) => Math.max(max, s.priceAmount), 0);
   }
+
+  static generateWappMessage(pizzas: PizzaOrcamento[]): string {
+    if (pizzas.length === 0) return "Nenhuma pizza adicionada.";
+
+    const partes = pizzas.map((pizza) => {
+      const sabores = pizza.sabores.map((s) => s.name).join(", ");
+      return `${pizza.quantidade}x ${pizza.size.name.toUpperCase()} com ${
+        pizza.sabores.length
+      } sabores (${sabores})`;
+    });
+
+    const total = OrcamentoUtils.calcularTotalOrcamento(pizzas);
+
+    return `Pedido:\n${partes
+      .map((p) => "- " + p)
+      .join("\n")}\nTotal estimado: R$ ${total.toFixed(2)}`;
+  }
 }

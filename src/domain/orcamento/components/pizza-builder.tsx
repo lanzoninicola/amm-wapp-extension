@@ -110,10 +110,10 @@ export function PizzaBuilder({
                 setCurrentPizza(null);
               }
             }}
-            className="w-full bg-slate-100"
+            className="w-full bg-slate-100 uppercase"
             disabled={!size || saboresSelecionados.length === 0}
           >
-            OK
+            Adicionar pizza
           </Button>
         </div>
 
