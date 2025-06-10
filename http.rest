@@ -1,0 +1,5 @@
+
+##
+GET https://amodomio.com.br/api/orcamento
+Content-Type: application/json
+x-api-key: 3PjN!u9g@r5XzE1fQw7H
