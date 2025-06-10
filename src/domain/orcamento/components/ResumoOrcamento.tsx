@@ -8,14 +8,16 @@ import { BairroWithFeeAndDistance } from "../../types";
 interface ResumoOrcamentoProps {
   pizzas: PizzaOrcamento[];
   bairros: BairroWithFeeAndDistance[]
+  currentBairro: BairroWithFeeAndDistance | null
+  setCurrentBairro: (bairro: BairroWithFeeAndDistance | null) => void;
   onRemovePizza: (id: string) => void; // Função para remover pizza do orçamento
 }
 
-export function ResumoOrcamento({ pizzas, bairros, onRemovePizza }: ResumoOrcamentoProps) {
+export function ResumoOrcamento({ pizzas, bairros, currentBairro, setCurrentBairro, onRemovePizza }: ResumoOrcamentoProps) {
   const [messageCopied, setMessageCopied] = useState(false)
   const [showMessage, setShowMessage] = useState(false)
   const [showBairroSelection, setShowBairroSelection] = useState(false)
-  const [currentBairro, setCurrentBairro] = useState<BairroWithFeeAndDistance | null>(null)
+
 
 
   if (pizzas.length === 0) {

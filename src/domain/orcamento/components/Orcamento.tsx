@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { PizzaOptionsBySize, PizzaSize, ToppingWithPrice } from "../../types";
+import { BairroWithFeeAndDistance, PizzaOptionsBySize, PizzaSize, ToppingWithPrice } from "../../types";
 import useOrcamentoApi from "../hooks/useOrcamentoApi";
 import { PizzaBuilder } from "./pizza-builder";
 import { ResumoOrcamento } from "./ResumoOrcamento";
@@ -24,6 +24,8 @@ export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
   const { data, error, loading } = useOrcamentoApi({ mockResponse: true });
 
   const [pizzas, setPizzas] = useState<PizzaOrcamento[]>([]);
+  const [currentBairro, setCurrentBairro] = useState<BairroWithFeeAndDistance | null>(null)
+
   const [currentActiveMenu, setCurrentActiveMenu] = useState<OrcamentoMenuItem | null>(null)
 
   const sizes = data?.payload?.sizes || [];
@@ -117,7 +119,13 @@ export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
 
           {
             pizzas.length > 0 && currentActiveMenu === "resumo" && (
-              <ResumoOrcamento pizzas={pizzas} onRemovePizza={removerPizza} bairros={bairros} />
+              <ResumoOrcamento
+                pizzas={pizzas}
+                onRemovePizza={removerPizza}
+                bairros={bairros}
+                currentBairro={currentBairro}
+                setCurrentBairro={setCurrentBairro}
+              />
             )
           }
 
