@@ -5,6 +5,7 @@ import { Button } from "../../../components/ui/button";
 import { SizeSelector } from "./SizeSelector";
 import { ToppingSelector } from "./ToppingSelector";
 import { PizzaResumo } from "./PizzaResumo";
+import { PizzaOrcamento } from "./OrcamentoSidebar";
 
 interface PizzaBuilderProps {
   sizes: PizzaSize[];
@@ -22,6 +23,7 @@ export function PizzaBuilder({
   onAddPizza,
   onRemovePizza
 }: PizzaBuilderProps) {
+  const [currentPizza, setCurrentPizza] = useState<PizzaOrcamento | null>(null)
   const [size, setSize] = useState<PizzaSize | null>(null);
   const [saboresSelecionados, setSaboresSelecionados] = useState<ToppingWithPrice[]>([]);
 
@@ -47,7 +49,7 @@ export function PizzaBuilder({
         {size && (
           <ToppingSelector
             toppings={options[size.key] || []}
-            selectedTopping={(id: string) => {
+            onToppingSelection={(id: string) => {
               const sabor = options[size.key].find(option => option.menuItemId === id);
               if (sabor) {
                 toggleSabor(sabor);

@@ -21,7 +21,7 @@ export function OrcamentoSidebar() {
   console.log({ data })
   const { toast } = useToast();
 
-
+  const [currentPizza, setCurrentPizza] = useState<PizzaOrcamento>(null)
   const [pizzas, setPizzas] = useState<PizzaOrcamento[]>([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(true);
   const [showWhatsAppMessage, setShowWhatsAppMessage] = useState(false);

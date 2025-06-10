@@ -6,12 +6,12 @@ import { cn } from "../../../lib/utils";
 
 interface ToppingSelectorProps {
   toppings: ToppingWithPrice[];
-  selectedTopping: (id: string) => void;
+  onToppingSelection: (id: string) => void;
 }
 
 export function ToppingSelector({
   toppings,
-  selectedTopping,
+  onToppingSelection,
 }: ToppingSelectorProps) {
   const [toppingFound, setToppingFound] = useState<ToppingWithPrice[]>(toppings);
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
@@ -32,7 +32,7 @@ export function ToppingSelector({
     if (e.key === "Enter" && highlightedIndex >= 0) {
       e.preventDefault();
       const topping = toppingFound[highlightedIndex];
-      selectedTopping(topping.menuItemId);
+      onToppingSelection(topping.menuItemId);
     }
   };
 
@@ -75,7 +75,7 @@ export function ToppingSelector({
             <div key={s.menuItemId}>
               <button
                 ref={(el) => (itemsRef.current[index] = el)}
-                onClick={() => selectedTopping(s.menuItemId)}
+                onClick={() => onToppingSelection(s.menuItemId)}
 
                 className={
                   cn(
