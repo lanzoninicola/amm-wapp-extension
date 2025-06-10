@@ -71,7 +71,7 @@ export function ResumoOrcamento({ pizzas, bairros, currentBairro, setCurrentBair
             setShowMessage(false)
           }}
         >
-          {showBairroSelection ? "Ocultar lista bairros" : "Com taxa de entrega"}
+          {showBairroSelection ? "Ocultar lista bairros" : "Entrega bairro:"}
         </p>
 
         {showBairroSelection && (

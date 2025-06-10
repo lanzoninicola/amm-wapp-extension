@@ -52,6 +52,8 @@ export function PizzaBuilder({
         {size && (
           <ToppingSelector
             toppings={options[size.key] || []}
+            sizeSelected={size}
+            toppingsSelected={saboresSelecionados}
             onToppingSelection={(id: string) => {
 
               // se nenhum sabor foi selecionado crio já um objeto pizza com ID

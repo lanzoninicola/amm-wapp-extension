@@ -1,16 +1,20 @@
 
-import { ToppingWithPrice } from "../../types";
+import { PizzaSize, ToppingWithPrice } from "../../types";
 import { Input } from "../../../components/ui/input";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "../../../lib/utils";
 
 interface ToppingSelectorProps {
   toppings: ToppingWithPrice[];
+  toppingsSelected: ToppingWithPrice[];
+  sizeSelected: PizzaSize
   onToppingSelection: (id: string) => void;
 }
 
 export function ToppingSelector({
   toppings,
+  toppingsSelected,
+  sizeSelected,
   onToppingSelection,
 }: ToppingSelectorProps) {
   const [toppingFound, setToppingFound] = useState<ToppingWithPrice[]>(toppings);
@@ -47,7 +51,10 @@ export function ToppingSelector({
 
   return (
     <div className="mb-2">
-      <p className="font-semibold mb-2 text-[11px] uppercase tracking-wider">Sabores:</p>
+      <div className="flex items-center justify-between mb-2">
+        <p className="font-semibold text-[11px] uppercase tracking-wider">Sabores:</p>
+        <span className="text-[11px] font-semibold">Selecionados {toppingsSelected.length} de {sizeSelected.maxToppingsAmount}</span>
+      </div>
       <Input
         placeholder="Buscar sabor..."
         className="mb-2"
