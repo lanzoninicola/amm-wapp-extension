@@ -17,7 +17,9 @@ export default function App() {
   return (
     <>
       <AppMenu onFeatureSelection={selectFeature} />
-      {currentActiveFeature === "orcamento" && <Orcamento setCurrentActiveFeature={setCurrentActiveFeature} />}
+      {currentActiveFeature === "orcamento" &&
+        <Orcamento setCurrentActiveFeature={setCurrentActiveFeature} />
+      }
       <AppSidebar />
       {/*<AppAssistenteEscolha /> */}
     </>
