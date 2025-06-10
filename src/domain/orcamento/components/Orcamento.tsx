@@ -15,10 +15,9 @@ export type PizzaOrcamento = {
   quantidade: number;
 };
 
-export function OrcamentoSidebar() {
+export function Orcamento() {
   const { data, error, loading } = useOrcamentoApi({ mockResponse: true });
 
-  console.log({ data })
   const { toast } = useToast();
 
 
@@ -28,12 +27,18 @@ export function OrcamentoSidebar() {
   const [showResumo, setShowResumo] = useState(false);
 
   const sizes = data?.payload?.sizes || [];
+  const pizzaOptions = data?.payload?.options || {};
 
   if (loading) return <p>Carregando...</p>;
   if (error && error !== null) return <p className="text-red-500">Erro ao carregar os dados: {error}</p>;
   if (!data || Object.keys(data).length === 0) return <p>Nenhum dado disponível.</p>;
 
 
+  const buscarPrecoBase = (size: string): number => {
+    const options = pizzaOptions[size] || [];
+    if (options.length === 0) return 0;
+    return options[0].priceAmount ?? 0;
+  };
 
   const adicionarPizza = (pizza: PizzaOrcamento) => {
     if (!pizza.size || pizza.sabores.length === 0) {

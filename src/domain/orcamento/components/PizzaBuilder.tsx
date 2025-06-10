@@ -5,7 +5,7 @@ import { Button } from "../../../components/ui/button";
 import { SizeSelector } from "./SizeSelector";
 import { ToppingSelector } from "./ToppingSelector";
 import { PizzaResumo } from "./PizzaResumo";
-import { PizzaOrcamento } from "./OrcamentoSidebar";
+import { PizzaOrcamento } from "./Orcamento";
 
 interface PizzaBuilderProps {
   sizes: PizzaSize[];

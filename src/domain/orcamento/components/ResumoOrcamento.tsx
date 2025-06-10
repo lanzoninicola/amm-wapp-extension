@@ -1,6 +1,6 @@
 import { XIcon } from "lucide-react";
 import { ToppingWithPrice } from "../../types";
-import { PizzaOrcamento } from "./OrcamentoSidebar";
+import { PizzaOrcamento } from "./Orcamento";
 
 
 interface ResumoOrcamentoProps {

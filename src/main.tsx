@@ -2,7 +2,7 @@ import "./content-style.css";
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 // import AppMenu from "./AppMenu";
-import { OrcamentoSidebar } from "./domain/orcamento/components/OrcamentoSidebar";
+import { Orcamento } from "./domain/orcamento/components/Orcamento";
 
 console.log("🚀 React content script iniciado");
 
@@ -31,7 +31,7 @@ if (bodyDivs.length > 0) {
 
 ReactDOM.createRoot(container).render(
   <React.StrictMode>
-    <OrcamentoSidebar />
+    <Orcamento />
     {/* <AppSidebar />
     <AppAssistenteEscolha /> */}
   </React.StrictMode>
