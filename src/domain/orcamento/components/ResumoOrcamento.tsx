@@ -3,6 +3,7 @@ import { PizzaOrcamento } from "./Orcamento";
 import { OrcamentoUtils } from "../../orcamento.utils.entity";
 import { useState } from "react";
 import { BairroWithFeeAndDistance } from "../../types";
+import { BairroSelector } from "./bairro-selector";
 
 
 interface ResumoOrcamentoProps {
@@ -45,7 +46,7 @@ export function ResumoOrcamento({ pizzas, bairros, currentBairro, setCurrentBair
                 <XIcon
                   width={14}
                   height={14}
-                  className="hover:text-red-500 hover:font-semibold cursor-pointer"
+                  className="text-red-500 hover:font-semibold cursor-pointer hover:text-red-400"
                   onClick={() => onRemovePizza(pizza.id)}
                 />
                 <div className="flex flex-col">
@@ -66,29 +67,11 @@ export function ResumoOrcamento({ pizzas, bairros, currentBairro, setCurrentBair
           className="text-xs text-muted text-right cursor-pointer hover:underline mb-2"
           onClick={() => setShowBairroSelection(!showBairroSelection)}
         >
-          {showBairroSelection ? "Ocultar" : "Mostrar"} bairros
+          {showBairroSelection ? "Ocultar lista bairros" : "Com taxa de entrega"}
         </p>
 
         {showBairroSelection && (
-          <div className="h-[56px] px-2 py-2 overflow-auto border rounded-lg">
-            <ul className="flex flex-col">
-              {bairros.map((b) => (
-                <li key={b.id}>
-                  <button
-                    onClick={() => setCurrentBairro(b)}
-                    className="w-full border-b hover:bg-blue-200"
-                  >
-                    <div className="flex justify-between p-2">
-                      <span className="text-xs uppercase font-mono">{b.name}</span>
-                      <span className="text-xs uppercase font-mono font-semibold">
-                        {b.deliveryFee.amount}
-                      </span>
-                    </div>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <BairroSelector bairros={bairros} onBairroSelection={setCurrentBairro} />
         )}
 
         {currentBairro && (
@@ -96,17 +79,20 @@ export function ResumoOrcamento({ pizzas, bairros, currentBairro, setCurrentBair
             <XIcon
               width={14}
               height={14}
-              className="hover:text-red-500 hover:font-semibold cursor-pointer"
+              className="text-red-500 hover:font-semibold cursor-pointer hover:text-red-400"
               onClick={() => setCurrentBairro(null)}
             />
-            <button className="flex justify-between w-full">
-              <p className="font-semibold uppercase text-xs">
-                {currentBairro?.name}
-              </p>
+            <div className="flex justify-between w-full items-start">
+              <div className="flex flex-col">
+                <p className="text-[11px] leading-none">Entrega bairro:</p>
+                <p className="text-left font-semibold uppercase text-xs">
+                  {currentBairro?.name}
+                </p>
+              </div>
               <p className="text-right text-xs text-muted">
                 R$ {currentBairro?.deliveryFee.amount.toFixed(2)}
               </p>
-            </button>
+            </div>
           </div>
         )}
       </section>
