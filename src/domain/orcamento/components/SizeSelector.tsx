@@ -12,11 +12,11 @@ export function SizeSelector({
   setSize: (size: PizzaSize) => void;
 }) {
 
-  console.log("SizeSelector size:", sizes);
+  // console.log("SizeSelector size:", sizes);
 
   return (
     <div className="mb-2" data-element="size-selector">
-      <p className="font-semibold mb-2 text-[11px] uppercase tracking-wider">Tamanho:</p>
+      {/* <p className="font-semibold mb-2 text-[11px] uppercase tracking-wider">Tamanho:</p> */}
       <div className="flex gap-2 w-full items-center">
         {sizes.map((s, idx: number) => {
 
@@ -27,7 +27,8 @@ export function SizeSelector({
               key={idx}
               onClick={() => setSize(s)}
               className={cn(
-                "w-full text-center cursor-pointer rounded border py-2 transition flex flex-col gap-0 items-center",
+                "w-full text-center cursor-pointer rounded border-2 py-2 transition flex flex-col gap-0 items-center",
+                "hover:bg-yellow-300",
                 size?.key === s.key ? "bg-blue-500 text-white" : "bg-white"
               )}
             >

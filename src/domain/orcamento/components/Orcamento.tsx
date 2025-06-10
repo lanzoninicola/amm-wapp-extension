@@ -3,10 +3,11 @@ import { useState } from "react";
 import { useToast } from "../../../components/ui/use-toast";
 import { PizzaOptionsBySize, PizzaSize, ToppingWithPrice } from "../../types";
 import useOrcamentoApi from "../hooks/useOrcamentoApi";
-import { PizzaBuilder } from "./PizzaBuilder";
+import { PizzaBuilder } from "./pizza-builder";
 import { ResumoOrcamento } from "./ResumoOrcamento";
-import { CopyIcon } from "lucide-react";
+import { AlertCircleIcon, Loader2, XIcon } from "lucide-react";
 import { cn } from "../../../lib/utils";
+import OrcamentoTemplateMessage from "./orcamento-template-message";
 
 export type PizzaOrcamento = {
   id: string;
@@ -15,7 +16,11 @@ export type PizzaOrcamento = {
   quantidade: number;
 };
 
-export function Orcamento() {
+interface OrcamentoProps {
+  setCurrentActiveFeature?: (feature: string | null) => void;
+}
+
+export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
   const { data, error, loading } = useOrcamentoApi({ mockResponse: true });
 
   const { toast } = useToast();
@@ -29,16 +34,32 @@ export function Orcamento() {
   const sizes = data?.payload?.sizes || [];
   const pizzaOptions = data?.payload?.options || {};
 
-  if (loading) return <p>Carregando...</p>;
-  if (error && error !== null) return <p className="text-red-500">Erro ao carregar os dados: {error}</p>;
+  if (loading) return (
+    <div className="fixed top-6 left-4 p-3 bg-white rounded-xl shadow-lg h-[200px]">
+      <div className="grid place-items-center  w-full h-full">
+        <div className="flex flex-col gap-2 items-center justify-center w-full">
+          <Loader2 className="animate-spin" />
+          <p>Carregando os dados...</p>
+        </div>
+      </div>
+
+    </div>
+  );
+  if (error && error !== null) return (
+    <div className="fixed top-6 left-4 p-3 bg-white rounded-xl shadow-lg h-[200px]">
+      <div className="grid place-items-center w-full h-full">
+        <div className="flex flex-col gap-2 items-center justify-center w-full">
+          <AlertCircleIcon color="red" size={48} />
+          <p className="text-red-500 text-sm">Erro ao carregar os dados: {error}</p>
+        </div>
+      </div>
+
+    </div>
+  );
+
   if (!data || Object.keys(data).length === 0) return <p>Nenhum dado disponível.</p>;
 
 
-  const buscarPrecoBase = (size: string): number => {
-    const options = pizzaOptions[size] || [];
-    if (options.length === 0) return 0;
-    return options[0].priceAmount ?? 0;
-  };
 
   const adicionarPizza = (pizza: PizzaOrcamento) => {
     if (!pizza.size || pizza.sabores.length === 0) {
@@ -51,30 +72,8 @@ export function Orcamento() {
       pizza
     ]);
     setMostrarFormulario(false);
+    setShowResumo(true);
   };
-
-
-
-  const gerarMensagem = (): string => {
-    if (pizzas.length === 0) return "Nenhuma pizza adicionada.";
-
-    const partes = pizzas.map((pizza) => {
-      const sabores = pizza.sabores.map(s => s.name).join(", ");
-      return `${pizza.quantidade}x ${pizza.size.name.toUpperCase()} com ${pizza.sabores.length} sabores (${sabores})`;
-    });
-
-    const total = pizzas.reduce((acc, p) => acc + buscarPrecoBase(p.size.key) * p.quantidade, 0).toFixed(2);
-
-    return `Pedido:\n${partes.map(p => "- " + p).join("\n")}\nTotal estimado: R$ ${total}`;
-  };
-
-  const copiarMensagem = () => {
-    const texto = gerarMensagem().replace(/\n/g, "\n");
-    navigator.clipboard.writeText(texto);
-    toast({ title: "Mensagem copiada para a área de transferência!" });
-  };
-
-
 
   const MenuItem = ({ onClick, children, highlightCondition }: { onClick: () => void; children: React.ReactNode; highlightCondition: boolean }) => {
     return (
@@ -121,8 +120,12 @@ export function Orcamento() {
   };
 
   return (
-    <div className="fixed top-4 left-4 p-3 bg-white rounded-xl shadow-lg " style={{ width: "500px", maxHeight: "calc(100vh - 2rem)", overflowY: "auto" }}>
+    <div className="fixed top-6 left-4 p-3 bg-white rounded-xl shadow-lg " style={{ width: "500px", maxHeight: "calc(100vh - 2rem)", overflowY: "auto" }}>
 
+      <div className="h-4 w-full flex justify-end">
+        <XIcon className="w-4 h-4 text-gray-700 hover:text-gray-800 transition-colors cursor-pointer"
+          onClick={() => setCurrentActiveFeature && setCurrentActiveFeature(null)} />
+      </div>
 
 
       <div className="flex flex-col">
@@ -150,7 +153,7 @@ export function Orcamento() {
       {mostrarFormulario && (
         <PizzaBuilder
           sizes={sizes}
-          options={data.payload.options as PizzaOptionsBySize}
+          options={pizzaOptions as PizzaOptionsBySize}
           onAddPizza={adicionarPizza}
           onRemovePizza={removerPizza}
         />
@@ -159,19 +162,7 @@ export function Orcamento() {
 
 
       {showWhatsAppMessage === true && (
-
-        <div className="mt-6">
-          <div className="flex items-start justify-between mb-2">
-            <h4 className="font-bold mb-2">Mensagem final</h4>
-            <button onClick={copiarMensagem} className="mt-2">
-              <CopyIcon className="w-4 h-4 text-gray-500 hover:text-gray-800 transition-colors" />
-            </button>
-          </div>
-          <pre className="bg-gray-100 p-3 rounded text-sm whitespace-pre-wrap">
-            {gerarMensagem()}
-          </pre>
-
-        </div>
+        <OrcamentoTemplateMessage pizzas={pizzas} />
       )}
     </div>
   );
