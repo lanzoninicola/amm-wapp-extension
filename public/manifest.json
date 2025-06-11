@@ -9,8 +9,7 @@
     "scripting"
   ],
   "host_permissions": [
-    "https://web.whatsapp.com/*",
-    "https://jsonplaceholder.typicode.com/*"
+    "https://web.whatsapp.com/*"
   ],
   "background": {
     "service_worker": "background.js"

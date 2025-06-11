@@ -9,7 +9,7 @@ import ButtonQuickAction from './domain/template-messages/components/button-quic
 import { cortarPizza, linKCardapioText, pixText, pizzaSize } from './db/mock.db';
 import PixSvgIcon from './domain/template-messages/components/pix-svg-icon';
 
-export default function App() {
+export default function AppSidebar() {
   const [showSidebar, setShowSidebar] = useState(false);
 
   const toggleSidebar = (e: React.MouseEvent, fromEl: string = '') => {
