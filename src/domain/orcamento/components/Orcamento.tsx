@@ -21,16 +21,17 @@ interface OrcamentoProps {
 }
 
 export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
-  const { data, error, loading } = useOrcamentoApi({ mockResponse: false });
-
-  const [pizzas, setPizzas] = useState<PizzaOrcamento[]>([]);
-  const [currentBairro, setCurrentBairro] = useState<BairroWithFeeAndDistance | null>(null)
-
-  const [currentActiveMenu, setCurrentActiveMenu] = useState<OrcamentoMenuItem | null>(null)
+  const { data, error, loading } = useOrcamentoApi({ mockResponse: true });
 
   const sizes = data?.payload?.sizes || [];
   const pizzaOptions = data?.payload?.options || {};
   const bairros = data?.payload?.bairros || [];
+
+
+  const [currentActiveMenu, setCurrentActiveMenu] = useState<OrcamentoMenuItem | null>(null)
+  const [currentBairro, setCurrentBairro] = useState<BairroWithFeeAndDistance | null>(null)
+  const [pizzas, setPizzas] = useState<PizzaOrcamento[]>([]);
+
 
   const adicionarPizza = (pizza: PizzaOrcamento) => {
     if (!pizza.size || pizza.sabores.length === 0) {
@@ -70,8 +71,6 @@ export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
       setCurrentActiveMenu(null)
       return
     }
-
-
     setCurrentActiveMenu(item);
   }
 
@@ -88,10 +87,12 @@ export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
       </button>
 
       <div className="grid grid-cols-2 w-full mb-4">
-        <MenuItem onClick={() => onSelectMenuItem("sabores-selector")} highlightCondition={currentActiveMenu === "sabores-selector"}>
+        <MenuItem onClick={() => onSelectMenuItem("sabores-selector")}
+          highlightCondition={currentActiveMenu === "sabores-selector"}>
           Selecionar Sabores
         </MenuItem>
-        <MenuItem onClick={() => onSelectMenuItem("resumo")} highlightCondition={currentActiveMenu === "resumo"}>
+        <MenuItem onClick={() => onSelectMenuItem("resumo")}
+          highlightCondition={currentActiveMenu === "resumo"}>
           {`Resumo (${pizzas.length}) `}
         </MenuItem>
         {/* <MenuItem onClick={() => selectMenuOption("mensagem")} highlightCondition={showWhatsAppMessage}>
@@ -99,6 +100,14 @@ export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
           </MenuItem> */}
 
       </div>
+
+
+      {data && !currentActiveMenu && (
+        <div className="h-[100px] grid place-items-center">
+          <span className="text-sm text-muted-foreground">Pode iniciar selecionado os sabores...</span>
+        </div>
+      )
+      }
 
 
       {loading && <LoadingContent />}

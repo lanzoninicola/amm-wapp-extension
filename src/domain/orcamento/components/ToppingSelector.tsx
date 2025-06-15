@@ -17,7 +17,7 @@ export function ToppingSelector({
   sizeSelected,
   onToppingSelection,
 }: ToppingSelectorProps) {
-  const [toppingFound, setToppingFound] = useState<ToppingWithPrice[]>(toppings);
+  const [toppingFound, setToppingFound] = useState<ToppingWithPrice[]>([]);
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
 
   const itemsRef = useRef<(HTMLButtonElement | null)[]>([]);
@@ -78,7 +78,7 @@ export function ToppingSelector({
       />
       <div className="h-[150px] overflow-y-auto">
         <div className="flex flex-col">
-          {toppingFound.map((s, index) => (
+          {toppings.map((s, index) => (
             <div key={s.menuItemId}>
               <button
                 ref={(el) => (itemsRef.current[index] = el)}

@@ -21,11 +21,20 @@ export function PizzaBuilder({
   onRemovePizza
 }: PizzaBuilderProps) {
   const [currentPizza, setCurrentPizza] = useState<PizzaOrcamento | null>(null)
+
+
   const [size, setSize] = useState<PizzaSize | null>(null);
+  const [currentToppingsOptions, setCurrentToppingsOptions] = useState<ToppingWithPrice[] | null>(null)
+
   const [saboresSelecionados, setSaboresSelecionados] = useState<ToppingWithPrice[]>([]);
 
-  const toggleSabor = (sabor: ToppingWithPrice) => {
 
+  const onSizeSelection = (size: PizzaSize) => {
+    setSize(size)
+    setCurrentToppingsOptions(options[size.key])
+  }
+
+  const toggleSabor = (sabor: ToppingWithPrice) => {
     const ss = [...saboresSelecionados]
     const nextSaboresSelecionados = ss.find(s => s.menuItemId === sabor.menuItemId)
       ? ss.filter(s => s.menuItemId !== sabor.menuItemId)
@@ -38,6 +47,8 @@ export function PizzaBuilder({
     setSaboresSelecionados(nextSaboresSelecionados);
   };
 
+  console.log({ currentToppingsOptions })
+
 
 
   return (
@@ -46,16 +57,15 @@ export function PizzaBuilder({
         <SizeSelector
           sizes={sizes}
           size={size}
-          setSize={setSize}
+          setSize={onSizeSelection}
         />
 
         {size && (
           <ToppingSelector
-            toppings={options[size.key] || []}
+            toppings={currentToppingsOptions || []}
             sizeSelected={size}
             toppingsSelected={saboresSelecionados}
             onToppingSelection={(id: string) => {
-
               // se nenhum sabor foi selecionado crio já um objeto pizza com ID
               if (saboresSelecionados.length === 0) {
                 setCurrentPizza({
@@ -65,8 +75,6 @@ export function PizzaBuilder({
                   quantidade: 1
                 })
               }
-
-
               const sabor = options[size.key].find(option => option.menuItemId === id);
 
               if (sabor) {
