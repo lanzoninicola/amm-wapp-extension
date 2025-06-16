@@ -1,12 +1,19 @@
 import { useState } from "react";
 import AppMenu from "./AppMenu";
-import AppSidebar from "./AppSidebar";
 import { Orcamento } from "./domain/orcamento/components/Orcamento";
-import { XIcon } from "lucide-react";
+import { Receipt, XIcon } from "lucide-react";
 import QuickActionBar from "./domain/quick-action-bar/components/quick-action-bar";
 
-export type ActiveAppFeature = "orcamento" | null
+export const FEATURES = [
+  {
+    name: "orcamento",
+    label: "Orçamento",
+    icon: <Receipt size={16} />
+  }
+]
 
+
+export type ActiveAppFeature = "orcamento" | null
 
 export default function App() {
 
@@ -19,16 +26,18 @@ export default function App() {
   return (
     <>
       <AppMenu onFeatureSelection={selectFeature} >
+
         <div className="flex items-center gap-3">
           <QuickActionBar />
         </div>
+
       </AppMenu>
       {currentActiveFeature !== null && (
-        <Container setCurrentActiveFeature={setCurrentActiveFeature}>
+        <ContainerFloatLeft setCurrentActiveFeature={setCurrentActiveFeature}>
           {currentActiveFeature === "orcamento" &&
             <Orcamento />
           }
-        </Container>
+        </ContainerFloatLeft>
       )}
       {/* <AppSidebar /> */}
       {/*<AppAssistenteEscolha /> */}
@@ -36,19 +45,19 @@ export default function App() {
   )
 }
 
-interface ContainerProps {
+interface ContainerFloatLeftProps {
   setCurrentActiveFeature: (feature: ActiveAppFeature) => void
   children: React.ReactNode
 }
 
-function Container({
+function ContainerFloatLeft({
   children,
   setCurrentActiveFeature
-}: ContainerProps) {
+}: ContainerFloatLeftProps) {
   return (
     <div className="fixed top-6 left-4 p-3 bg-white rounded-xl shadow-lg "
       style={{ width: "500px", maxHeight: "calc(100vh - 2rem)", overflowY: "auto" }}
-      data-element="amm-app-container"
+      data-element="amm-app-ContainerFloatLeft"
     >
       {/* Fechar a janela */}
       <button className="h-4 w-full flex justify-end" onClick={() => {

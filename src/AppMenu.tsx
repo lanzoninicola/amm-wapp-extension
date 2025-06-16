@@ -1,4 +1,6 @@
-import { ActiveAppFeature } from "./App"
+
+import { ActiveAppFeature, FEATURES } from "./App"
+import ButtonMenu from "./components/button-menu"
 import { Separator } from "./components/ui/separator"
 
 
@@ -7,12 +9,6 @@ interface AppMenuProps {
   children?: React.ReactNode
 }
 
-const features = [
-  {
-    name: "orcamento",
-    label: "Orçamento"
-  }
-]
 
 export default function AppMenu({ onFeatureSelection, children }: AppMenuProps) {
 
@@ -23,17 +19,24 @@ export default function AppMenu({ onFeatureSelection, children }: AppMenuProps) 
     >
       <div className="flex items-center">
         <div className="w-full h-full grid place-items-center leading-none ">
-          {features.map((f) => (
-            <button
+          {FEATURES.map((f) => (
+            // <button
+            //   key={f.name}
+            //   className="text-xs font-semibold uppercase tracking-wide"
+            //   onClick={() => onFeatureSelection(f.name as ActiveAppFeature)}
+            // >
+            //   {f.label}
+            // </button>
+            <ButtonMenu
               key={f.name}
-              className="text-xs font-semibold uppercase tracking-wide"
+              tooltipText={f.label}
               onClick={() => onFeatureSelection(f.name as ActiveAppFeature)}
             >
-              {f.label}
-            </button>
+              {f.icon}
+            </ButtonMenu>
           ))}
         </div>
-        <Separator orientation="vertical" className="h-4 mx-2 bg-yellow-300" />
+        <Separator orientation="vertical" className="h-4 mx-4 bg-yellow-300" />
         {children}
       </div>
     </div>
