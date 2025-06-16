@@ -4,9 +4,8 @@ import { BairroWithFeeAndDistance, PizzaOptionsBySize, PizzaSize, ToppingWithPri
 import useOrcamentoApi from "../hooks/useOrcamentoApi";
 import { PizzaBuilder } from "./pizza-builder";
 import { ResumoOrcamento } from "./ResumoOrcamento";
-import { AlertCircleIcon, Loader2, XIcon } from "lucide-react";
+import { AlertCircleIcon, Loader2 } from "lucide-react";
 import { cn } from "../../../lib/utils";
-import { ActiveAppFeature } from "../../../App";
 
 export type PizzaOrcamento = {
   id: string;
@@ -17,11 +16,7 @@ export type PizzaOrcamento = {
 
 export type OrcamentoMenuItem = "sabores-selector" | "resumo"
 
-interface OrcamentoProps {
-  setCurrentActiveFeature?: (feature: ActiveAppFeature | null) => void;
-}
-
-export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
+export function Orcamento() {
   const { data, error, loading } = useOrcamentoApi({ mockResponse: true });
 
   const sizes = data?.payload?.sizes || [];
@@ -78,16 +73,9 @@ export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
 
 
   return (
-    <div className="fixed top-6 left-4 p-3 bg-white rounded-xl shadow-lg " style={{ width: "500px", maxHeight: "calc(100vh - 2rem)", overflowY: "auto" }}>
-      {/* Fechar a janela */}
-      <button className="h-4 w-full flex justify-end" onClick={() => {
-        if (!setCurrentActiveFeature) return
-        setCurrentActiveFeature(null)
-      }}>
-        <XIcon
-          className="w-4 h-4 text-gray-700 hover:text-gray-800 transition-colors cursor-pointer" />
-      </button>
 
+
+    <>
       <div className="grid grid-cols-2 w-full mb-4">
         <MenuItem onClick={() => onSelectMenuItem("sabores-selector")}
           highlightCondition={currentActiveMenu === "sabores-selector"}>
@@ -110,7 +98,6 @@ export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
         </div>
       )
       }
-
 
       {loading && <LoadingContent />}
 
@@ -148,10 +135,9 @@ export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
 
         </div>
       )}
+    </>
 
 
-
-    </div>
   );
 }
 
