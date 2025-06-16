@@ -1,6 +1,7 @@
 export type ToppingWithPrice = {
   menuItemId: string;
   name: string;
+  ingredients: string;
   groupName?: string;
   priceAmount: number;
   previousPriceAmount: number;

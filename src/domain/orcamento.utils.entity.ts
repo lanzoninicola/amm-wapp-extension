@@ -6,13 +6,19 @@ export class OrcamentoUtils {
     pizzas: PizzaOrcamento[],
     bairro: BairroWithFeeAndDistance | null = null
   ): number {
-    return pizzas.reduce((acc, pizza) => {
+    const subTotal = pizzas.reduce((acc, pizza) => {
       const pizzaSellingAmount = pizza.sabores.reduce(
         (max, s) => Math.max(max, s.priceAmount),
         0
       );
-      return acc + pizzaSellingAmount + (bairro?.deliveryFee.amount ?? 0);
+      return acc + pizzaSellingAmount;
     }, 0);
+
+    if (bairro) {
+      return subTotal + bairro.deliveryFee.amount;
+    }
+
+    return subTotal;
   }
 
   static calcularPrecoPizza(pizza: PizzaOrcamento): number {
@@ -41,12 +47,13 @@ export class OrcamentoUtils {
     resumoText += `${partes.map((p) => "- " + p).join("\n")}\n\n`;
 
     if (bairro) {
-      resumoText += `Entrega: ${
+      resumoText += `Entrega bairro: ${
         bairro.name
       } - R$ ${bairro.deliveryFee.amount.toFixed(2)}\n`;
     }
 
-    resumoText += `Total estimado: R$ ${total.toFixed(2)}`;
+    resumoText += `----------------------------------------\n`;
+    resumoText += `Total estimado: *R$ ${total.toFixed(2)}*`;
 
     return resumoText;
   }
