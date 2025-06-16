@@ -71,11 +71,15 @@ export function ResumoOrcamento({ pizzas, bairros, currentBairro, setCurrentBair
             setShowMessage(false)
           }}
         >
-          {showBairroSelection ? "Ocultar lista bairros" : "Entrega bairro:"}
+          {showBairroSelection ? "Ocultar lista bairros" : "Selecionar bairro:"}
         </p>
 
         {showBairroSelection && (
-          <BairroSelector bairros={bairros} onBairroSelection={setCurrentBairro} />
+          <BairroSelector bairros={bairros} onBairroSelection={(bairro) => {
+            setCurrentBairro(bairro)
+            setShowBairroSelection(false)
+
+          }} />
         )}
 
         {currentBairro && (
