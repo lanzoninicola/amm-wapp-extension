@@ -66,7 +66,7 @@ function ContainerFloatLeft({
   setCurrentActiveFeature
 }: ContainerFloatLeftProps) {
   return (
-    <div className="fixed top-6 left-4 p-3 bg-white rounded-xl shadow-lg "
+    <div className="fixed top-6 left-4 p-3 rounded-xl shadow-lg "
       style={{ width: "500px", maxHeight: "calc(100vh - 2rem)", overflowY: "auto" }}
       data-element="amm-app-ContainerFloatLeft"
     >

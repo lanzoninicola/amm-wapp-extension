@@ -155,14 +155,12 @@ function LoadingContent() {
 
 function ErrorContent({ error }: { error: string | null }) {
   return (
-    <div className="fixed top-6 left-4 p-3 bg-white rounded-xl shadow-lg h-[200px]">
-      <div className="grid place-items-center w-full h-full">
-        <div className="flex flex-col gap-2 items-center justify-center w-full">
-          <AlertCircleIcon color="red" size={48} />
-          <p className="text-red-500 text-sm">Erro ao carregar os dados: {error}</p>
-        </div>
+    <div className="grid place-items-center w-full h-full">
+      <div className="flex flex-col gap-2 items-center justify-center w-full">
+        <AlertCircleIcon color="red" size={48} />
+        <p className="text-red-500 text-sm">Erro ao carregar os dados: {error}</p>
       </div>
-
     </div>
+
   );
 }

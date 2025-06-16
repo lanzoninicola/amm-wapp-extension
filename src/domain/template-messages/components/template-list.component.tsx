@@ -7,11 +7,16 @@ import { cn } from "../../../lib/utils";
 
 
 export default function TemplateList() {
-    const [currentActiveMenu, setCurrentActiveMenu] = useState<string | null>("list")
+    const [currentActiveMenu, setCurrentActiveMenu] = useState<string | null>("loading")
     const [templates, setTemplates] = useState<TemplateGroup[]>([]);
 
     useEffect(() => {
-        templateMessagesEntity.getMessages().then(setTemplates);
+        templateMessagesEntity.getMessages().then(
+            (data) => {
+                setTemplates(data);
+                setCurrentActiveMenu("list");
+            }
+        );
     }, []);
 
 
@@ -44,6 +49,14 @@ export default function TemplateList() {
                 </MenuItem>
 
             </div>
+            {
+                currentActiveMenu === "loading" && (
+                    <div className="flex justify-center items-center h-32">
+                        <span className="text-sm text-gray-500">Carregando...</span>
+                    </div>
+
+                )
+            }
             {currentActiveMenu === "list" && (
                 <ListView
                     templates={templates}
