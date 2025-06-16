@@ -1,13 +1,11 @@
-import { Bike, Hand, HeartHandshake, PersonStanding, Proportions, Scissors, SquareMenu } from 'lucide-react';
+import { PersonStanding } from 'lucide-react';
 import './App.css';
 import { ScrollArea } from './components/ui/scroll-area';
 import { Toaster } from './components/ui/toaster';
 import TemplateList from './domain/template-messages/components/template-list.component';
 import { Button } from './components/ui/button';
 import { useState } from 'react';
-import ButtonQuickAction from './domain/template-messages/components/button-quick-action';
-import { cortarPizza, linKCardapioText, pixText, pizzaSize } from './db/mock.db';
-import PixSvgIcon from './domain/template-messages/components/pix-svg-icon';
+import QuickActionBar from './domain/quick-action-bar/components/quick-action-bar';
 
 export default function AppSidebar() {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -33,57 +31,7 @@ export default function AppSidebar() {
           >
             <PersonStanding />
           </Button>
-          <ButtonQuickAction
-            templateText={{
-              title: 'Boa noite',
-              content: 'Boa noite, como vai?'
-            }}
-            showToast={true}
-          >
-            <Hand size={18} />
-          </ButtonQuickAction>
-          <ButtonQuickAction
-            templateText={linKCardapioText()}
-            showToast={true}
-          >
-            <SquareMenu size={18} />
-          </ButtonQuickAction>
-          <ButtonQuickAction
-            templateText={pizzaSize()}
-            showToast={true}
-          >
-            <Proportions width={18} height={18} />
-          </ButtonQuickAction>
-          <ButtonQuickAction
-            templateText={pixText()}
-            showToast={true}
-          >
-            <PixSvgIcon width={18} height={18} />
-          </ButtonQuickAction>
-          <ButtonQuickAction
-            templateText={{
-              title: 'Saindo para entrega',
-              content: 'Seu pedido está a caminho! Obrigado por escolher A Modo Mio!\n\nAmou a pizza? Deixe sua opinião no Google, sua avaliação em 2 min faz toda a diferença! 🙌\n\n👉 https://g.page/r/CceZSxdctFZHEAE/review'
-            }}
-            showToast={true}
-          >
-            <Bike size={18} />
-          </ButtonQuickAction>
-          <ButtonQuickAction
-            templateText={cortarPizza()}
-            showToast={true}
-          >
-            <Scissors size={18} />
-          </ButtonQuickAction>
-          <ButtonQuickAction
-            templateText={{
-              title: 'Agredecimento pedido',
-              content: 'Muito obrigado pelo pedido!\n\nAmou a pizza? Deixe sua opinião no Google, sua avaliação em 2 min faz toda a diferença! 🙌\n\n👉 https://g.page/r/CceZSxdctFZHEAE/review'
-            }}
-            showToast={true}
-          >
-            <HeartHandshake size={18} />
-          </ButtonQuickAction>
+          <QuickActionBar />
 
         </div>
       </div>

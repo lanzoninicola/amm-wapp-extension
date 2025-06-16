@@ -3,6 +3,7 @@ import AppMenu from "./AppMenu";
 import AppSidebar from "./AppSidebar";
 import { Orcamento } from "./domain/orcamento/components/Orcamento";
 import { XIcon } from "lucide-react";
+import QuickActionBar from "./domain/quick-action-bar/components/quick-action-bar";
 
 export type ActiveAppFeature = "orcamento" | null
 
@@ -17,7 +18,11 @@ export default function App() {
 
   return (
     <>
-      <AppMenu onFeatureSelection={selectFeature} />
+      <AppMenu onFeatureSelection={selectFeature} >
+        <div className="flex items-center gap-3">
+          <QuickActionBar />
+        </div>
+      </AppMenu>
       {currentActiveFeature !== null && (
         <Container setCurrentActiveFeature={setCurrentActiveFeature}>
           {currentActiveFeature === "orcamento" &&
@@ -25,7 +30,7 @@ export default function App() {
           }
         </Container>
       )}
-      <AppSidebar />
+      {/* <AppSidebar /> */}
       {/*<AppAssistenteEscolha /> */}
     </>
   )

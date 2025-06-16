@@ -44,9 +44,9 @@ export default function ButtonQuickAction({
     }
 
     return (
-        <div className={
+        <button className={
             cn(
-                'grid place-items-center  bg-none rounded-full  text-black  h-10 w-10 cursor-pointer  ',
+                'relative grid place-items-center  bg-none rounded-full  text-black  h-6 w-6 cursor-pointer  ',
                 "hover:border hover:bg-yellow-200",
                 copied && 'bg-yellow-200'
             )
@@ -59,7 +59,9 @@ export default function ButtonQuickAction({
             <div className={
                 cn(
                     "hidden",
-                    "absolute w-[120px] right-[70px]",
+                    "w-[120px] h-[60px]",
+                    // "absolute w-[120px] right-[70px]",
+                    "absolute top-9 right-0",
                     hovered && "block animate-in",
                 )
             }>
@@ -68,7 +70,7 @@ export default function ButtonQuickAction({
                 </p>
 
             </div>
-        </div>
+        </button>
 
 
     )
