@@ -15,10 +15,7 @@ interface BackgroundResponse<T> {
  * @returns An object containing the fetched data, loading state, and error message.
  */
 export default function useFetchBackground<T = unknown>(
-  action: string,
-  options: {
-    mockResponse?: boolean;
-  }
+  action: string
 ): BackgroundResponse<T> {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -28,10 +25,6 @@ export default function useFetchBackground<T = unknown>(
     setLoading(true);
     setData(null);
     setError(null);
-
-    if (options?.mockResponse) {
-      return;
-    }
 
     sendMessageToBackground<T>(action, {})
       .then((response) => {

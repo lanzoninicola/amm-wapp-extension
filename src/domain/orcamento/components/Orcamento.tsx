@@ -17,7 +17,7 @@ export type PizzaOrcamento = {
 export type OrcamentoMenuItem = "sabores-selector" | "resumo"
 
 export function Orcamento() {
-  const { data, error, loading } = useOrcamentoApi({ mockResponse: true });
+  const { data, error, loading } = useOrcamentoApi();
 
   const sizes = data?.payload?.sizes || [];
   const pizzaOptions = data?.payload?.options || {};
