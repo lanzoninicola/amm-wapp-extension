@@ -5,7 +5,6 @@ import { TemplateGroup } from "./template-messages.types"
 
 class TemplateMessages {
 
-
     async getMessages(): Promise<TemplateGroup[]> {
         const env = process.env.NODE_ENV
 
@@ -19,7 +18,6 @@ class TemplateMessages {
 
 
     async getMockedMessages(): Promise<TemplateGroup[]> {
-
         return new Promise(resolve => setTimeout(() => resolve(mockDatabase), 200))
     }
 }

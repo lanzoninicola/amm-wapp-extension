@@ -1,19 +1,25 @@
 import { useState } from "react";
 import AppMenu from "./AppMenu";
 import { Orcamento } from "./domain/orcamento/components/Orcamento";
-import { Receipt, XIcon } from "lucide-react";
+import { MessageCircleCode, Receipt, XIcon } from "lucide-react";
 import QuickActionBar from "./domain/quick-action-bar/components/quick-action-bar";
+import TemplateList from "./domain/template-messages/components/template-list.component";
 
 export const FEATURES = [
   {
     name: "orcamento",
     label: "Orçamento",
     icon: <Receipt size={16} />
-  }
+  },
+  {
+    name: "message-templates",
+    label: "Modelos de mensagens",
+    icon: <MessageCircleCode size={16} />
+  },
 ]
 
 
-export type ActiveAppFeature = "orcamento" | null
+export type ActiveAppFeature = "orcamento" | "message-templates" | null
 
 export default function App() {
 
@@ -27,7 +33,7 @@ export default function App() {
     <>
       <AppMenu onFeatureSelection={selectFeature} >
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center">
           <QuickActionBar />
         </div>
 
@@ -37,8 +43,13 @@ export default function App() {
           {currentActiveFeature === "orcamento" &&
             <Orcamento />
           }
+          {currentActiveFeature === "message-templates" &&
+            <TemplateList />
+          }
         </ContainerFloatLeft>
       )}
+
+
       {/* <AppSidebar /> */}
       {/*<AppAssistenteEscolha /> */}
     </>

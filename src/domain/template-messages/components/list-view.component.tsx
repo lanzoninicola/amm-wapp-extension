@@ -20,7 +20,7 @@ const ListView: React.FC<ListViewProps> = ({ templates }) => {
                         </AccordionTrigger>
                         <AccordionContent>
 
-                            <ul className="flex flex-col gap-2 h-[350px] overflow-y-scroll"
+                            <ul className="flex flex-col h-[350px] overflow-y-scroll"
 
                             >
                                 {group.items.map((item, itemIndex) => (

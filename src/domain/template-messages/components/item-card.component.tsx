@@ -19,7 +19,7 @@ export default function ItemCard({ itemIndex, item }: ItemCardProps) {
     const { toast } = useToast();
 
     const truncateContent = (content: string) => {
-        const limit = 50;
+        const limit = 60;
         return content.length > limit ? `${content.slice(0, limit)}...` : content;
     };
 
@@ -52,7 +52,7 @@ export default function ItemCard({ itemIndex, item }: ItemCardProps) {
 
 
     return (
-        <div className="flex flex-col items-start gap-2 rounded-lg pr-[0.5rem] py-2 text-left text-sm transition-all
+        <div className="flex flex-col items-start rounded-lg pr-[0.5rem] py-2 text-left text-sm transition-all
         cursor-pointer
         "
             style={{

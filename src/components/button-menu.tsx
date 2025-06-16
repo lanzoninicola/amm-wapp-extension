@@ -19,7 +19,7 @@ export default function ButtonMenu({
   return (
     <button className={
       cn(
-        'relative grid place-items-center  bg-none rounded-full  text-black  h-6 w-6 cursor-pointer  ',
+        'relative grid place-items-center mr-3 bg-none rounded-full  text-black  h-6 w-6 cursor-pointer  ',
         "hover:border hover:bg-yellow-200",
       )
     }
