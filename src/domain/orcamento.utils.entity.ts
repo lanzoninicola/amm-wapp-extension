@@ -41,12 +41,13 @@ export class OrcamentoUtils {
     resumoText += `${partes.map((p) => "- " + p).join("\n")}\n\n`;
 
     if (bairro) {
-      resumoText += `Entrega: ${
+      resumoText += `Entrega bairro: ${
         bairro.name
       } - R$ ${bairro.deliveryFee.amount.toFixed(2)}\n`;
     }
 
-    resumoText += `Total estimado: R$ ${total.toFixed(2)}`;
+    resumoText += `----------------------------------------\n`;
+    resumoText += `Total estimado: *R$ ${total.toFixed(2)}*`;
 
     return resumoText;
   }

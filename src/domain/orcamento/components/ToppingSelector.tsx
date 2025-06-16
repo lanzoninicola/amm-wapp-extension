@@ -3,6 +3,7 @@ import { PizzaSize, ToppingWithPrice } from "../../types";
 import { Input } from "../../../components/ui/input";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "../../../lib/utils";
+import { AlertCircleIcon } from "lucide-react";
 
 interface ToppingSelectorProps {
   toppings: ToppingWithPrice[];
@@ -51,6 +52,14 @@ export function ToppingSelector({
 
   return (
     <div className="mb-2">
+      {
+        toppingsSelected.length === sizeSelected.maxToppingsAmount && (
+          <div className="flex items-center gap-1 mb-2">
+            <AlertCircleIcon size={16} className="text-red-500" />
+            <p className="text-red-500 text-xs font-semibold">Você atingiu o limite de sabores para este tamanho.</p>
+          </div>
+        )
+      }
       <div className="flex items-center justify-between mb-2">
         <p className="font-semibold text-[11px] uppercase tracking-wider">Sabores:</p>
         <span className="text-[11px] font-semibold">Selecionados {toppingsSelected.length} de {sizeSelected.maxToppingsAmount}</span>

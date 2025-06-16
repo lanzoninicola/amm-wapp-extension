@@ -28,7 +28,7 @@ export function ResumoOrcamento({ pizzas, bairros, currentBairro, setCurrentBair
   const total = OrcamentoUtils.calcularTotalOrcamento(pizzas, currentBairro)
 
   const copiarMensagem = () => {
-    const mensagem = OrcamentoUtils.generateWappMessage(pizzas);
+    const mensagem = OrcamentoUtils.generateWappMessage(pizzas, currentBairro);
     const texto = mensagem.replace(/\n/g, "\n");
     navigator.clipboard.writeText(texto);
     setMessageCopied(true)

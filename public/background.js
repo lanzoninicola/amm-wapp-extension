@@ -3,7 +3,7 @@ console.log("Running background.js")
 typeof chrome !== 'undefined' && typeof chrome.runtime !== 'undefined'
 
 const REST_API_BASE_URL = "http://localhost:3000/api";
-const FETCH_ORCAMENTO_MOCK_RESPONSE = true
+const FETCH_ORCAMENTO_MOCK_RESPONSE = false
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log("Received message in background.js:", request);
