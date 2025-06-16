@@ -9,6 +9,8 @@ import { PizzaOrcamento } from "./Orcamento";
 
 interface PizzaBuilderProps {
   sizes: PizzaSize[];
+  currentSize: PizzaSize | null
+  setCurrentSize: (size: PizzaSize | null) => void
   options: PizzaOptionsBySize;
   onAddPizza: (pizza: PizzaOrcamento) => void;
   onRemovePizza: (id: string) => void;
@@ -16,22 +18,20 @@ interface PizzaBuilderProps {
 
 export function PizzaBuilder({
   sizes,
+  currentSize,
+  setCurrentSize,
   options,
   onAddPizza,
   onRemovePizza
 }: PizzaBuilderProps) {
   const [currentPizza, setCurrentPizza] = useState<PizzaOrcamento | null>(null)
-
-
-  const [size, setSize] = useState<PizzaSize | null>(null);
   const [currentToppingsOptions, setCurrentToppingsOptions] = useState<ToppingWithPrice[] | null>(null)
-
   const [saboresSelecionados, setSaboresSelecionados] = useState<ToppingWithPrice[]>([]);
 
 
-  const onSizeSelection = (size: PizzaSize) => {
-    setSize(size)
-    setCurrentToppingsOptions(options[size.key])
+  const onSizeSelection = (currentSize: PizzaSize) => {
+    setCurrentSize(currentSize)
+    setCurrentToppingsOptions(options[currentSize.key])
   }
 
   const toggleSabor = (sabor: ToppingWithPrice) => {
@@ -40,7 +40,7 @@ export function PizzaBuilder({
       ? ss.filter(s => s.menuItemId !== sabor.menuItemId)
       : [...ss, sabor]
 
-    if (nextSaboresSelecionados.length > (size?.maxToppingsAmount ?? 0)) {
+    if (nextSaboresSelecionados.length > (currentSize?.maxToppingsAmount ?? 0)) {
       return
     }
 
@@ -56,26 +56,27 @@ export function PizzaBuilder({
       <div className="flex flex-col gap-4 bg-white">
         <SizeSelector
           sizes={sizes}
-          size={size}
-          setSize={onSizeSelection}
+          currentSize={currentSize}
+          setCurrentSize={onSizeSelection}
         />
 
-        {size && (
+        {currentSize && (
           <ToppingSelector
             toppings={currentToppingsOptions || []}
-            sizeSelected={size}
+
+            sizeSelected={currentSize}
             toppingsSelected={saboresSelecionados}
             onToppingSelection={(id: string) => {
               // se nenhum sabor foi selecionado crio já um objeto pizza com ID
               if (saboresSelecionados.length === 0) {
                 setCurrentPizza({
                   id: crypto.randomUUID(),
-                  size,
+                  size: currentSize,
                   sabores: [],
                   quantidade: 1
                 })
               }
-              const sabor = options[size.key].find(option => option.menuItemId === id);
+              const sabor = options[currentSize.key].find(option => option.menuItemId === id);
 
               if (sabor) {
                 toggleSabor(sabor);
@@ -86,7 +87,7 @@ export function PizzaBuilder({
         )}
 
         <PizzaResumo
-          size={size}
+          currentSize={currentSize}
           toppings={saboresSelecionados}
         />
 
@@ -96,7 +97,7 @@ export function PizzaBuilder({
             onClick={() => {
               if (currentPizza) {
                 onRemovePizza(currentPizza.id);
-                setSize(null);
+                setCurrentSize(null);
                 setSaboresSelecionados([]);
                 setCurrentPizza(null);
               }
@@ -109,19 +110,19 @@ export function PizzaBuilder({
 
           <Button
             onClick={() => {
-              if (size && saboresSelecionados.length > 0) {
+              if (currentSize && saboresSelecionados.length > 0) {
                 onAddPizza({
                   ...currentPizza,
-                  size,
+                  size: currentSize,
                   sabores: saboresSelecionados
                 } as PizzaOrcamento);
-                setSize(null);
+                setCurrentSize(null);
                 setSaboresSelecionados([]);
                 setCurrentPizza(null);
               }
             }}
             className="w-full bg-slate-100 uppercase"
-            disabled={!size || saboresSelecionados.length === 0}
+            disabled={!currentSize || saboresSelecionados.length === 0}
           >
             Adicionar pizza
           </Button>

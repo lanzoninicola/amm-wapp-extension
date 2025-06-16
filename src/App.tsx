@@ -3,14 +3,14 @@ import AppMenu from "./AppMenu";
 import AppSidebar from "./AppSidebar";
 import { Orcamento } from "./domain/orcamento/components/Orcamento";
 
-
+export type ActiveAppFeature = "orcamento" | null
 
 
 export default function App() {
 
-  const [currentActiveFeature, setCurrentActiveFeature] = useState<string | null>(null)
+  const [currentActiveFeature, setCurrentActiveFeature] = useState<ActiveAppFeature | null>(null)
 
-  function selectFeature(feature: string) {
+  function selectFeature(feature: ActiveAppFeature) {
     setCurrentActiveFeature(feature)
   }
 

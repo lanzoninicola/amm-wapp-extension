@@ -6,6 +6,7 @@ import { PizzaBuilder } from "./pizza-builder";
 import { ResumoOrcamento } from "./ResumoOrcamento";
 import { AlertCircleIcon, Loader2, XIcon } from "lucide-react";
 import { cn } from "../../../lib/utils";
+import { ActiveAppFeature } from "../../../App";
 
 export type PizzaOrcamento = {
   id: string;
@@ -17,7 +18,7 @@ export type PizzaOrcamento = {
 export type OrcamentoMenuItem = "sabores-selector" | "resumo"
 
 interface OrcamentoProps {
-  setCurrentActiveFeature?: (feature: string | null) => void;
+  setCurrentActiveFeature?: (feature: ActiveAppFeature | null) => void;
 }
 
 export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
@@ -29,6 +30,9 @@ export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
 
 
   const [currentActiveMenu, setCurrentActiveMenu] = useState<OrcamentoMenuItem | null>(null)
+
+  const [currentSize, setCurrentSize] = useState<PizzaSize | null>(null);
+
   const [currentBairro, setCurrentBairro] = useState<BairroWithFeeAndDistance | null>(null)
   const [pizzas, setPizzas] = useState<PizzaOrcamento[]>([]);
 
@@ -58,8 +62,6 @@ export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
       </span>
     )
   }
-
-
 
   const removerPizza = (id: string) => {
     setPizzas(prev => prev.filter(pizza => pizza.id !== id));
@@ -120,6 +122,8 @@ export function Orcamento({ setCurrentActiveFeature }: OrcamentoProps) {
           {currentActiveMenu === "sabores-selector" && (
             <PizzaBuilder
               sizes={sizes}
+              currentSize={currentSize}
+              setCurrentSize={setCurrentSize}
               options={pizzaOptions as PizzaOptionsBySize}
               onAddPizza={adicionarPizza}
               onRemovePizza={removerPizza}

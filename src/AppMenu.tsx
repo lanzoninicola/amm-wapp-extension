@@ -1,7 +1,8 @@
+import { ActiveAppFeature } from "./App"
 
 
 interface AppMenuProps {
-  onFeatureSelection: (option: string) => void
+  onFeatureSelection: (option: ActiveAppFeature) => void
 }
 
 const features = [
@@ -23,7 +24,7 @@ export default function AppMenu({ onFeatureSelection }: AppMenuProps) {
           <button
             key={f.name}
             className="text-xs font-semibold uppercase tracking-wide"
-            onClick={() => onFeatureSelection(f.name)}
+            onClick={() => onFeatureSelection(f.name as ActiveAppFeature)}
           >
             {f.label}
           </button>

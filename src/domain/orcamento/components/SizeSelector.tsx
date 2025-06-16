@@ -4,12 +4,12 @@ import { PizzaSize } from "../../types";
 
 export function SizeSelector({
   sizes,
-  size,
-  setSize
+  currentSize,
+  setCurrentSize
 }: {
   sizes: PizzaSize[];
-  size: PizzaSize | null;
-  setSize: (size: PizzaSize) => void;
+  currentSize: PizzaSize | null;
+  setCurrentSize: (currentSize: PizzaSize) => void;
 }) {
 
   // console.log("SizeSelector size:", sizes);
@@ -25,11 +25,11 @@ export function SizeSelector({
           return (
             <button
               key={idx}
-              onClick={() => setSize(s)}
+              onClick={() => setCurrentSize(s)}
               className={cn(
                 "w-full text-center cursor-pointer rounded border-2 py-2 transition flex flex-col gap-0 items-center",
                 "hover:bg-yellow-300",
-                size?.key === s.key ? "bg-blue-500 text-white" : "bg-white"
+                currentSize?.key === s.key ? "bg-blue-500 text-white" : "bg-white"
               )}
             >
               <span className="text-xs font-semibold text-center leading-3 brea" >
