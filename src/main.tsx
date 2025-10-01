@@ -30,11 +30,6 @@ if (bodyDivs.length > 0) {
 
 ReactDOM.createRoot(container).render(
   <React.StrictMode>
-<<<<<<<
-    <AppSidebar />
-    {/* <AppAssistenteEscolha /> */}
-=======
     <App />
->>>>>>>
   </React.StrictMode>
 );
