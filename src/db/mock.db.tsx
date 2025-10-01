@@ -17,7 +17,7 @@ export const pixText = () => {
 export const pizzaSize = () => {
     return {
         title: "Tamanhos",
-        content: "- *INDIVIDUAL*: serve até 1 pessoas, com no máximo um sabor.\n- *MÉDIO* (aprox. 40x20cm ): serve até 2 pessoas, com no máximo dois sabores.\n- *FAMÍLIA* (aprox. 60x40cm): serve até 6 pessoas, com no máximo quatro sabores."
+        content: "- *INDIVIDUAL*: serve 1 pessoa, com no máximo um sabor.\n- *PEQUENA*: serve até 2 pessoas, com no máximo um sabor.\n- *MÉDIO* (aprox. 40x20cm ): serve até 2 pessoas, com no máximo dois sabores.\n- *FAMÍLIA* (aprox. 60x40cm): serve até 6 pessoas, com no máximo quatro sabores."
     }
 }
 
