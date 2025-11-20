@@ -1,8 +1,8 @@
-import { Bike, Hand, HeartHandshake, Proportions, Scissors, SquareMenu } from 'lucide-react';
+import { Bike, Hand, HeartHandshake, Proportions, Scissors, Siren, SquareMenu, Watch } from 'lucide-react';
 
 
 import ButtonQuickAction from '../../template-messages/components/button-quick-action';
-import { cortarPizza, linKCardapioText, pixText, pizzaSize } from '../../../db/mock.db';
+import { cortarPizza, filaWhatsApp, linKCardapioText, pixText, pizzaSize } from '../../../db/mock.db';
 import PixSvgIcon from '../../template-messages/components/pix-svg-icon';
 
 
@@ -32,6 +32,23 @@ export default function QuickActionBar() {
         <Proportions width={16} height={16} />
       </ButtonQuickAction>
       <ButtonQuickAction
+        templateText={filaWhatsApp()}
+        showToast={true}
+      >
+        <Siren size={16} />
+      </ButtonQuickAction>
+
+      <ButtonQuickAction
+        templateText={{
+          title: 'Agendamento entrega',
+          content: 'Quer que a gente entregue em um horário específico?'
+        }}
+        showToast={true}
+      >
+        <Watch size={16} />
+      </ButtonQuickAction>
+
+      <ButtonQuickAction
         templateText={pixText()}
         showToast={true}
       >
@@ -52,6 +69,7 @@ export default function QuickActionBar() {
       >
         <Scissors size={16} />
       </ButtonQuickAction>
+
       <ButtonQuickAction
         templateText={{
           title: 'Agredecimento pedido',

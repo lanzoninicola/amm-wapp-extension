@@ -1,5 +1,3 @@
-
-
 export const linKCardapioText = () => {
     return {
         title: "Link Cardápio",
@@ -25,6 +23,13 @@ export const cortarPizza = () => {
     return {
         title: 'Cortar pizza',
         content: '*Dica boa*: corta a pizza com tesoura! Assim você mantém os ingredientes no lugar, consegue ver direitinho a massa por dentro e ainda facilita na hora de comer.'
+    }
+}
+
+export const filaWhatsApp = () => {
+    return {
+        title: 'Fila WhatsApp',
+        content: '🚨 *Estamos com fila no WhatsApp* 🚨\nPara agilizar seu atendimento, aceitamos pedidos apenas por:\n\n➡️ _*Cardápio Digital*_\nhttps://amodomio.com.br/cardapio\n\n➡️ _Aiqfome_\n\nIsso evita espera e garante mais rapidez no preparo.\nAgradecemos a compreensão 💛'
     }
 }
 
