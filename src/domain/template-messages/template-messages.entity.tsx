@@ -1,4 +1,4 @@
-import { mockDatabase } from "../../db/mock.db"
+import { mockDatabase } from "../../db/message-templates"
 import { TemplateGroup } from "./template-messages.types"
 
 

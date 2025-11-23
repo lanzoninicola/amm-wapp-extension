@@ -2,7 +2,7 @@ import { Bike, Hand, HeartHandshake, Proportions, Scissors, Siren, SquareMenu, W
 
 
 import ButtonQuickAction from '../../template-messages/components/button-quick-action';
-import { cortarPizza, filaWhatsApp, linKCardapioText, pixText, pizzaSize } from '../../../db/mock.db';
+import { cortarPizza, filaWhatsApp, linKCardapioText, pixText, pizzaSize } from '../../../db/message-templates';
 import PixSvgIcon from '../../template-messages/components/pix-svg-icon';
 
 
