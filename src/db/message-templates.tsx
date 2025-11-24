@@ -1,9 +1,11 @@
 export const linKCardapioText = () => {
     return {
         title: "Link Cardápio",
-        content: "Olá!\nVocê pode conferir todas as nossas deliciosas opções de pizzas no link abaixo:\n\nhttps://amodomio.com.br/cardapio\n\nSe tiver alguma dúvida ou precisar de uma recomendação, estou aqui para ajudar! \n\nBuon appetito! 🍕"
+        content:
+            "Olá! Segue o link do nosso cardápio:\n\nhttps://amodomio.com.br/cardapio\n\n_Valores variam conforme sabor e tamanho_:\n• *Individual*: 1 pessoa / 1 sabor\n• *Pequena*: até 2 pessoas / 1 sabor\n• *Média*: até 2 pessoas / até 2 sabores / 40x20 cm\n• *Família*: até 6 pessoas / até 4 sabores / 60x40 cm\n\nQualquer dúvida, me chame! 🍕"
     }
 }
+
 
 export const pixText = () => {
     return {
