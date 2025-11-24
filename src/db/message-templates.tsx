@@ -15,9 +15,10 @@ export const pixText = () => {
 export const pizzaSize = () => {
     return {
         title: "Tamanhos",
-        content: "- *INDIVIDUAL*: serve 1 pessoa, com no máximo um sabor.\n- *PEQUENA*: serve até 2 pessoas, com no máximo um sabor.\n- *MÉDIO* (aprox. 40x20cm ): serve até 2 pessoas, com no máximo dois sabores.\n- *FAMÍLIA* (aprox. 60x40cm): serve até 6 pessoas, com no máximo quatro sabores."
+        content: "*Valores variam conforme sabor e tamanho*:\n\n- *INDIVIDUAL*: 1 pessoa / 1 sabor\n- *PEQUENA*: até 2 pessoas / 1 sabor\n- *MÉDIA*: até 2 pessoas / até 2 sabores / 40x20 cm\n- *FAMÍLIA*: até 6 pessoas / até 4 sabores / 60x40 cm\n\nNo cardápio tem tudo: https://amodomio.com.br/cardapio"
     }
 }
+
 
 export const cortarPizza = () => {
     return {

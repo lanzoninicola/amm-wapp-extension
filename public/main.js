@@ -154,10 +154,14 @@ Buon appetito! 🍕`}),kd=()=>({title:"Pix",content:`Chave PIX
 
 Peço a gentileza de enviar o comprovante.
 
-Muito obrigado!`}),Sd=()=>({title:"Tamanhos",content:`- *INDIVIDUAL*: serve 1 pessoa, com no máximo um sabor.
-- *PEQUENA*: serve até 2 pessoas, com no máximo um sabor.
-- *MÉDIO* (aprox. 40x20cm ): serve até 2 pessoas, com no máximo dois sabores.
-- *FAMÍLIA* (aprox. 60x40cm): serve até 6 pessoas, com no máximo quatro sabores.`}),Cd=()=>({title:"Cortar pizza",content:"*Dica boa*: corta a pizza com tesoura! Assim você mantém os ingredientes no lugar, consegue ver direitinho a massa por dentro e ainda facilita na hora de comer."}),ng=()=>({title:"Fila WhatsApp",content:`🚨 *Estamos com fila no WhatsApp* 🚨
+Muito obrigado!`}),Sd=()=>({title:"Tamanhos",content:`*Valores variam conforme sabor e tamanho*.
+
+- *INDIVIDUAL*: 1 pessoa / 1 sabor
+- *PEQUENA*: até 2 pessoas / 1 sabor
+- *MÉDIA*: até 2 pessoas / até 2 sabores / 40x20 cm
+- *FAMÍLIA*: até 6 pessoas / até 4 sabores / 60x40 cm
+
+No cardápio tem tudo: https://amodomio.com.br/cardapio`}),Cd=()=>({title:"Cortar pizza",content:"*Dica boa*: corta a pizza com tesoura! Assim você mantém os ingredientes no lugar, consegue ver direitinho a massa por dentro e ainda facilita na hora de comer."}),ng=()=>({title:"Fila WhatsApp",content:`🚨 *Estamos com fila no WhatsApp* 🚨
 Para agilizar seu atendimento, aceitamos pedidos apenas por:
 
 ➡️ _*Cardápio Digital*_
