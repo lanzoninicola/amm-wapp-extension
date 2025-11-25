@@ -1,4 +1,4 @@
-import { Bike, Hand, HeartHandshake, Proportions, Scissors, Siren, SquareMenu, Watch } from 'lucide-react';
+import { BellRing, Bike, Hand, HeartHandshake, Proportions, Scissors, Siren, SquareMenu, Watch } from 'lucide-react';
 
 
 import ButtonQuickAction from '../../template-messages/components/button-quick-action';
@@ -46,6 +46,15 @@ export default function QuickActionBar() {
         showToast={true}
       >
         <Watch size={16} />
+      </ButtonQuickAction>
+      <ButtonQuickAction
+        templateText={{
+          title: 'Voltamos ao atendimento',
+          content: 'Olá! Voltamos ao atendimento! 😊\nTodos os *preços, tamanhos e sabores* estão no nosso cardápio aqui 👇\nhttps://amodomio.com.br/cardapio'
+        }}
+        showToast={true}
+      >
+        <BellRing size={16} />
       </ButtonQuickAction>
 
       <ButtonQuickAction
