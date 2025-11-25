@@ -4,12 +4,13 @@ import { BellRing, Bike, Hand, HeartHandshake, Proportions, Scissors, Siren, Squ
 import ButtonQuickAction from '../../template-messages/components/button-quick-action';
 import { cortarPizza, filaWhatsApp, linKCardapioText, pixText, pizzaSize } from '../../../db/message-templates';
 import PixSvgIcon from '../../template-messages/components/pix-svg-icon';
+import { Separator } from '../../../components/ui/separator';
 
 
 
 export default function QuickActionBar() {
   return (
-    <>
+    <div className="flex items-center gap-1">
       <ButtonQuickAction
         templateText={{
           title: 'Boa noite',
@@ -26,11 +27,22 @@ export default function QuickActionBar() {
         <SquareMenu size={16} />
       </ButtonQuickAction>
       <ButtonQuickAction
+        templateText={{
+          title: 'Voltamos ao atendimento',
+          content: 'Olá! Voltamos ao atendimento! 😊\nTodos os *preços, tamanhos e sabores* estão no nosso cardápio aqui 👇\nhttps://amodomio.com.br/cardapio'
+        }}
+        showToast={true}
+      >
+        <BellRing size={16} />
+      </ButtonQuickAction>
+
+      <ButtonQuickAction
         templateText={pizzaSize()}
         showToast={true}
       >
         <Proportions width={16} height={16} />
       </ButtonQuickAction>
+      <Separator orientation="vertical" className="h-5 bg-[#e3c95f]/80" />
       <ButtonQuickAction
         templateText={filaWhatsApp()}
         showToast={true}
@@ -46,15 +58,6 @@ export default function QuickActionBar() {
         showToast={true}
       >
         <Watch size={16} />
-      </ButtonQuickAction>
-      <ButtonQuickAction
-        templateText={{
-          title: 'Voltamos ao atendimento',
-          content: 'Olá! Voltamos ao atendimento! 😊\nTodos os *preços, tamanhos e sabores* estão no nosso cardápio aqui 👇\nhttps://amodomio.com.br/cardapio'
-        }}
-        showToast={true}
-      >
-        <BellRing size={16} />
       </ButtonQuickAction>
 
       <ButtonQuickAction
@@ -72,6 +75,7 @@ export default function QuickActionBar() {
       >
         <Bike size={16} />
       </ButtonQuickAction>
+      <Separator orientation="vertical" className="h-5 bg-[#e3c95f]/80" />
       <ButtonQuickAction
         templateText={cortarPizza()}
         showToast={true}
@@ -88,6 +92,6 @@ export default function QuickActionBar() {
       >
         <HeartHandshake size={16} />
       </ButtonQuickAction>
-    </>
+    </div>
   )
 }
