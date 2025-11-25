@@ -42,7 +42,7 @@ export default function QuickActionBar() {
       >
         <Proportions width={16} height={16} />
       </ButtonQuickAction>
-      <Separator orientation="vertical" className="h-5 bg-yellow-400/70" />
+      <Separator orientation="vertical" className="h-5 bg-[#e3c95f]/80" />
       <ButtonQuickAction
         templateText={filaWhatsApp()}
         showToast={true}
@@ -75,7 +75,7 @@ export default function QuickActionBar() {
       >
         <Bike size={16} />
       </ButtonQuickAction>
-      <Separator orientation="vertical" className="h-5 bg-yellow-400/70" />
+      <Separator orientation="vertical" className="h-5 bg-[#e3c95f]/80" />
       <ButtonQuickAction
         templateText={cortarPizza()}
         showToast={true}

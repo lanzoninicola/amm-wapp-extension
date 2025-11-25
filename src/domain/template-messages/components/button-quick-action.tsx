@@ -46,6 +46,7 @@ export default function ButtonQuickAction({
         <ButtonMenu
             onClick={handleClick}
             tooltipText={templateText.title}
+            highlight={copied}
         >
             {children}
 
