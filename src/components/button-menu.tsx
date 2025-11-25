@@ -17,33 +17,26 @@ export default function ButtonMenu({
 
 
   return (
-    <button className={
-      cn(
-        'relative grid place-items-center mr-3 bg-none rounded-full  text-black  h-6 w-6 cursor-pointer  ',
-        "hover:border hover:bg-yellow-200",
-      )
-    }
+    <button
+      className={cn(
+        'relative grid place-items-center w-7 h-7 rounded-full border border-transparent bg-white/70 text-slate-900 cursor-pointer transition-all duration-150',
+        'hover:border-yellow-300 hover:bg-yellow-200/70 active:translate-y-[1px]',
+        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600'
+      )}
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       {children}
-      <div className={
-        cn(
-          "hidden",
-          "w-[120px] h-[60px]",
-          // "absolute w-[120px] right-[70px]",
-          "absolute top-9 right-0",
-          hovered && "block animate-in",
-        )
-      }>
-        <p className="text-xs uppercase font-semibold tracking-wide text-right">
-          {tooltipText}
-        </p>
-
+      <div
+        className={cn(
+          'pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 z-10 rounded-md border border-yellow-200 bg-white px-1.5 py-0.5 shadow-lg',
+          'whitespace-nowrap text-[10px] uppercase font-semibold tracking-wide text-slate-900',
+          hovered ? 'block animate-in' : 'hidden'
+        )}
+      >
+        {tooltipText}
       </div>
     </button>
-
-
   )
 }

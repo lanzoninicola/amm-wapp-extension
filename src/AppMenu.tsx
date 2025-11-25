@@ -14,10 +14,10 @@ export default function AppMenu({ onFeatureSelection, children }: AppMenuProps) 
 
   return (
     <div
-      className="fixed top-0 right-0 w-max px-8 h-[25px] bg-yellow-500 rounded-bl-xl"
+      className="fixed top-0 right-0 w-max px-3 py-1.5 bg-yellow-500/95 border border-yellow-400/70 rounded-bl-xl shadow-md backdrop-blur"
       data-element="amm-app-menu"
     >
-      <div className="flex flex-row items-center">
+      <div className="flex flex-row items-center gap-1">
         {FEATURES.map((f) => (
           // <button
           //   key={f.name}
@@ -35,7 +35,7 @@ export default function AppMenu({ onFeatureSelection, children }: AppMenuProps) 
           </ButtonMenu>
         ))}
 
-        <Separator orientation="vertical" className="h-4 mx-4 bg-yellow-300" />
+        <Separator orientation="vertical" className="h-5 mx-2 bg-yellow-300/90" />
         {children}
       </div>
     </div>
