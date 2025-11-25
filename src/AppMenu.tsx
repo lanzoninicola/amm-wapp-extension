@@ -14,7 +14,7 @@ export default function AppMenu({ onFeatureSelection, children }: AppMenuProps) 
 
   return (
     <div
-      className="fixed top-0 right-0 w-max px-3 py-1.5 bg-yellow-500/95 border border-yellow-400/70 rounded-bl-xl shadow-md backdrop-blur"
+      className="fixed top-0 right-0 w-max px-3 py-1.5  rounded-bl-xl"
       data-element="amm-app-menu"
     >
       <div className="flex flex-row items-center gap-1">

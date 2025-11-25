@@ -19,7 +19,7 @@ export default function ButtonMenu({
   return (
     <button
       className={cn(
-        'relative grid place-items-center w-7 h-7 rounded-full border border-transparent bg-white/70 text-slate-900 cursor-pointer transition-all duration-150',
+        'relative grid place-items-center w-7 h-7 rounded-full border border-transparent bg-yellow-100 text-slate-900 cursor-pointer transition-all duration-150',
         'hover:border-yellow-300 hover:bg-yellow-200/70 active:translate-y-[1px]',
         'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600'
       )}
@@ -30,7 +30,7 @@ export default function ButtonMenu({
       {children}
       <div
         className={cn(
-          'pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 z-10 rounded-md border border-yellow-200 bg-white px-1.5 py-0.5 shadow-lg',
+          'pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 z-10 rounded-md border border-yellow-200 bg-white px-1.5 py-0.5',
           'whitespace-nowrap text-[10px] uppercase font-semibold tracking-wide text-slate-900',
           hovered ? 'block animate-in' : 'hidden'
         )}
