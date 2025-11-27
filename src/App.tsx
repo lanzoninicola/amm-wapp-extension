@@ -24,6 +24,7 @@ export type ActiveAppFeature = "orcamento" | "message-templates" | null
 export default function App() {
 
   const [currentActiveFeature, setCurrentActiveFeature] = useState<ActiveAppFeature | null>(null)
+  const isFeatureOpen = currentActiveFeature !== null
 
   function selectFeature(feature: ActiveAppFeature) {
     setCurrentActiveFeature(feature)
@@ -31,22 +32,21 @@ export default function App() {
 
   return (
     <>
-      <AppMenu onFeatureSelection={selectFeature} >
-
+      <AppMenu onFeatureSelection={selectFeature}>
         <div className="flex items-center">
           <QuickActionBar />
         </div>
-
       </AppMenu>
-      {currentActiveFeature !== null && (
-        <ContainerFloatLeft setCurrentActiveFeature={setCurrentActiveFeature}>
+
+      {isFeatureOpen && (
+        <FloatingFeaturePanel setCurrentActiveFeature={setCurrentActiveFeature}>
           {currentActiveFeature === "orcamento" &&
             <Orcamento />
           }
           {currentActiveFeature === "message-templates" &&
             <TemplateList />
           }
-        </ContainerFloatLeft>
+        </FloatingFeaturePanel>
       )}
 
 
@@ -56,19 +56,19 @@ export default function App() {
   )
 }
 
-interface ContainerFloatLeftProps {
+interface FloatingFeaturePanelProps {
   setCurrentActiveFeature: (feature: ActiveAppFeature) => void
   children: React.ReactNode
 }
 
-function ContainerFloatLeft({
+function FloatingFeaturePanel({
   children,
   setCurrentActiveFeature
-}: ContainerFloatLeftProps) {
+}: FloatingFeaturePanelProps) {
   return (
     <div className="fixed top-6 left-4 bg-white p-3 rounded-xl "
       style={{ width: "500px", maxHeight: "calc(100vh - 2rem)", overflowY: "auto" }}
-      data-element="amm-app-ContainerFloatLeft"
+      data-element="amm-app-floating-panel"
     >
       {/* Fechar a janela */}
       <button className="h-4 w-full flex justify-end" onClick={() => {
