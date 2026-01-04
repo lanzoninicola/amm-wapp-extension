@@ -6,17 +6,29 @@ const phoneRegex = /^\+?\d[\d ()+-]{6,}$/;
 
 function readContact(): ContactInfo | null {
   const getHeaderInfoFromRightPanel = () => {
-    const container = document.querySelector(
-      "#app > div > div > div:nth-of-type(3) > div > div:nth-of-type(6) > span > div > span > div > div > section > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(1) > span > div"
+    const headerBlock = document.querySelector(
+      "#app > div > div > div:nth-of-type(3) > div > div:nth-of-type(6) > span > div > span > div > div > section > div:nth-of-type(1) > div:nth-of-type(2)"
     );
 
-    if (!container)
-      return { name: null as string | null, number: null as string | null };
+    if (!headerBlock) return { name: null, number: null };
 
-    // Seletores específicos enviados para nome
-    const row1 =
-      container.querySelector("div span")?.textContent?.trim() || null;
-    const row2 = container.querySelector("span")?.textContent?.trim() || null;
+    const row1El = headerBlock.querySelector<HTMLElement>("div:nth-child(1)");
+    const row2El = headerBlock.querySelector<HTMLElement>("div:nth-child(2)");
+
+    const row1 = row1El?.textContent?.trim() || null;
+    const row2 = row2El?.textContent?.trim() || null;
+
+    // Seletores específicos para nome
+    const nameSaved =
+      row1El?.querySelector("span div div span")?.textContent?.trim() || null;
+    const nameUnsaved =
+      row2El?.querySelector("span div span")?.textContent?.trim() || null;
+
+    // Seletores específicos para número
+    const numberSaved =
+      row2El?.querySelector("span div span")?.textContent?.trim() || null;
+    const numberUnsaved =
+      row1El?.querySelector("span div div span")?.textContent?.trim() || null;
 
     let name: string | null = null;
     let number: string | null = null;
@@ -27,6 +39,18 @@ function readContact(): ContactInfo | null {
     } else if (row2 && phoneRegex.test(row2)) {
       number = row2;
       name = row1 || null;
+    } else {
+      name =
+        nameSaved ||
+        nameUnsaved ||
+        (row1 && !phoneRegex.test(row1) ? row1 : null) ||
+        (row2 && !phoneRegex.test(row2) ? row2 : null);
+
+      number =
+        (numberSaved && phoneRegex.test(numberSaved) ? numberSaved : null) ||
+        (numberUnsaved && phoneRegex.test(numberUnsaved) ? numberUnsaved : null) ||
+        (row1 && phoneRegex.test(row1) ? row1 : null) ||
+        (row2 && phoneRegex.test(row2) ? row2 : null);
     }
 
     return { name, number };
