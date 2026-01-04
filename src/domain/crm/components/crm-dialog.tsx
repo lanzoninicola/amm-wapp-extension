@@ -10,6 +10,7 @@ import {
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { Separator } from "../../../components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 import { Loader2, Settings, Upload, RefreshCcw, CheckCircle2, AlertCircle, Contact } from "lucide-react";
 import { useWhatsappContactInfo } from "../../../hooks/use-whatsapp-contact-info";
 import ButtonMenu from "../../../components/button-menu";
@@ -17,10 +18,11 @@ import ButtonMenu from "../../../components/button-menu";
 type CrmConfig = {
   baseUrl: string;
   endpoint: string;
+  apiKey: string;
 };
 
 const STORAGE_KEY = "crmConfig";
-const defaultConfig: CrmConfig = { baseUrl: "", endpoint: "" };
+const defaultConfig: CrmConfig = { baseUrl: "", endpoint: "", apiKey: "" };
 
 type FlowState =
   | "idle"
@@ -38,10 +40,12 @@ export function CrmDialog() {
   const [open, setOpen] = useState(false);
   const [config, setConfig] = useState<CrmConfig>(defaultConfig);
   const [showSettings, setShowSettings] = useState(false);
-  const [form, setForm] = useState({ name: "", phone: "" });
+  const [form, setForm] = useState({ name: "", phone: "", gender: "unknown", ageProfile: "unknown" });
   const [flow, setFlow] = useState<FlowState>("idle");
   const [progress, setProgress] = useState(0);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [rawError, setRawError] = useState<string | null>(null);
+  const [showRawError, setShowRawError] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -51,7 +55,8 @@ export function CrmDialog() {
         if (parsed.crmConfig) {
           setConfig({
             baseUrl: parsed.crmConfig.baseUrl ?? "",
-            endpoint: parsed.crmConfig.endpoint ?? ""
+            endpoint: parsed.crmConfig.endpoint ?? "",
+            apiKey: parsed.crmConfig.apiKey ?? ""
           });
         }
       } catch (err) {
@@ -66,6 +71,8 @@ export function CrmDialog() {
       setProgress(0);
       setFeedback(null);
       setShowSettings(false);
+      setRawError(null);
+      setShowRawError(false);
     } else if (flow === "idle") {
       // ao abrir, já tenta capturar contato
       handleRetrieve();
@@ -97,10 +104,11 @@ export function CrmDialog() {
         return;
       }
 
-      setForm({
+      setForm((prev) => ({
+        ...prev,
         name: contact.name ?? "",
         phone: contact.number ?? ""
-      });
+      }));
       setFlow("confirm");
       setProgress(60);
     }, 100);
@@ -126,25 +134,41 @@ export function CrmDialog() {
     setFlow("sending");
     setProgress(90);
     setFeedback(null);
+    setRawError(null);
+    setShowRawError(false);
+
+    let rawErrorText = "";
 
     try {
       const response = await fetch(`${config.baseUrl}${config.endpoint}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: form.name, phone: form.phone })
+        headers: {
+          "Content-Type": "application/json",
+          ...(config.apiKey ? { "x-api-key": config.apiKey } : {})
+        },
+        body: JSON.stringify({
+          name: form.name,
+          phone: form.phone,
+          gender: form.gender,
+          ageProfile: form.ageProfile,
+          source: "whatsapp-web"
+        })
       });
 
       if (!response.ok) {
+        rawErrorText = await response.text();
         throw new Error(`Erro ${response.status}`);
       }
 
       setFlow("success");
       setProgress(100);
       setFeedback("Enviado com sucesso.");
+      setRawError(null);
     } catch (err: any) {
       console.error(err);
       setFlow("error");
       setFeedback("Erro ao enviar. Verifique o endpoint e tente novamente.");
+      setRawError(rawErrorText || err?.message || "Erro desconhecido");
       setProgress(50);
     }
   }
@@ -193,8 +217,36 @@ export function CrmDialog() {
       >
         <DialogHeader className="space-y-1">
           <DialogTitle className="text-gray-900 text-xl">Enviar contato para CRM</DialogTitle>
-          <DialogDescription className="text-gray-600">
-            Capture os dados do contato, revise e envie em uma requisição POST.
+          <DialogDescription >
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  className="bg-black text-white hover:bg-black/90 rounded-lg"
+                  onClick={handleRetrieve}
+                  disabled={flow === "loading_contact" || flow === "sending"}
+                >
+                  {flow === "loading_contact" ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    <RefreshCcw size={16} />
+                  )}
+
+                </Button>
+
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="text-gray-900 border-gray-300 hover:bg-gray-100 rounded-lg"
+                  onClick={() => setShowSettings((v) => !v)}
+                >
+                  <Settings size={16} />
+                </Button>
+
+              </div>
+
+              {/* Feedback inline removido; manteremos o bloco inferior */}
+            </div>
           </DialogDescription>
         </DialogHeader>
 
@@ -208,42 +260,7 @@ export function CrmDialog() {
           <span className="text-xs text-gray-600">{progressLabel}</span>
         </div>
 
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              className="bg-black text-white hover:bg-black/90"
-              onClick={handleRetrieve}
-              disabled={flow === "loading_contact" || flow === "sending"}
-            >
-              {flow === "loading_contact" ? (
-                <Loader2 size={16} className="animate-spin" />
-              ) : (
-                <RefreshCcw size={16} />
-              )}
-              <span className="ml-2">Carregar dados contato</span>
-            </Button>
 
-            {flow === "confirm" || flow === "ready_to_send" || flow === "editing" ? (
-              <Button
-                size="sm"
-                variant="outline"
-                className="text-gray-900 border-gray-300 hover:bg-gray-100"
-                onClick={() => setShowSettings((v) => !v)}
-              >
-                <Settings size={16} />
-                <span className="ml-2">Configurações</span>
-              </Button>
-            ) : null}
-          </div>
-
-          {flow === "error" && (
-            <div className="flex items-center gap-1 text-sm">
-              <AlertCircle className="text-red-600" size={16} />
-              <span className="text-red-600">{feedback}</span>
-            </div>
-          )}
-        </div>
 
         {showSettings && (
           <div className="rounded-md border border-gray-200 p-3 space-y-2 bg-gray-50">
@@ -263,6 +280,14 @@ export function CrmDialog() {
                 placeholder="/api/crm/contato"
               />
             </div>
+            <div className="flex gap-2 items-center">
+              <div className="w-24 text-sm text-gray-600">API Key</div>
+              <Input
+                value={config.apiKey}
+                onChange={(e) => setConfig((prev) => ({ ...prev, apiKey: e.target.value }))}
+                placeholder="chave secreta"
+              />
+            </div>
             <Button size="sm" onClick={saveConfig} className="flex items-center gap-2 bg-black text-white hover:bg-black/90">
               <CheckCircle2 size={16} />
               Salvar configurações
@@ -272,69 +297,65 @@ export function CrmDialog() {
 
         <Separator className="bg-gray-200" />
 
-        <div className="space-y-2">
-          <div className="flex flex-col gap-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="space-y-1">
             <div className="text-sm text-gray-600">Nome</div>
-            <div className="rounded-md border border-gray-200 px-3 py-2 text-sm bg-gray-50">
-              {form.name || "—"}
-            </div>
+            <Input
+              value={form.name}
+              onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
+              placeholder="Nome do contato"
+            />
           </div>
-          <div className="flex flex-col gap-1">
+          <div className="space-y-1">
             <div className="text-sm text-gray-600">Telefone</div>
-            <div className="rounded-md border border-gray-200 px-3 py-2 text-sm bg-gray-50">
-              {form.phone || "—"}
-            </div>
+            <Input
+              value={form.phone}
+              onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value }))}
+              placeholder="Telefone do contato"
+            />
+          </div>
+          <div className="space-y-1">
+            <div className="text-sm text-gray-600">Gênero</div>
+            <Select
+              value={form.gender}
+              onValueChange={(value) => setForm((prev) => ({ ...prev, gender: value }))}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Selecione o gênero" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="male">Masculino</SelectItem>
+                <SelectItem value="female">Feminino</SelectItem>
+                <SelectItem value="unknown">Não sei</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1">
+            <div className="text-sm text-gray-600">Perfil de idade</div>
+            <Select
+              value={form.ageProfile}
+              onValueChange={(value) => setForm((prev) => ({ ...prev, ageProfile: value }))}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Selecione o perfil de idade" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="young">Jovem</SelectItem>
+                <SelectItem value="adult">Adulto</SelectItem>
+                <SelectItem value="unknown">Não sei</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
-        {(flow === "confirm" || flow === "ready_to_send") && (
-          <div className="flex gap-2">
-            <Button variant="default" className="flex-1 bg-black text-white hover:bg-black/90" onClick={() => handleConfirmData(true)}>
-              Dados corretos
-            </Button>
-            <Button variant="outline" className="flex-1 text-gray-900 border-gray-300 hover:bg-gray-100" onClick={() => handleConfirmData(false)}>
-              Corrigir
-            </Button>
-          </div>
-        )}
-
-        {flow === "editing" && (
-          <div className="space-y-3">
-            <div className="space-y-1">
-              <div className="text-sm text-gray-600">Nome</div>
-              <Input
-                value={form.name}
-                onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
-              />
-            </div>
-            <div className="space-y-1">
-              <div className="text-sm text-gray-600">Telefone</div>
-              <Input
-                value={form.phone}
-                onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value }))}
-              />
-            </div>
-            <div className="flex gap-2">
-              <Button variant="default" className="flex-1 bg-black text-white hover:bg-black/90" onClick={() => setFlow("ready_to_send")}>
-                Confirmar dados
-              </Button>
-              <Button variant="ghost" className="flex-1 text-gray-900 hover:bg-gray-100" onClick={() => handleRetrieve()}>
-                Recarregar
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {flow === "ready_to_send" && (
-          <Button
-            className="w-full flex items-center gap-2 bg-black text-white hover:bg-black/90"
-            onClick={handleSend}
-            disabled={flow === "sending" || !isConfigComplete}
-          >
-            {flow === "sending" ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
-            Enviar
-          </Button>
-        )}
+        <Button
+          className="w-full flex items-center gap-2 bg-black text-white hover:bg-black/90"
+          onClick={handleSend}
+          disabled={flow === "sending" || !isConfigComplete}
+        >
+          {flow === "sending" ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+          Enviar
+        </Button>
 
         {flow === "sending" && (
           <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -343,8 +364,24 @@ export function CrmDialog() {
         )}
 
         {flow === "error" && feedback && (
-          <div className="flex items-center gap-2 text-sm text-red-600">
-            <AlertCircle size={16} /> {feedback}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-sm text-red-600">
+              <AlertCircle size={16} /> {feedback}
+              {rawError ? (
+                <button
+                  type="button"
+                  className="underline underline-offset-2 text-red-600 hover:text-red-700"
+                  onClick={() => setShowRawError((v) => !v)}
+                >
+                  clicar aqui
+                </button>
+              ) : null}
+            </div>
+            {showRawError && rawError ? (
+              <pre className="whitespace-pre-wrap break-words rounded-md border border-red-200 bg-red-50 p-2 text-xs text-red-700">
+                {rawError}
+              </pre>
+            ) : null}
           </div>
         )}
 
