@@ -1,16 +1,25 @@
-import { BellRing, Bike, Hand, HeartHandshake, Proportions, Scissors, Siren, SquareMenu, Watch } from 'lucide-react';
-
-
+import { BellRing, Bike, Eye, Hand, HeartHandshake, Proportions, Scissors, Siren, SquareMenu, Watch } from 'lucide-react';
 import ButtonQuickAction from '../../template-messages/components/button-quick-action';
 import { cortarPizza, filaWhatsApp, linKCardapioText, pixText, pizzaSize } from '../../../db/message-templates';
 import PixSvgIcon from '../../template-messages/components/pix-svg-icon';
 import { Separator } from '../../../components/ui/separator';
-
-
+import { useWhatsappContactInfo } from '../../../hooks/use-whatsapp-contact-info';
+import { CrmDialog } from '../../crm/components/crm-dialog';
 
 export default function QuickActionBar() {
+  const contact = useWhatsappContactInfo();
+
+  function showContact() {
+    if (!contact) {
+      alert("Nenhum contato detectado agora.");
+      return;
+    }
+    const { name, number } = contact;
+    alert(`Contato atual:\nNome: ${name ?? "(sem nome)"}\nNúmero: ${number ?? "(sem número)"}`);
+  }
+
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1" data-componente="amm-quick-action-bar">
       <ButtonQuickAction
         templateText={{
           title: 'Boa noite',
@@ -92,6 +101,9 @@ export default function QuickActionBar() {
       >
         <HeartHandshake size={16} />
       </ButtonQuickAction>
+      <Separator orientation="vertical" className="h-5 bg-[#e3c95f]/80" />
+
+      <CrmDialog />
     </div>
   )
 }

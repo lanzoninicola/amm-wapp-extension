@@ -37,7 +37,7 @@ export default function TemplateList() {
 
 
     return (
-        <div className="mt-4">
+        <div className="mt-4" data-component="amm-template-list">
             <div className="grid grid-cols-2 w-full mb-4">
                 <MenuItem onClick={() => setCurrentActiveMenu("list")}
                     highlightCondition={currentActiveMenu === "list"}>

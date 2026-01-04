@@ -68,7 +68,7 @@ function FloatingFeaturePanel({
   return (
     <div className="fixed top-6 left-4 bg-white p-3 rounded-xl "
       style={{ width: "500px", maxHeight: "calc(100vh - 2rem)", overflowY: "auto" }}
-      data-element="amm-app-floating-panel"
+      data-element="amm-floating-feature-panel"
     >
       {/* Fechar a janela */}
       <button className="h-4 w-full flex justify-end" onClick={() => {

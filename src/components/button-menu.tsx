@@ -3,8 +3,8 @@ import { cn } from "../lib/utils"
 
 interface ButtonMenuProps {
   children: React.ReactNode,
-  onClick: () => void,
-  tooltipText: string,
+  onClick?: () => void,
+  tooltipText?: string,
   highlight?: boolean
 }
 
