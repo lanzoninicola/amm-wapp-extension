@@ -171,16 +171,29 @@ export function CrmDialog() {
           CRM
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-white text-gray-900 shadow-2xl">
-        <DialogHeader>
-          <DialogTitle className="text-gray-900">Enviar contato para CRM</DialogTitle>
+      <DialogContent
+        data-element="amm-dialog-crm"
+        className="bg-white text-gray-900 shadow-2xl max-w-xl"
+        style={{
+          "--primary": "222.2 47.4% 11.2%",
+          "--primary-foreground": "210 40% 98%",
+          "--muted": "210 40% 96.1%",
+          "--muted-foreground": "215.4 16.3% 46.9%",
+          "--accent": "210 40% 96.1%",
+          "--accent-foreground": "222.2 47.4% 11.2%",
+          "--border": "214.3 31.8% 91.4%",
+          "--input": "214.3 31.8% 91.4%",
+        } as React.CSSProperties}
+      >
+        <DialogHeader className="space-y-1">
+          <DialogTitle className="text-gray-900 text-xl">Enviar contato para CRM</DialogTitle>
           <DialogDescription className="text-gray-600">
             Capture os dados do contato, revise e envie em uma requisição POST.
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex items-center gap-3">
-          <div className="flex-1 h-2 rounded bg-gray-200">
+          <div className="flex-1 h-2 rounded bg-gray-200 overflow-hidden">
             <div
               className="h-2 rounded bg-primary transition-all"
               style={{ width: `${Math.min(progress, 100)}%` }}
@@ -193,7 +206,7 @@ export function CrmDialog() {
           <div className="flex gap-2">
             <Button
               size="sm"
-              variant="default"
+              className="bg-black text-white hover:bg-black/90"
               onClick={handleRetrieve}
               disabled={flow === "loading_contact" || flow === "sending"}
             >
@@ -209,13 +222,14 @@ export function CrmDialog() {
               <Button
                 size="sm"
                 variant="outline"
+                className="text-gray-900 border-gray-300 hover:bg-gray-100"
                 onClick={() => setShowSettings((v) => !v)}
               >
                 <Settings size={16} />
-              <span className="ml-2">Configurações</span>
-            </Button>
-          ) : null}
-        </div>
+                <span className="ml-2">Configurações</span>
+              </Button>
+            ) : null}
+          </div>
 
           {(flow === "success" || flow === "error") && (
             <div className="flex items-center gap-1 text-sm">
@@ -230,7 +244,7 @@ export function CrmDialog() {
         </div>
 
         {showSettings && (
-          <div className="rounded-md border p-3 space-y-2">
+          <div className="rounded-md border border-gray-200 p-3 space-y-2 bg-gray-50">
             <div className="flex gap-2 items-center">
               <div className="w-24 text-sm text-gray-600">Base URL</div>
               <Input
@@ -247,25 +261,25 @@ export function CrmDialog() {
                 placeholder="/api/crm/contato"
               />
             </div>
-            <Button size="sm" onClick={saveConfig} className="flex items-center gap-2">
+            <Button size="sm" onClick={saveConfig} className="flex items-center gap-2 bg-black text-white hover:bg-black/90">
               <CheckCircle2 size={16} />
               Salvar configurações
             </Button>
           </div>
         )}
 
-        <Separator />
+        <Separator className="bg-gray-200" />
 
         <div className="space-y-2">
           <div className="flex flex-col gap-1">
             <div className="text-sm text-gray-600">Nome</div>
-            <div className="rounded-md border px-3 py-2 text-sm bg-gray-100">
+            <div className="rounded-md border border-gray-200 px-3 py-2 text-sm bg-gray-50">
               {form.name || "—"}
             </div>
           </div>
           <div className="flex flex-col gap-1">
             <div className="text-sm text-gray-600">Telefone</div>
-            <div className="rounded-md border px-3 py-2 text-sm bg-gray-100">
+            <div className="rounded-md border border-gray-200 px-3 py-2 text-sm bg-gray-50">
               {form.phone || "—"}
             </div>
           </div>
@@ -273,36 +287,36 @@ export function CrmDialog() {
 
         {(flow === "confirm" || flow === "ready_to_send") && (
           <div className="flex gap-2">
-            <Button variant="default" className="flex-1" onClick={() => handleConfirmData(true)}>
+            <Button variant="default" className="flex-1 bg-black text-white hover:bg-black/90" onClick={() => handleConfirmData(true)}>
               Dados corretos
             </Button>
-            <Button variant="outline" className="flex-1" onClick={() => handleConfirmData(false)}>
+            <Button variant="outline" className="flex-1 text-gray-900 border-gray-300 hover:bg-gray-100" onClick={() => handleConfirmData(false)}>
               Corrigir
             </Button>
           </div>
         )}
 
         {flow === "editing" && (
-            <div className="space-y-3">
-              <div className="space-y-1">
-                <div className="text-sm text-gray-600">Nome</div>
-                <Input
-                  value={form.name}
-                  onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
-                />
-              </div>
-              <div className="space-y-1">
-                <div className="text-sm text-gray-600">Telefone</div>
-                <Input
-                  value={form.phone}
-                  onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value }))}
-                />
-              </div>
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <div className="text-sm text-gray-600">Nome</div>
+              <Input
+                value={form.name}
+                onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-1">
+              <div className="text-sm text-gray-600">Telefone</div>
+              <Input
+                value={form.phone}
+                onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value }))}
+              />
+            </div>
             <div className="flex gap-2">
-              <Button variant="default" className="flex-1" onClick={() => setFlow("ready_to_send")}>
+              <Button variant="default" className="flex-1 bg-black text-white hover:bg-black/90" onClick={() => setFlow("ready_to_send")}>
                 Confirmar dados
               </Button>
-              <Button variant="ghost" className="flex-1" onClick={() => handleRetrieve()}>
+              <Button variant="ghost" className="flex-1 text-gray-900 hover:bg-gray-100" onClick={() => handleRetrieve()}>
                 Recarregar
               </Button>
             </div>
@@ -311,7 +325,7 @@ export function CrmDialog() {
 
         {flow === "ready_to_send" && (
           <Button
-            className="w-full flex items-center gap-2"
+            className="w-full flex items-center gap-2 bg-black text-white hover:bg-black/90"
             onClick={handleSend}
             disabled={flow === "sending" || !isConfigComplete}
           >

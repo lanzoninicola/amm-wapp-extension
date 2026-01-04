@@ -7,7 +7,25 @@ const Dialog = DialogPrimitive.Root
 
 const DialogTrigger = DialogPrimitive.Trigger
 
-const DialogPortal = DialogPrimitive.Portal
+const DialogPortal = ({
+  children,
+  ...props
+}: DialogPrimitive.DialogPortalProps) => {
+  let container: HTMLElement | undefined;
+
+  if (typeof document !== "undefined") {
+    const host = document.getElementById("amodomio-root") as HTMLElement | null;
+    const shadowRoot = host?.shadowRoot;
+    const portalEl = shadowRoot?.getElementById("ammodomio-portal") as HTMLElement | null;
+    container = portalEl ?? undefined;
+  }
+
+  return (
+    <DialogPrimitive.Portal container={container} {...props}>
+      {children}
+    </DialogPrimitive.Portal>
+  )
+}
 
 const DialogClose = DialogPrimitive.Close
 

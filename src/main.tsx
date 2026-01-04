@@ -1,34 +1,46 @@
-import "./content-style.css";
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React from "react";
+import ReactDOM from "react-dom/client";
 import App from "./App";
+import tailwindStyles from "./index.css?inline";
 
 console.log("🚀 React content script iniciado");
 
+// Cria container host
+const host = document.createElement("div");
+host.id = "amodomio-root";
+host.style.position = "fixed";
+host.style.top = "0";
+host.style.left = "0";
+host.style.zIndex = "999999";
+host.style.width = "100vw";
+host.style.height = "100vh";
+host.style.pointerEvents = "none"; // evita bloquear cliques fora do app
 
-// const env = process.env.NODE_ENV;
+// Usa Shadow DOM para isolar CSS do WhatsApp e garantir carregamento das classes em produção
+const shadow = host.attachShadow({ mode: "open" });
+const styleTag = document.createElement("style");
+styleTag.textContent = tailwindStyles;
+shadow.appendChild(styleTag);
 
-const container = document.createElement("div");
-container.id = "amodomio-root";
-container.style.position = "fixed";
-container.style.top = "0";
-container.style.left = "0";
-container.style.zIndex = "999999";
+const shadowAppRoot = document.createElement("div");
+shadowAppRoot.style.pointerEvents = "auto";
+shadow.appendChild(shadowAppRoot);
 
-// append the container after the first div child element located after the body element
+// Portal root para componentes que usam Portal (ex.: Dialog)
+const portalRoot = document.createElement("div");
+portalRoot.id = "ammodomio-portal";
+portalRoot.style.pointerEvents = "auto";
+shadow.appendChild(portalRoot);
 
-const bodyDivs = Array.from(document.body.children).filter(el => el.tagName === "DIV");
-
+// Insere logo após o primeiro DIV do body, ou fallback no body
+const bodyDivs = Array.from(document.body.children).filter((el) => el.tagName === "DIV");
 if (bodyDivs.length > 0) {
-  // Insert after the first div
-  const firstDiv = bodyDivs[0];
-  firstDiv.insertAdjacentElement('afterend', container);
+  bodyDivs[0].insertAdjacentElement("afterend", host);
 } else {
-  // Fallback if no div found
-  document.body.appendChild(container);
+  document.body.appendChild(host);
 }
 
-ReactDOM.createRoot(container).render(
+ReactDOM.createRoot(shadowAppRoot).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
