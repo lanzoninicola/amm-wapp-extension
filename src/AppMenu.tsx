@@ -1,6 +1,4 @@
-
-import { GripHorizontal } from "lucide-react"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { ActiveAppFeature, FEATURES } from "./App"
 import ButtonMenu from "./components/button-menu"
 import { Separator } from "./components/ui/separator"
@@ -15,84 +13,62 @@ interface AppMenuProps {
 export default function AppMenu({ onFeatureSelection, children }: AppMenuProps) {
   const hasExtras = Boolean(children)
   const menuRef = useRef<HTMLDivElement | null>(null)
-  const dragState = useRef<{ startX: number; startLeft: number }>({ startX: 0, startLeft: 0 })
-  const [positionX, setPositionX] = useState<number | null>(null)
-  const [isDragging, setIsDragging] = useState(false)
-
-  const clamp = useCallback(
-    (value: number, min: number, max: number) => Math.min(max, Math.max(min, value)),
-    []
-  )
-
-  const updateBounds = () => {
-    const el = menuRef.current
-    if (!el) return
-    const margin = 12
-    const width = el.getBoundingClientRect().width
-    const maxX = Math.max(margin, window.innerWidth - width - margin)
-    setPositionX((current) => {
-      if (current === null) return maxX
-      return clamp(current, margin, maxX)
-    })
-  }
 
   useEffect(() => {
-    updateBounds()
-    window.addEventListener("resize", updateBounds)
-    return () => window.removeEventListener("resize", updateBounds)
-  }, [])
+    const bar = menuRef.current
+    if (!bar) return
 
-  useEffect(() => {
-    const handlePointerMove = (e: PointerEvent) => {
-      if (!isDragging || positionX === null) return
-      const el = menuRef.current
-      if (!el) return
-      const deltaX = e.clientX - dragState.current.startX
-      const margin = 12
-      const width = el.getBoundingClientRect().width
-      const maxX = Math.max(margin, window.innerWidth - width - margin)
-      const next = clamp(dragState.current.startLeft + deltaX, margin, maxX)
-      setPositionX(next)
+    const GAP_BELOW_BAR = 0
+    let targetApp: HTMLElement | null = null
+    let resizeObserver: ResizeObserver | null = null
+    let pollInterval: number | null = null
+
+    const applyOffset = () => {
+      if (!targetApp) return
+      const barHeight = bar.getBoundingClientRect().height
+      const offset = Math.ceil(barHeight + GAP_BELOW_BAR)
+      targetApp.style.top = `${offset}px`
+      targetApp.style.height = `calc(100% - ${offset}px)`
     }
 
-    const handlePointerUp = () => {
-      setIsDragging(false)
+    const attachToApp = () => {
+      targetApp = document.getElementById("app") as HTMLElement | null
+      if (!targetApp) return false
+
+      resizeObserver = new ResizeObserver(applyOffset)
+      resizeObserver.observe(bar)
+      window.addEventListener("resize", applyOffset)
+      applyOffset()
+      return true
     }
 
-    if (isDragging) {
-      window.addEventListener("pointermove", handlePointerMove)
-      window.addEventListener("pointerup", handlePointerUp)
+    if (!attachToApp()) {
+      pollInterval = window.setInterval(() => {
+        if (attachToApp() && pollInterval !== null) {
+          window.clearInterval(pollInterval)
+          pollInterval = null
+        }
+      }, 300)
     }
 
     return () => {
-      window.removeEventListener("pointermove", handlePointerMove)
-      window.removeEventListener("pointerup", handlePointerUp)
+      resizeObserver?.disconnect()
+      window.removeEventListener("resize", applyOffset)
+      if (pollInterval !== null) window.clearInterval(pollInterval)
+      if (targetApp) {
+        targetApp.style.top = ""
+        targetApp.style.height = ""
+      }
     }
-  }, [clamp, isDragging, positionX])
-
-  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!menuRef.current) return
-    e.preventDefault()
-    dragState.current = {
-      startX: e.clientX,
-      startLeft: positionX ?? menuRef.current.getBoundingClientRect().left,
-    }
-    setIsDragging(true)
-  }
+  }, [])
 
   return (
     <div
       ref={menuRef}
-      className="fixed top-0 w-max px-2 py-1.5 bg-[#f7e58a]/95 border border-[#e3c95f]/70 rounded-bl-xl backdrop-blur select-none"
-      style={{
-        left: positionX ?? undefined,
-        right: positionX === null ? 0 : "auto",
-      }}
+      className="fixed top-0 left-0 right-0 flex justify-center z-[1000000] pointer-events-auto bg-[#f7e58a]/95"
       data-element="amm-app-menu"
     >
-      <div className="flex flex-row items-center gap-1">
-        <DragHandle onPointerDown={handlePointerDown} isDragging={isDragging} />
-
+      <div className="w-full p-1 inline-flex flex-row items-center justify-end ">
         {FEATURES.map((f) => (
           <ButtonMenu
             key={f.name}
@@ -110,28 +86,6 @@ export default function AppMenu({ onFeatureSelection, children }: AppMenuProps) 
           </>
         )}
       </div>
-    </div>
-
-
-
-  )
-}
-
-interface DragHandleProps {
-  onPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void
-  isDragging: boolean
-}
-
-function DragHandle({ onPointerDown, isDragging }: DragHandleProps) {
-  return (
-    <div
-      role="button"
-      tabIndex={-1}
-      className="h-8 w-6 flex items-center justify-center text-amber-800/80 hover:text-amber-900 cursor-grab active:cursor-grabbing"
-      onPointerDown={onPointerDown}
-      aria-label="Arrastar barra"
-    >
-      <GripHorizontal size={16} strokeWidth={2.25} className={isDragging ? "opacity-80" : "opacity-100"} />
     </div>
   )
 }

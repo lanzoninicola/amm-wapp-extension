@@ -7,16 +7,7 @@ import { useWhatsappContactInfo } from '../../../hooks/use-whatsapp-contact-info
 import { CrmDialog } from '../../crm/components/crm-dialog';
 
 export default function QuickActionBar() {
-  const contact = useWhatsappContactInfo();
 
-  function showContact() {
-    if (!contact) {
-      alert("Nenhum contato detectado agora.");
-      return;
-    }
-    const { name, number } = contact;
-    alert(`Contato atual:\nNome: ${name ?? "(sem nome)"}\nNúmero: ${number ?? "(sem número)"}`);
-  }
 
   return (
     <div className="flex items-center gap-1" data-componente="amm-quick-action-bar">
@@ -27,13 +18,13 @@ export default function QuickActionBar() {
         }}
         showToast={true}
       >
-        <Hand size={16} />
+        <Hand size={14} />
       </ButtonQuickAction>
       <ButtonQuickAction
         templateText={linKCardapioText()}
         showToast={true}
       >
-        <SquareMenu size={16} />
+        <SquareMenu size={14} />
       </ButtonQuickAction>
       <ButtonQuickAction
         templateText={{
@@ -42,21 +33,21 @@ export default function QuickActionBar() {
         }}
         showToast={true}
       >
-        <BellRing size={16} />
+        <BellRing size={14} />
       </ButtonQuickAction>
 
       <ButtonQuickAction
         templateText={pizzaSize()}
         showToast={true}
       >
-        <Proportions width={16} height={16} />
+        <Proportions width={14} height={14} />
       </ButtonQuickAction>
       <Separator orientation="vertical" className="h-5 bg-[#e3c95f]/80" />
       <ButtonQuickAction
         templateText={filaWhatsApp()}
         showToast={true}
       >
-        <Siren size={16} />
+        <Siren size={14} />
       </ButtonQuickAction>
 
       <ButtonQuickAction
@@ -66,14 +57,14 @@ export default function QuickActionBar() {
         }}
         showToast={true}
       >
-        <Watch size={16} />
+        <Watch size={14} />
       </ButtonQuickAction>
 
       <ButtonQuickAction
         templateText={pixText()}
         showToast={true}
       >
-        <PixSvgIcon width={16} height={16} />
+        <PixSvgIcon width={14} height={14} />
       </ButtonQuickAction>
       <ButtonQuickAction
         templateText={{
@@ -82,14 +73,14 @@ export default function QuickActionBar() {
         }}
         showToast={true}
       >
-        <Bike size={16} />
+        <Bike size={14} />
       </ButtonQuickAction>
       <Separator orientation="vertical" className="h-5 bg-[#e3c95f]/80" />
       <ButtonQuickAction
         templateText={cortarPizza()}
         showToast={true}
       >
-        <Scissors size={16} />
+        <Scissors size={14} />
       </ButtonQuickAction>
 
       <ButtonQuickAction
@@ -99,7 +90,7 @@ export default function QuickActionBar() {
         }}
         showToast={true}
       >
-        <HeartHandshake size={16} />
+        <HeartHandshake size={14} />
       </ButtonQuickAction>
       <Separator orientation="vertical" className="h-5 bg-[#e3c95f]/80" />
 
