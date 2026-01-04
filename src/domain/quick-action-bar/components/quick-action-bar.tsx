@@ -102,16 +102,7 @@ export default function QuickActionBar() {
         <HeartHandshake size={16} />
       </ButtonQuickAction>
       <Separator orientation="vertical" className="h-5 bg-[#e3c95f]/80" />
-      <button
-        onClick={showContact}
-        className="px-2 py-1 rounded-md border text-sm hover:bg-gray-100"
-        aria-label="Ver contato capturado"
-      >
-        <div className="flex items-center gap-1">
-          <Eye size={16} />
-          <span>Ver contato</span>
-        </div>
-      </button>
+
       <CrmDialog />
     </div>
   )

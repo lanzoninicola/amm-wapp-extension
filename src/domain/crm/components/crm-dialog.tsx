@@ -10,8 +10,9 @@ import {
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { Separator } from "../../../components/ui/separator";
-import { Loader2, Settings, Upload, RefreshCcw, CheckCircle2, AlertCircle } from "lucide-react";
+import { Loader2, Settings, Upload, RefreshCcw, CheckCircle2, AlertCircle, Contact } from "lucide-react";
 import { useWhatsappContactInfo } from "../../../hooks/use-whatsapp-contact-info";
+import ButtonMenu from "../../../components/button-menu";
 
 type CrmConfig = {
   baseUrl: string;
@@ -65,7 +66,11 @@ export function CrmDialog() {
       setProgress(0);
       setFeedback(null);
       setShowSettings(false);
+    } else if (flow === "idle") {
+      // ao abrir, já tenta capturar contato
+      handleRetrieve();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   const isConfigComplete = useMemo(
@@ -166,10 +171,11 @@ export function CrmDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="secondary" size="sm" className="flex items-center gap-1">
-          <Upload size={16} />
-          CRM
-        </Button>
+        <ButtonMenu tooltipText="Carregar os dados no CRM">
+          <Contact size={16} />
+        </ButtonMenu>
+
+
       </DialogTrigger>
       <DialogContent
         data-element="amm-dialog-crm"
@@ -215,10 +221,10 @@ export function CrmDialog() {
               ) : (
                 <RefreshCcw size={16} />
               )}
-              <span className="ml-2">Recuperar dados</span>
+              <span className="ml-2">Carregar dados contato</span>
             </Button>
 
-            {flow === "confirm" || flow === "ready_to_send" || flow === "editing" || flow === "error" || flow === "success" ? (
+            {flow === "confirm" || flow === "ready_to_send" || flow === "editing" ? (
               <Button
                 size="sm"
                 variant="outline"
@@ -231,14 +237,10 @@ export function CrmDialog() {
             ) : null}
           </div>
 
-          {(flow === "success" || flow === "error") && (
+          {flow === "error" && (
             <div className="flex items-center gap-1 text-sm">
-              {flow === "success" ? (
-                <CheckCircle2 className="text-green-600" size={16} />
-              ) : (
-                <AlertCircle className="text-red-600" size={16} />
-              )}
-              <span className="text-gray-700">{feedback}</span>
+              <AlertCircle className="text-red-600" size={16} />
+              <span className="text-red-600">{feedback}</span>
             </div>
           )}
         </div>
