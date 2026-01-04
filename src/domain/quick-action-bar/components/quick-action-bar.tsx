@@ -4,6 +4,7 @@ import { cortarPizza, filaWhatsApp, linKCardapioText, pixText, pizzaSize } from 
 import PixSvgIcon from '../../template-messages/components/pix-svg-icon';
 import { Separator } from '../../../components/ui/separator';
 import { useWhatsappContactInfo } from '../../../hooks/use-whatsapp-contact-info';
+import { CrmDialog } from '../../crm/components/crm-dialog';
 
 export default function QuickActionBar() {
   const contact = useWhatsappContactInfo();
@@ -111,6 +112,7 @@ export default function QuickActionBar() {
           <span>Ver contato</span>
         </div>
       </button>
+      <CrmDialog />
     </div>
   )
 }

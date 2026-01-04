@@ -57,8 +57,10 @@ function readContact(): ContactInfo | null {
   };
 
   const panelInfo = getHeaderInfoFromRightPanel();
+  const sanitizedName =
+    panelInfo.name?.replace(/~/g, "").trim() || null;
 
-  return { name: panelInfo.name, number: panelInfo.number };
+  return { name: sanitizedName, number: panelInfo.number };
 }
 
 export function useWhatsappContactInfo() {
