@@ -3,7 +3,7 @@ import ButtonQuickAction from '../../template-messages/components/button-quick-a
 import { cortarPizza, filaWhatsApp, linKCardapioText, pixText, pizzaSize } from '../../../db/message-templates';
 import PixSvgIcon from '../../template-messages/components/pix-svg-icon';
 import { Separator } from '../../../components/ui/separator';
-import { useWhatsappContactInfo } from '../../../hooks/use-whatsapp-contact-info';
+
 import { CrmDialog } from '../../crm/components/crm-dialog';
 
 export default function QuickActionBar() {

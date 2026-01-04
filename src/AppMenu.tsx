@@ -69,15 +69,17 @@ export default function AppMenu({ onFeatureSelection, children }: AppMenuProps) 
       data-element="amm-app-menu"
     >
       <div className="w-full p-1 inline-flex flex-row items-center justify-end ">
-        {FEATURES.map((f) => (
-          <ButtonMenu
-            key={f.name}
-            tooltipText={f.label}
-            onClick={() => onFeatureSelection(f.name as ActiveAppFeature)}
-          >
-            {f.icon}
-          </ButtonMenu>
-        ))}
+        <div className="w-full flex items-center gap-x-2 justify-end">
+          {FEATURES.map((f) => (
+            <ButtonMenu
+              key={f.name}
+              tooltipText={f.label}
+              onClick={() => onFeatureSelection(f.name as ActiveAppFeature)}
+            >
+              {f.icon}
+            </ButtonMenu>
+          ))}
+        </div>
 
         {hasExtras && (
           <>

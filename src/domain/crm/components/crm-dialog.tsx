@@ -195,7 +195,7 @@ export function CrmDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <ButtonMenu tooltipText="Carregar os dados no CRM">
+        <ButtonMenu tooltipText="Enviar contato no CRM">
           <Contact size={16} />
         </ButtonMenu>
 
