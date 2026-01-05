@@ -153,13 +153,13 @@ export function CrmDialog() {
         Array.isArray(payload)
           ? payload.length > 0
           : Boolean(
-              payload &&
-              (payload.exists ||
-                payload.id ||
-                payload.total > 0 ||
-                payload.count > 0 ||
-                (Array.isArray(payload.data) && payload.data.length > 0))
-            );
+            payload &&
+            (payload.exists ||
+              payload.id ||
+              payload.total > 0 ||
+              payload.count > 0 ||
+              (Array.isArray(payload.data) && payload.data.length > 0))
+          );
 
       if (exists) {
         setFlow("exists");
@@ -383,27 +383,27 @@ export function CrmDialog() {
                 placeholder="https://dev.amodomio.com.br"
               />
             </div>
-          <div className="flex gap-2 items-center">
-            <div className="w-24 text-sm text-gray-600">Endpoint</div>
-            <Input
-              value={config.endpoint}
-              onChange={(e) => setConfig((prev) => ({ ...prev, endpoint: e.target.value }))}
-              placeholder="/api/crm/contato"
-            />
-          </div>
-          <div className="flex gap-2 items-center">
-            <div className="w-24 text-sm text-gray-600">Endpoint de consulta</div>
-            <Input
-              value={config.checkEndpoint}
-              onChange={(e) => setConfig((prev) => ({ ...prev, checkEndpoint: e.target.value }))}
-              placeholder="/api/crm/customers"
-            />
-          </div>
-          <div className="flex gap-2 items-center">
-            <div className="w-24 text-sm text-gray-600">API Key</div>
-            <Input
-              value={config.apiKey}
-              onChange={(e) => setConfig((prev) => ({ ...prev, apiKey: e.target.value }))}
+            <div className="flex gap-2 items-center">
+              <div className="w-24 text-sm text-gray-600">Endpoint</div>
+              <Input
+                value={config.endpoint}
+                onChange={(e) => setConfig((prev) => ({ ...prev, endpoint: e.target.value }))}
+                placeholder="/api/crm/contato"
+              />
+            </div>
+            <div className="flex gap-2 items-center">
+              <div className="w-24 text-sm text-gray-600">Endpoint de consulta</div>
+              <Input
+                value={config.checkEndpoint}
+                onChange={(e) => setConfig((prev) => ({ ...prev, checkEndpoint: e.target.value }))}
+                placeholder="/api/crm/customers"
+              />
+            </div>
+            <div className="flex gap-2 items-center">
+              <div className="w-24 text-sm text-gray-600">API Key</div>
+              <Input
+                value={config.apiKey}
+                onChange={(e) => setConfig((prev) => ({ ...prev, apiKey: e.target.value }))}
                 placeholder="chave secreta"
               />
             </div>
