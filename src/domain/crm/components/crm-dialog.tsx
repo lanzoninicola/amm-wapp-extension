@@ -5,7 +5,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogTrigger
+  DialogTrigger,
+  DialogClose
 } from "../../../components/ui/dialog";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
@@ -19,14 +20,22 @@ type CrmConfig = {
   baseUrl: string;
   endpoint: string;
   apiKey: string;
+  checkEndpoint: string;
 };
 
 const STORAGE_KEY = "crmConfig";
-const defaultConfig: CrmConfig = { baseUrl: "", endpoint: "", apiKey: "" };
+const defaultConfig: CrmConfig = {
+  baseUrl: "",
+  endpoint: "",
+  apiKey: "",
+  checkEndpoint: "/api/crm/customers"
+};
 
 type FlowState =
   | "idle"
   | "loading_contact"
+  | "checking_existing"
+  | "exists"
   | "confirm"
   | "editing"
   | "ready_to_send"
@@ -56,7 +65,8 @@ export function CrmDialog() {
           setConfig({
             baseUrl: parsed.crmConfig.baseUrl ?? "",
             endpoint: parsed.crmConfig.endpoint ?? "",
-            apiKey: parsed.crmConfig.apiKey ?? ""
+            apiKey: parsed.crmConfig.apiKey ?? "",
+            checkEndpoint: parsed.crmConfig.checkEndpoint ?? defaultConfig.checkEndpoint
           });
         }
       } catch (err) {
@@ -80,8 +90,13 @@ export function CrmDialog() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  const isConfigComplete = useMemo(
+  const isSendConfigured = useMemo(
     () => Boolean(config.baseUrl && config.endpoint),
+    [config]
+  );
+
+  const isLookupConfigured = useMemo(
+    () => Boolean(config.baseUrl && config.checkEndpoint),
     [config]
   );
 
@@ -91,27 +106,112 @@ export function CrmDialog() {
     setTimeout(() => setFeedback(null), 2000);
   }
 
-  function handleRetrieve() {
+  const phoneDigits = useMemo(() => form.phone.replace(/\D/g, ""), [form.phone]);
+  const phoneLastDigits = useMemo(() => phoneDigits.slice(-8) || phoneDigits, [phoneDigits]);
+
+  async function checkExistingContact(phoneInput: string) {
+    const digits = phoneInput.replace(/\D/g, "");
+    const lastDigits = digits.slice(-8) || digits;
+
+    if (!isLookupConfigured || !lastDigits) {
+      return false;
+    }
+
+    setFlow("checking_existing");
+    setProgress(75);
+    setFeedback("Consultando CRM pelo telefone...");
+    setRawError(null);
+    setShowRawError(false);
+
+    let rawErrorText = "";
+
+    try {
+      const url = new URL(config.checkEndpoint, config.baseUrl);
+      url.searchParams.set("phone", lastDigits);
+
+      const response = await fetch(url.toString(), {
+        headers: {
+          Accept: "application/json",
+          ...(config.apiKey ? { "x-api-key": config.apiKey } : {})
+        }
+      });
+
+      rawErrorText = response.ok ? "" : await response.text();
+
+      if (!response.ok) {
+        throw new Error(`Erro ${response.status}`);
+      }
+
+      let payload: any = null;
+      try {
+        payload = await response.json();
+      } catch (err) {
+        console.error("Resposta sem JSON da checagem de CRM", err);
+      }
+
+      const exists =
+        Array.isArray(payload)
+          ? payload.length > 0
+          : Boolean(
+              payload &&
+              (payload.exists ||
+                payload.id ||
+                payload.total > 0 ||
+                payload.count > 0 ||
+                (Array.isArray(payload.data) && payload.data.length > 0))
+            );
+
+      if (exists) {
+        setFlow("exists");
+        setProgress(100);
+        setFeedback("Este contato já está cadastrado no CRM.");
+        return true;
+      }
+
+      setFlow("confirm");
+      setProgress((prev) => Math.max(prev, 80));
+      setFeedback(null);
+      return false;
+    } catch (err: any) {
+      console.error(err);
+      setFlow("error");
+      setFeedback("Erro ao verificar contato. Verifique o endpoint e tente novamente.");
+      setRawError(rawErrorText || err?.message || "Erro desconhecido");
+      setProgress(50);
+      return null;
+    }
+  }
+
+  async function handleRetrieve() {
     setFlow("loading_contact");
     setProgress(25);
     setFeedback(null);
+    setRawError(null);
+    setShowRawError(false);
 
-    setTimeout(() => {
-      if (!contact?.number && !contact?.name) {
-        setFlow("error");
-        setFeedback("Não encontrei o contato. Abra o painel direito e tente novamente.");
-        setProgress(0);
-        return;
-      }
+    await new Promise((resolve) => setTimeout(resolve, 120));
 
-      setForm((prev) => ({
-        ...prev,
-        name: contact.name ?? "",
-        phone: contact.number ?? ""
-      }));
-      setFlow("confirm");
-      setProgress(60);
-    }, 100);
+    if (!contact?.number && !contact?.name) {
+      setFlow("error");
+      setFeedback("Não encontrei o contato. Abra o painel direito e tente novamente.");
+      setProgress(0);
+      return;
+    }
+
+    const nextPhone = contact?.number ?? form.phone ?? "";
+
+    setForm((prev) => ({
+      ...prev,
+      name: contact?.name ?? prev.name,
+      phone: nextPhone
+    }));
+
+    setFlow("confirm");
+    setProgress(60);
+
+    if (nextPhone) {
+      await checkExistingContact(nextPhone);
+    }
   }
 
   function handleConfirmData(correct: boolean) {
@@ -125,10 +225,17 @@ export function CrmDialog() {
   }
 
   async function handleSend() {
-    if (!isConfigComplete) {
+    if (!isSendConfigured) {
       setFeedback("Configure Base URL e Endpoint antes de enviar.");
       setFlow("error");
       return;
+    }
+
+    if (isLookupConfigured) {
+      const alreadyExists = await checkExistingContact(form.phone);
+      if (alreadyExists || alreadyExists === null) {
+        return;
+      }
     }
 
     setFlow("sending");
@@ -177,6 +284,10 @@ export function CrmDialog() {
     switch (flow) {
       case "loading_contact":
         return "Capturando contato";
+      case "checking_existing":
+        return "Consultando CRM";
+      case "exists":
+        return "Contato localizado";
       case "confirm":
       case "editing":
       case "ready_to_send":
@@ -272,19 +383,27 @@ export function CrmDialog() {
                 placeholder="https://dev.amodomio.com.br"
               />
             </div>
-            <div className="flex gap-2 items-center">
-              <div className="w-24 text-sm text-gray-600">Endpoint</div>
-              <Input
-                value={config.endpoint}
-                onChange={(e) => setConfig((prev) => ({ ...prev, endpoint: e.target.value }))}
-                placeholder="/api/crm/contato"
-              />
-            </div>
-            <div className="flex gap-2 items-center">
-              <div className="w-24 text-sm text-gray-600">API Key</div>
-              <Input
-                value={config.apiKey}
-                onChange={(e) => setConfig((prev) => ({ ...prev, apiKey: e.target.value }))}
+          <div className="flex gap-2 items-center">
+            <div className="w-24 text-sm text-gray-600">Endpoint</div>
+            <Input
+              value={config.endpoint}
+              onChange={(e) => setConfig((prev) => ({ ...prev, endpoint: e.target.value }))}
+              placeholder="/api/crm/contato"
+            />
+          </div>
+          <div className="flex gap-2 items-center">
+            <div className="w-24 text-sm text-gray-600">Endpoint de consulta</div>
+            <Input
+              value={config.checkEndpoint}
+              onChange={(e) => setConfig((prev) => ({ ...prev, checkEndpoint: e.target.value }))}
+              placeholder="/api/crm/customers"
+            />
+          </div>
+          <div className="flex gap-2 items-center">
+            <div className="w-24 text-sm text-gray-600">API Key</div>
+            <Input
+              value={config.apiKey}
+              onChange={(e) => setConfig((prev) => ({ ...prev, apiKey: e.target.value }))}
                 placeholder="chave secreta"
               />
             </div>
@@ -348,14 +467,42 @@ export function CrmDialog() {
           </div>
         </div>
 
-        <Button
-          className="w-full flex items-center gap-2 bg-black text-white hover:bg-black/90"
-          onClick={handleSend}
-          disabled={flow === "sending" || !isConfigComplete}
-        >
-          {flow === "sending" ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
-          Enviar
-        </Button>
+        <div className="space-y-2">
+          {flow === "checking_existing" && (
+            <div className="flex items-center gap-2 rounded-md border border-blue-100 bg-blue-50 p-2 text-blue-800">
+              <Loader2 size={16} className="animate-spin" /> Verificando se o contato já está no CRM...
+            </div>
+          )}
+
+          {flow === "exists" && (
+            <div className="flex items-start gap-3 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">
+              <CheckCircle2 size={18} className="mt-0.5" />
+              <div className="space-y-1">
+                <div className="text-sm font-semibold">Contato já existe no CRM</div>
+                <div className="text-xs text-emerald-700">
+                  Encontramos um cadastro para o telefone final {phoneLastDigits || "informado"}. Você pode fechar esta janela.
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {flow === "exists" ? (
+          <DialogClose asChild>
+            <Button className="w-full flex items-center gap-2 bg-gray-900 text-white hover:bg-gray-800">
+              Fechar
+            </Button>
+          </DialogClose>
+        ) : (
+          <Button
+            className="w-full flex items-center gap-2 bg-black text-white hover:bg-black/90"
+            onClick={handleSend}
+            disabled={flow === "sending" || flow === "checking_existing" || !isSendConfigured}
+          >
+            {flow === "sending" ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+            Enviar
+          </Button>
+        )}
 
         {flow === "sending" && (
           <div className="flex items-center gap-2 text-sm text-gray-600">
