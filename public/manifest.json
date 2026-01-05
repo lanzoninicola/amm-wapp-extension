@@ -9,7 +9,9 @@
     "scripting"
   ],
   "host_permissions": [
-    "https://web.whatsapp.com/*"
+    "https://web.whatsapp.com/*",
+    "https://*.amodomio.com.br/*",
+    "http://localhost:3000/*"
   ],
   "background": {
     "service_worker": "background.js"

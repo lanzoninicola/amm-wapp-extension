@@ -52,6 +52,95 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     return true;
   }
+
+  if (request.type === "CRM_CHECK_CONTACT") {
+    const { baseUrl, checkEndpoint, phone, apiKey } = request.data || {};
+
+    try {
+      const url = new URL(checkEndpoint || "/api/crm/customers", baseUrl);
+      if (phone) {
+        url.searchParams.set("phone", phone);
+      }
+
+      fetch(url.toString(), {
+        headers: {
+          Accept: "application/json",
+          ...(apiKey ? { "x-api-key": apiKey } : {})
+        }
+      })
+        .then(async (res) => {
+          const text = await res.text();
+          let payload = null;
+          try {
+            payload = text ? JSON.parse(text) : null;
+          } catch (err) {
+            console.warn("Resposta não JSON da checagem CRM:", err);
+          }
+
+          if (!res.ok) {
+            throw new Error(`Erro ${res.status} - ${text || res.statusText}`);
+          }
+
+          const exists = Array.isArray(payload)
+            ? payload.length > 0
+            : Boolean(
+              payload &&
+              (payload.exists ||
+                payload.id ||
+                payload.total > 0 ||
+                payload.count > 0 ||
+                (Array.isArray(payload?.data) && payload.data.length > 0))
+            );
+
+          sendResponse({ data: { exists, payload, status: res.status } });
+        })
+        .catch((error) => {
+          console.error("Erro ao verificar contato no CRM:", error);
+          sendResponse({ error: error.message });
+        });
+    } catch (error) {
+      console.error("Erro ao montar URL de consulta CRM:", error);
+      sendResponse({ error: error.message });
+    }
+
+    return true;
+  }
+
+  if (request.type === "CRM_SEND_CONTACT") {
+    const { baseUrl, endpoint, apiKey, body } = request.data || {};
+
+    try {
+      const url = new URL(endpoint || "/api/crm/customers", baseUrl);
+
+      fetch(url.toString(), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(apiKey ? { "x-api-key": apiKey } : {})
+        },
+        body: JSON.stringify(body || {})
+      })
+        .then(async (res) => {
+          const text = await res.text();
+          const payload = text ? JSON.parse(text) : null;
+
+          if (!res.ok) {
+            throw new Error(`Erro ${res.status} - ${text || res.statusText}`);
+          }
+
+          sendResponse({ data: { payload, status: res.status } });
+        })
+        .catch((error) => {
+          console.error("Erro ao enviar contato ao CRM:", error);
+          sendResponse({ error: error.message });
+        });
+    } catch (error) {
+      console.error("Erro ao montar URL de envio CRM:", error);
+      sendResponse({ error: error.message });
+    }
+
+    return true;
+  }
 });
 
 

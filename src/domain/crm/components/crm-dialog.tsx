@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Loader2, Settings, Upload, RefreshCcw, CheckCircle2, AlertCircle, Contact } from "lucide-react";
 import { useWhatsappContactInfo } from "../../../hooks/use-whatsapp-contact-info";
 import ButtonMenu from "../../../components/button-menu";
+import { sendMessageToBackground } from "../../../utils/send-message-to-background";
 
 type CrmConfig = {
   baseUrl: string;
@@ -126,40 +127,57 @@ export function CrmDialog() {
     let rawErrorText = "";
 
     try {
-      const url = new URL(config.checkEndpoint, config.baseUrl);
-      url.searchParams.set("phone", lastDigits);
-
-      const response = await fetch(url.toString(), {
-        headers: {
-          Accept: "application/json",
-          ...(config.apiKey ? { "x-api-key": config.apiKey } : {})
-        }
-      });
-
-      rawErrorText = response.ok ? "" : await response.text();
-
-      if (!response.ok) {
-        throw new Error(`Erro ${response.status}`);
-      }
-
+      let exists = false;
       let payload: any = null;
-      try {
-        payload = await response.json();
-      } catch (err) {
-        console.error("Resposta sem JSON da checagem de CRM", err);
-      }
 
-      const exists =
-        Array.isArray(payload)
-          ? payload.length > 0
-          : Boolean(
-            payload &&
-            (payload.exists ||
-              payload.id ||
-              payload.total > 0 ||
-              payload.count > 0 ||
-              (Array.isArray(payload.data) && payload.data.length > 0))
-          );
+      if (typeof chrome !== "undefined" && chrome.runtime?.id) {
+        const response = await sendMessageToBackground<{
+          exists?: boolean;
+          payload?: any;
+          status?: number;
+        }>("CRM_CHECK_CONTACT", {
+          baseUrl: config.baseUrl,
+          checkEndpoint: config.checkEndpoint,
+          phone: lastDigits,
+          apiKey: config.apiKey
+        });
+        exists = Boolean(response?.exists);
+        payload = response?.payload ?? null;
+      } else {
+        const url = new URL(config.checkEndpoint, config.baseUrl);
+        url.searchParams.set("phone", lastDigits);
+
+        const response = await fetch(url.toString(), {
+          headers: {
+            Accept: "application/json",
+            ...(config.apiKey ? { "x-api-key": config.apiKey } : {})
+          }
+        });
+
+        rawErrorText = response.ok ? "" : await response.text();
+
+        if (!response.ok) {
+          throw new Error(`Erro ${response.status}`);
+        }
+
+        try {
+          payload = await response.json();
+        } catch (err) {
+          console.error("Resposta sem JSON da checagem de CRM", err);
+        }
+
+        exists =
+          Array.isArray(payload)
+            ? payload.length > 0
+            : Boolean(
+              payload &&
+              (payload.exists ||
+                payload.id ||
+                payload.total > 0 ||
+                payload.count > 0 ||
+                (Array.isArray(payload.data) && payload.data.length > 0))
+            );
+      }
 
       if (exists) {
         setFlow("exists");
@@ -247,30 +265,50 @@ export function CrmDialog() {
     let rawErrorText = "";
 
     try {
-      const response = await fetch(`${config.baseUrl}${config.endpoint}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(config.apiKey ? { "x-api-key": config.apiKey } : {})
-        },
-        body: JSON.stringify({
-          name: form.name,
-          phone: form.phone,
-          gender: form.gender,
-          ageProfile: form.ageProfile,
-          source: "whatsapp-web"
-        })
-      });
+      if (typeof chrome !== "undefined" && chrome.runtime?.id) {
+        await sendMessageToBackground("CRM_SEND_CONTACT", {
+          baseUrl: config.baseUrl,
+          endpoint: config.endpoint,
+          apiKey: config.apiKey,
+          body: {
+            name: form.name,
+            phone: form.phone,
+            gender: form.gender,
+            ageProfile: form.ageProfile,
+            source: "whatsapp-web"
+          }
+        });
 
-      if (!response.ok) {
-        rawErrorText = await response.text();
-        throw new Error(`Erro ${response.status}`);
+        setFlow("success");
+        setProgress(100);
+        setFeedback("Enviado com sucesso.");
+        setRawError(null);
+      } else {
+        const response = await fetch(`${config.baseUrl}${config.endpoint}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(config.apiKey ? { "x-api-key": config.apiKey } : {})
+          },
+          body: JSON.stringify({
+            name: form.name,
+            phone: form.phone,
+            gender: form.gender,
+            ageProfile: form.ageProfile,
+            source: "whatsapp-web"
+          })
+        });
+
+        if (!response.ok) {
+          rawErrorText = await response.text();
+          throw new Error(`Erro ${response.status}`);
+        }
+
+        setFlow("success");
+        setProgress(100);
+        setFeedback("Enviado com sucesso.");
+        setRawError(null);
       }
-
-      setFlow("success");
-      setProgress(100);
-      setFeedback("Enviado com sucesso.");
-      setRawError(null);
     } catch (err: any) {
       console.error(err);
       setFlow("error");
