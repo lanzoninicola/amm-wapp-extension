@@ -10,6 +10,11 @@ export default defineConfig({
       "@": resolve(__dirname, "./src"),
     },
   },
+  test: {
+    environment: "jsdom",
+    setupFiles: "./src/test/setup.ts",
+    globals: true,
+  },
   build: {
     outDir: "public",
     emptyOutDir: false,
