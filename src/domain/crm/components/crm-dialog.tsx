@@ -117,6 +117,7 @@ export function CrmDialog() {
       setShowSettings(false);
       setRawError(null);
       setShowRawError(false);
+      setForm({ name: "", phone: "", gender: "female", ageProfile: "adult" });
     } else if (flow === "idle") {
       // ao abrir, já tenta capturar contato
       handleRetrieve();
@@ -248,6 +249,7 @@ export function CrmDialog() {
     if (!contact?.number && !contact?.name) {
       setFlow("error");
       setFeedback("Não encontrei o contato. Abra o painel direito e tente novamente.");
+      setForm({ name: "", phone: "", gender: "female", ageProfile: "adult" });
       setProgress(0);
       return;
     }
