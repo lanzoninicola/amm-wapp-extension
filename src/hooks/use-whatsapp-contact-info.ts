@@ -3,6 +3,29 @@ import { useEffect, useRef, useState } from "react";
 export type ContactInfo = { name: string | null; number: string | null };
 
 const phoneRegex = /^\+?\d[\d ()+-]{6,}$/;
+const COPY_BUTTON_ATTR = "data-ammodomio-copy-button";
+const COPY_ICON_ATTR = "data-ammodomio-copy-icon";
+const COPY_FEEDBACK_ATTR = "data-ammodomio-copy-feedback";
+
+function readCleanText(element: Element | null) {
+  if (!element) return null;
+
+  const parts: string[] = [];
+  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+  let node: Node | null = walker.nextNode();
+
+  while (node) {
+    const parent = node.parentElement;
+    if (!parent?.closest(`[${COPY_BUTTON_ATTR}], [${COPY_FEEDBACK_ATTR}], [${COPY_ICON_ATTR}]`)) {
+      const value = node.textContent?.trim();
+      if (value) parts.push(value);
+    }
+    node = walker.nextNode();
+  }
+
+  const text = parts.join(" ").trim();
+  return text || null;
+}
 
 function readContact(): ContactInfo | null {
   const getHeaderInfoFromRightPanel = () => {
@@ -15,20 +38,16 @@ function readContact(): ContactInfo | null {
     const row1El = headerBlock.querySelector<HTMLElement>("div:nth-child(1)");
     const row2El = headerBlock.querySelector<HTMLElement>("div:nth-child(2)");
 
-    const row1 = row1El?.textContent?.trim() || null;
-    const row2 = row2El?.textContent?.trim() || null;
+    const row1 = readCleanText(row1El);
+    const row2 = readCleanText(row2El);
 
     // Seletores específicos para nome
-    const nameSaved =
-      row1El?.querySelector("span div div span")?.textContent?.trim() || null;
-    const nameUnsaved =
-      row2El?.querySelector("span div span")?.textContent?.trim() || null;
+    const nameSaved = readCleanText(row1El?.querySelector("span div div span") ?? null);
+    const nameUnsaved = readCleanText(row2El?.querySelector("span div span") ?? null);
 
     // Seletores específicos para número
-    const numberSaved =
-      row2El?.querySelector("span div span")?.textContent?.trim() || null;
-    const numberUnsaved =
-      row1El?.querySelector("span div div span")?.textContent?.trim() || null;
+    const numberSaved = readCleanText(row2El?.querySelector("span div span") ?? null);
+    const numberUnsaved = readCleanText(row1El?.querySelector("span div div span") ?? null);
 
     let name: string | null = null;
     let number: string | null = null;
