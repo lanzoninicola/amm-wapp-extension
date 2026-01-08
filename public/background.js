@@ -6,6 +6,39 @@ typeof chrome !== 'undefined' && typeof chrome.runtime !== 'undefined'
 const REST_API_BASE_URL = "https://www.amodomio.com.br/api";
 const FETCH_ORCAMENTO_MOCK_RESPONSE = false
 
+const NAME_KEYS = ["name", "nome", "fullName", "full_name"];
+
+function hasValidName(value) {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+function extractRecords(payload) {
+  if (Array.isArray(payload)) {
+    return payload;
+  }
+
+  if (payload && Array.isArray(payload.data)) {
+    return payload.data;
+  }
+
+  if (payload && typeof payload.data === "object") {
+    return [payload.data];
+  }
+
+  if (payload && typeof payload === "object") {
+    return [payload];
+  }
+
+  return [];
+}
+
+function hasNamedRecord(payload) {
+  const records = extractRecords(payload);
+  return records.some((record) =>
+    NAME_KEYS.some((key) => hasValidName(record && record[key]))
+  );
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log("Received message in background.js:", request);
 
@@ -81,16 +114,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             throw new Error(`Erro ${res.status} - ${text || res.statusText}`);
           }
 
-          const exists = Array.isArray(payload)
-            ? payload.length > 0
-            : Boolean(
-              payload &&
-              (payload.exists ||
-                payload.id ||
-                payload.total > 0 ||
-                payload.count > 0 ||
-                (Array.isArray(payload?.data) && payload.data.length > 0))
-            );
+
+
+          const exists = hasNamedRecord(payload);
+
+          console.log({ exists })
 
           sendResponse({ data: { exists, payload, status: res.status } });
         })

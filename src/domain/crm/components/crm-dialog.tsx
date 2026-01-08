@@ -12,7 +12,7 @@ import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { Separator } from "../../../components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
-import { Loader2, Settings, Upload, RefreshCcw, CheckCircle2, AlertCircle, Contact } from "lucide-react";
+import { Loader2, Settings, Upload, RefreshCcw, CheckCircle2, AlertCircle, Contact, X } from "lucide-react";
 import { useWhatsappContactInfo } from "../../../hooks/use-whatsapp-contact-info";
 import ButtonMenu from "../../../components/button-menu";
 import { sendMessageToBackground } from "../../../utils/send-message-to-background";
@@ -32,6 +32,39 @@ const defaultConfig: CrmConfig = {
   checkEndpoint: "/api/crm/customers"
 };
 
+const NAME_KEYS = ["name", "nome", "fullName", "full_name"] as const;
+
+function hasValidName(value: unknown) {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+function extractRecords(payload: any) {
+  if (Array.isArray(payload)) {
+    return payload;
+  }
+
+  if (payload?.data && Array.isArray(payload.data)) {
+    return payload.data;
+  }
+
+  if (payload?.data && typeof payload.data === "object") {
+    return [payload.data];
+  }
+
+  if (payload && typeof payload === "object") {
+    return [payload];
+  }
+
+  return [];
+}
+
+function hasNamedRecord(payload: any) {
+  const records = extractRecords(payload);
+  return records.some((record) =>
+    NAME_KEYS.some((key) => hasValidName(record?.[key]))
+  );
+}
+
 type FlowState =
   | "idle"
   | "loading_contact"
@@ -50,7 +83,7 @@ export function CrmDialog() {
   const [open, setOpen] = useState(false);
   const [config, setConfig] = useState<CrmConfig>(defaultConfig);
   const [showSettings, setShowSettings] = useState(false);
-  const [form, setForm] = useState({ name: "", phone: "", gender: "unknown", ageProfile: "unknown" });
+  const [form, setForm] = useState({ name: "", phone: "", gender: "female", ageProfile: "adult" });
   const [flow, setFlow] = useState<FlowState>("idle");
   const [progress, setProgress] = useState(0);
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -179,7 +212,10 @@ export function CrmDialog() {
             );
       }
 
-      if (exists) {
+      const hasName = hasNamedRecord(payload);
+      const shouldBlockAsExisting = hasName;
+
+      if (shouldBlockAsExisting) {
         setFlow("exists");
         setProgress(100);
         setFeedback("Este contato já está cadastrado no CRM.");
@@ -216,12 +252,15 @@ export function CrmDialog() {
       return;
     }
 
-    const nextPhone = contact?.number ?? form.phone ?? "";
+    const nextPhone = contact?.number ?? "";
+    const nextName = hasValidName(contact?.name) ? contact?.name : "";
 
     setForm((prev) => ({
       ...prev,
-      name: contact?.name ?? prev.name,
-      phone: nextPhone
+      name: nextName,
+      phone: nextPhone,
+      gender: "female",
+      ageProfile: "adult"
     }));
 
     setFlow("confirm");
@@ -265,13 +304,15 @@ export function CrmDialog() {
     let rawErrorText = "";
 
     try {
+      const sanitizedName = form.name.trim() ? form.name : null;
+
       if (typeof chrome !== "undefined" && chrome.runtime?.id) {
         await sendMessageToBackground("CRM_SEND_CONTACT", {
           baseUrl: config.baseUrl,
           endpoint: config.endpoint,
           apiKey: config.apiKey,
           body: {
-            name: form.name,
+            name: sanitizedName,
             phone: form.phone,
             gender: form.gender,
             ageProfile: form.ageProfile,
@@ -291,7 +332,7 @@ export function CrmDialog() {
             ...(config.apiKey ? { "x-api-key": config.apiKey } : {})
           },
           body: JSON.stringify({
-            name: form.name,
+            name: sanitizedName,
             phone: form.phone,
             gender: form.gender,
             ageProfile: form.ageProfile,
@@ -457,11 +498,22 @@ export function CrmDialog() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1">
             <div className="text-sm text-gray-600">Nome</div>
-            <Input
-              value={form.name}
-              onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
-              placeholder="Nome do contato"
-            />
+            <div className="flex items-center gap-2">
+              <Input
+                value={form.name}
+                onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
+                placeholder="Nome do contato"
+              />
+              <button
+                type="button"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100"
+                onClick={() => setForm((prev) => ({ ...prev, name: "" }))}
+                aria-label="Limpar nome"
+                title="Limpar nome"
+              >
+                <X size={16} />
+              </button>
+            </div>
           </div>
           <div className="space-y-1">
             <div className="text-sm text-gray-600">Telefone</div>
