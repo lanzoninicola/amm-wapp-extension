@@ -17,8 +17,16 @@ function extractRecords(payload) {
     return payload;
   }
 
+  if (payload && payload.customer && typeof payload.customer === "object") {
+    return [payload.customer];
+  }
+
   if (payload && Array.isArray(payload.data)) {
     return payload.data;
+  }
+
+  if (payload && payload.data && payload.data.customer && typeof payload.data.customer === "object") {
+    return [payload.data.customer];
   }
 
   if (payload && typeof payload.data === "object") {

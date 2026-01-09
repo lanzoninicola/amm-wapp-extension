@@ -33,9 +33,24 @@ const defaultConfig: CrmConfig = {
 };
 
 const NAME_KEYS = ["name", "nome", "fullName", "full_name"] as const;
+const PHONE_KEYS = ["phone", "telefone", "phoneNumber", "mobile", "celular", "whatsapp"] as const;
 
 function hasValidName(value: unknown) {
   return typeof value === "string" && value.trim().length > 0;
+}
+
+function normalizePhone(value: unknown) {
+  if (typeof value !== "string") return "";
+  return value.replace(/\D/g, "");
+}
+
+function getPhoneMatch(lastDigits: string, record: Record<string, unknown>) {
+  return PHONE_KEYS.some((key) => {
+    const recordDigits = normalizePhone(record?.[key]);
+    if (!recordDigits) return false;
+    const recordLastDigits = recordDigits.slice(-8) || recordDigits;
+    return recordLastDigits === lastDigits;
+  });
 }
 
 function extractRecords(payload: any) {
@@ -43,8 +58,16 @@ function extractRecords(payload: any) {
     return payload;
   }
 
+  if (payload?.customer && typeof payload.customer === "object") {
+    return [payload.customer];
+  }
+
   if (payload?.data && Array.isArray(payload.data)) {
     return payload.data;
+  }
+
+  if (payload?.data?.customer && typeof payload.data.customer === "object") {
+    return [payload.data.customer];
   }
 
   if (payload?.data && typeof payload.data === "object") {
@@ -65,11 +88,38 @@ function hasNamedRecord(payload: any) {
   );
 }
 
+type LookupOutcome = "exists_with_name" | "exists_missing_name" | "not_found";
+
+function resolveLookupOutcome(payload: any, lastDigits: string): LookupOutcome {
+  const records = extractRecords(payload) as Record<string, unknown>[];
+  if (records.length === 0) {
+    return "not_found";
+  }
+
+  const hasName = records.some((record) =>
+    NAME_KEYS.some((key) => hasValidName(record?.[key]))
+  );
+
+  const hasPhoneMatch = records.some((record) => getPhoneMatch(lastDigits, record));
+  const matchedByPhone = hasPhoneMatch || records.length > 0;
+
+  if (matchedByPhone && hasName) {
+    return "exists_with_name";
+  }
+
+  if (matchedByPhone) {
+    return "exists_missing_name";
+  }
+
+  return "not_found";
+}
+
 type FlowState =
   | "idle"
   | "loading_contact"
   | "checking_existing"
   | "exists"
+  | "needs_name"
   | "confirm"
   | "editing"
   | "ready_to_send"
@@ -89,6 +139,11 @@ export function CrmDialog() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [rawError, setRawError] = useState<string | null>(null);
   const [showRawError, setShowRawError] = useState(false);
+  const [lastLookup, setLastLookup] = useState<{
+    phoneKey: string;
+    outcome: LookupOutcome;
+    checkedAt: number;
+  } | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -144,12 +199,41 @@ export function CrmDialog() {
   const phoneDigits = useMemo(() => form.phone.replace(/\D/g, ""), [form.phone]);
   const phoneLastDigits = useMemo(() => phoneDigits.slice(-8) || phoneDigits, [phoneDigits]);
 
-  async function checkExistingContact(phoneInput: string) {
+  function applyLookupOutcome(outcome: LookupOutcome) {
+    if (outcome === "exists_with_name") {
+      setFlow("exists");
+      setProgress(100);
+      setFeedback("Este contato já está cadastrado no CRM.");
+      return;
+    }
+
+    if (outcome === "exists_missing_name") {
+      setFlow("needs_name");
+      setProgress((prev) => Math.max(prev, 85));
+      setFeedback("Telefone encontrado. Envie para completar o nome no CRM.");
+      return;
+    }
+
+    setFlow("confirm");
+    setProgress((prev) => Math.max(prev, 80));
+    setFeedback(null);
+  }
+
+  async function checkExistingContact(phoneInput: string, options?: { force?: boolean }) {
     const digits = phoneInput.replace(/\D/g, "");
     const lastDigits = digits.slice(-8) || digits;
 
     if (!isLookupConfigured || !lastDigits) {
-      return false;
+      return "not_found";
+    }
+
+    const now = Date.now();
+    const cacheValidForMs = 60_000;
+    if (!options?.force && lastLookup && lastLookup.phoneKey === lastDigits) {
+      if (now - lastLookup.checkedAt < cacheValidForMs) {
+        applyLookupOutcome(lastLookup.outcome);
+        return lastLookup.outcome;
+      }
     }
 
     setFlow("checking_existing");
@@ -161,7 +245,6 @@ export function CrmDialog() {
     let rawErrorText = "";
 
     try {
-      let exists = false;
       let payload: any = null;
 
       if (typeof chrome !== "undefined" && chrome.runtime?.id) {
@@ -175,7 +258,6 @@ export function CrmDialog() {
           phone: lastDigits,
           apiKey: config.apiKey
         });
-        exists = Boolean(response?.exists);
         payload = response?.payload ?? null;
       } else {
         const url = new URL(config.checkEndpoint, config.baseUrl);
@@ -200,33 +282,12 @@ export function CrmDialog() {
           console.error("Resposta sem JSON da checagem de CRM", err);
         }
 
-        exists =
-          Array.isArray(payload)
-            ? payload.length > 0
-            : Boolean(
-              payload &&
-              (payload.exists ||
-                payload.id ||
-                payload.total > 0 ||
-                payload.count > 0 ||
-                (Array.isArray(payload.data) && payload.data.length > 0))
-            );
       }
 
-      const hasName = hasNamedRecord(payload);
-      const shouldBlockAsExisting = hasName;
-
-      if (shouldBlockAsExisting) {
-        setFlow("exists");
-        setProgress(100);
-        setFeedback("Este contato já está cadastrado no CRM.");
-        return true;
-      }
-
-      setFlow("confirm");
-      setProgress((prev) => Math.max(prev, 80));
-      setFeedback(null);
-      return false;
+      const outcome = resolveLookupOutcome(payload, lastDigits);
+      setLastLookup({ phoneKey: lastDigits, outcome, checkedAt: now });
+      applyLookupOutcome(outcome);
+      return outcome;
     } catch (err: any) {
       console.error(err);
       setFlow("error");
@@ -291,8 +352,8 @@ export function CrmDialog() {
     }
 
     if (isLookupConfigured) {
-      const alreadyExists = await checkExistingContact(form.phone);
-      if (alreadyExists || alreadyExists === null) {
+      const lookup = await checkExistingContact(form.phone);
+      if (lookup === "exists_with_name" || lookup === null) {
         return;
       }
     }
@@ -369,6 +430,8 @@ export function CrmDialog() {
         return "Consultando CRM";
       case "exists":
         return "Contato localizado";
+      case "needs_name":
+        return "Completar cadastro";
       case "confirm":
       case "editing":
       case "ready_to_send":
@@ -382,6 +445,28 @@ export function CrmDialog() {
       default:
         return "Aguardando";
     }
+  }, [flow]);
+
+  const statusBadge = useMemo(() => {
+    if (flow === "loading_contact" || flow === "checking_existing") {
+      return { label: "Verificando", className: "border-blue-200 bg-blue-100 text-blue-800" };
+    }
+    if (flow === "exists") {
+      return { label: "Já cadastrado", className: "border-emerald-200 bg-emerald-100 text-emerald-800" };
+    }
+    if (flow === "success") {
+      return { label: "Enviado", className: "border-emerald-200 bg-emerald-100 text-emerald-800" };
+    }
+    if (flow === "needs_name") {
+      return { label: "Atualizar nome", className: "border-amber-200 bg-amber-100 text-amber-800" };
+    }
+    if (flow === "confirm" || flow === "editing" || flow === "ready_to_send") {
+      return { label: "Não encontrado", className: "border-amber-200 bg-amber-100 text-amber-800" };
+    }
+    if (flow === "error") {
+      return { label: "Ação necessária", className: "border-red-200 bg-red-100 text-red-800" };
+    }
+    return null;
   }, [flow]);
 
   return (
@@ -408,7 +493,16 @@ export function CrmDialog() {
         } as React.CSSProperties}
       >
         <DialogHeader className="space-y-1">
-          <DialogTitle className="text-gray-900 text-xl">Enviar contato para CRM</DialogTitle>
+          <div className="flex items-center gap-2">
+            <DialogTitle className="text-gray-900 text-xl">Enviar contato para CRM</DialogTitle>
+            {statusBadge ? (
+              <span
+                className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${statusBadge.className}`}
+              >
+                {statusBadge.label}
+              </span>
+            ) : null}
+          </div>
           <DialogDescription >
             <div className="flex items-center justify-between gap-2">
               <div className="flex gap-2">
@@ -573,6 +667,18 @@ export function CrmDialog() {
                 <div className="text-sm font-semibold">Contato já existe no CRM</div>
                 <div className="text-xs text-emerald-700">
                   Encontramos um cadastro para o telefone final {phoneLastDigits || "informado"}. Você pode fechar esta janela.
+                </div>
+              </div>
+            </div>
+          )}
+
+          {flow === "needs_name" && (
+            <div className="flex items-start gap-3 rounded-md border border-amber-200 bg-amber-50 p-3 text-amber-800">
+              <AlertCircle size={18} className="mt-0.5" />
+              <div className="space-y-1">
+                <div className="text-sm font-semibold">Telefone encontrado sem nome</div>
+                <div className="text-xs text-amber-700">
+                  O telefone final {phoneLastDigits || "informado"} já existe. Envie para completar o nome no CRM.
                 </div>
               </div>
             </div>
