@@ -3,10 +3,12 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import tailwindStyles from "./index.css?inline";
 import { initContactCopyButtons } from "./whatsapp/contact-copy";
+import { initCrmStatusBadge } from "./whatsapp/crm-status-badge";
 
 console.log("🚀 React content script iniciado");
 
 initContactCopyButtons();
+initCrmStatusBadge();
 
 // Cria container host
 const host = document.createElement("div");

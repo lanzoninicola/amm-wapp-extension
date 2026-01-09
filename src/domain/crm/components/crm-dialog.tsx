@@ -469,6 +469,45 @@ export function CrmDialog() {
     return null;
   }, [flow]);
 
+  const badgePayload = useMemo(() => {
+    if (!statusBadge || !phoneLastDigits) {
+      return null;
+    }
+
+    let state = "unknown";
+    if (flow === "loading_contact" || flow === "checking_existing") {
+      state = "checking";
+    } else if (flow === "exists") {
+      state = "exists";
+    } else if (flow === "success") {
+      state = "success";
+    } else if (flow === "needs_name") {
+      state = "needs_name";
+    } else if (flow === "confirm" || flow === "editing" || flow === "ready_to_send") {
+      state = "not_found";
+    } else if (flow === "error") {
+      state = "error";
+    }
+
+    return {
+      label: statusBadge.label,
+      state,
+      phoneKey: phoneLastDigits
+    };
+  }, [flow, phoneLastDigits, statusBadge]);
+
+  useEffect(() => {
+    const storageKey = "amm-crm-status";
+    if (!badgePayload) {
+      localStorage.removeItem(storageKey);
+      window.dispatchEvent(new CustomEvent(storageKey, { detail: null }));
+      return;
+    }
+
+    localStorage.setItem(storageKey, JSON.stringify(badgePayload));
+    window.dispatchEvent(new CustomEvent(storageKey, { detail: badgePayload }));
+  }, [badgePayload]);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
