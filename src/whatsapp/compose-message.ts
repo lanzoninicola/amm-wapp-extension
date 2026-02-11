@@ -108,12 +108,12 @@ async function copyContent(text: string) {
 export async function composeMessage(text: string): Promise<ComposeMessageResult> {
   const editor = getWhatsAppComposer();
   if (editor) {
-    const previous = readComposerText(editor);
+    const beforeInsert = readComposerText(editor);
 
     tryPasteInComposer(editor, text);
-    if (readComposerText(editor) !== previous) return "inserted";
+    if (readComposerText(editor) !== beforeInsert) return "inserted";
 
-    if (insertTextInComposer(editor, text) && readComposerText(editor) !== previous) {
+    if (insertTextInComposer(editor, text) && readComposerText(editor) !== beforeInsert) {
       return "inserted";
     }
   }

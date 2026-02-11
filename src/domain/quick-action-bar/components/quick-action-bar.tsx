@@ -1,4 +1,4 @@
-import { BellRing, Bike, Eye, Hand, HeartHandshake, Proportions, Scissors, Siren, SquareMenu, Watch } from 'lucide-react';
+import { BellRing, Bike, Hand, HeartHandshake, Proportions, Scissors, Siren, SquareMenu, Watch } from 'lucide-react';
 import ButtonQuickAction from '../../template-messages/components/button-quick-action';
 import { cortarPizza, filaWhatsApp, linKCardapioText, pixText, pizzaSize } from '../../../db/message-templates';
 import PixSvgIcon from '../../template-messages/components/pix-svg-icon';
